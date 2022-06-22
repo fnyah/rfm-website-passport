@@ -44,12 +44,13 @@ router.get('/', (req, res, next) => {
 // When you visit http://localhost:3000/login, you will see "Login Page"
 router.get('/login', (req, res, next) => {
    
-    const form = '<h1>Login Page</h1><form method="POST" action="/login">\
-    Enter Username:<br><input type="text" name="uname">\
-    <br>Enter Password:<br><input type="password" name="pw">\
-    <br><br><input type="submit" value="Submit"></form>';
+    // const form = '<h1>Login Page</h1><form method="POST" action="/login">\
+    // Enter Username:<br><input type="text" name="uname">\
+    // <br>Enter Password:<br><input type="password" name="pw">\
+    // <br><br><input type="submit" value="Submit"></form>';
 
-    res.send(form);
+    // res.send(form);
+    res.render("loginpage")
 
 });
 
