@@ -9,7 +9,7 @@ const isAuth = require('./authMiddleware').isAuth;
  * -------------- POST ROUTES ----------------
  */
 
- router.post('/login', passport.authenticate('local', { failureRedirect: '/login-failure', successRedirect: 'login-success' }));
+ router.post('/login', passport.authenticate('local', { failureRedirect: '/login-failure', successRedirect: 'admin' }));
 
 //  router.post('/register', (req, res, next) => {
 //     const saltHash = genPassword(req.body.pw);
@@ -71,8 +71,8 @@ router.get('/login', (req, res, next) => {
  * 
  * Also, look up what behaviour express session has without a maxage set
  */
-router.get('/protected-route', isAuth, (req, res, next) => {
-    res.send('You made it to the route.');
+router.get('/admin', isAuth, (req, res, next) => {
+    res.render('controlPanel');
 });
 
 // Visiting this route logs the user out
@@ -81,9 +81,9 @@ router.get('/logout', (req, res, next) => {
     res.redirect('/protected-route');
 });
 
-router.get('/login-success', (req, res, next) => {
-    res.send('<p>You successfully logged in. --> <a href="/protected-route">Go to protected route</a></p>');
-});
+// router.get('/login-success', (req, res, next) => {
+//     res.send('<p>You successfully logged in. --> <a href="/protected-route">Go to protected route</a></p>');
+// });
 
 router.get('/login-failure', (req, res, next) => {
     res.send('You entered the wrong password.');
