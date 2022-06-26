@@ -38,7 +38,7 @@ const isAuth = require('./authMiddleware').isAuth;
  */
 
 router.get('/', (req, res, next) => {
-    res.send('<h1>Home</h1><p>Please <a href="/register">register</a></p>');
+    res.send('<h1>Home</h1><p>Please <a href="/login">login</a></p>');
 });
 
 // When you visit http://localhost:3000/login, you will see "Login Page"
@@ -72,14 +72,25 @@ router.get('/login', (req, res, next) => {
  * 
  * Also, look up what behaviour express session has without a maxage set
  */
+
+const articles = [{
+    title: "Bloop",
+    desc: "emfwlekfemfklwm"
+},
+{
+    title: "testing2",
+    desc: "this is a scond test"
+}
+]
+
 router.get('/admin', isAuth, (req, res, next) => {
-    res.render('controlPanel');
+    res.render('controlPanel', { articles: articles });
 });
 
 // Visiting this route logs the user out
 router.get('/logout', (req, res, next) => {
     req.logout();
-    res.redirect('/protected-route');
+    res.send("You have been logged out.")
 });
 
 // router.get('/login-success', (req, res, next) => {
