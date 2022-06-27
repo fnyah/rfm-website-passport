@@ -4,6 +4,7 @@ const genPassword = require('../lib/passwordUtils').genPassword;
 const connection = require('../config/database');
 const User = connection.models.User;
 const isAuth = require('./authMiddleware').isAuth;
+// const articles = require("../models/article")
 
 /**
  * -------------- POST ROUTES ----------------
@@ -83,12 +84,13 @@ const articles = [{
 }
 ]
 
+
 router.get('/admin', isAuth, (req, res, next) => {
     res.render('controlPanel', { articles: articles });
 });
 
 // Visiting this route logs the user out
-router.get('/logout', (req, res, next) => {
+router.get('/logout', isAuth, (req, res, next) => {
     req.logout();
     res.send("You have been logged out.")
 });
@@ -96,6 +98,14 @@ router.get('/logout', (req, res, next) => {
 // router.get('/login-success', (req, res, next) => {
 //     res.send('<p>You successfully logged in. --> <a href="/protected-route">Go to protected route</a></p>');
 // });
+
+router.get('/articles/new', isAuth, (req, res, next) => {
+    res.render("new")
+})
+
+router.post("/articles", (req, res) => {
+    
+})
 
 router.get('/login-failure', (req, res, next) => {
     res.send('You entered the wrong password.');
