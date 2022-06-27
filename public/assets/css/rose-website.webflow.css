@@ -285,10 +285,6 @@
   text-decoration: underline;
 }
 
-.container-4 {
-  min-height: 100vh;
-}
-
 @media screen and (min-width: 1920px) {
   .body {
     display: -webkit-box;
@@ -441,24 +437,6 @@
     margin-top: 168px;
     padding-right: 127px;
     padding-left: 106px;
-  }
-
-  .container-4 {
-    height: 100vh;
-  }
-
-  .heading-6 {
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
-
-  .list-2 {
-    margin-top: 10px;
-    list-style-type: none;
-  }
-
-  .list-item {
-    font-size: 30px;
   }
 }
 

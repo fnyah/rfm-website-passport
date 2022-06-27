@@ -28,8 +28,26 @@ const UserSchema = new mongoose.Schema({
     admin: Boolean
 });
 
+const articleSchema = new mongoose.Schema({
+    title: {
+      type: String
+    },
+    description: {
+      type: String,
+    },
+  });
+
+const standingSchema = new mongoose.Schema({
+    information: {
+        type: String
+    }
+})
+
 
 const User = connection.model('User', UserSchema);
+const Article = connection.model('Article', articleSchema)
+const Standings = connection.model('Standings', standingSchema)
+
 
 // Expose the connection
 module.exports = connection;
