@@ -40,6 +40,10 @@ const articleSchema = new mongoose.Schema({
 const standingSchema = new mongoose.Schema({
     information: {
         type: String
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
 })
 

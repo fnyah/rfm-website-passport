@@ -24,11 +24,11 @@
 <body class="body-2">
   <div data-animation="default" data-collapse="medium" data-duration="400" data-easing="ease" data-easing2="ease" role="banner" class="navbar w-nav">
     <div class="w-container">
-      <a href="#" class="w-nav-brand">
+      <a href="/" class="w-nav-brand">
         <div class="text-block">Dr. Rose Fine-Meyer<br>‍</div>
       </a>
       <nav role="navigation" class="w-nav-menu">
-        <a href="index.html" class="w-nav-link">Home</a>
+        <a href="/" class="w-nav-link">Home</a>
         <a href="about.html" aria-current="page" class="w-nav-link w--current">About</a>
         <a href="#" class="w-nav-link">Projects</a>
         <a href="#" class="w-nav-link">For Educators</a>
@@ -45,13 +45,16 @@
     <div class="div-block-6">
       <h3 class="heading-4">Standings</h3>
       <ul role="list" class="list">
-        <li>Co-investigator for a SSHRC grant: Thinking Historically for Canada’s Future</li>
-        <li>Wee</li>
-        <li>Woooo!</li>
-        <li>Another one</li>
+      <% standings.forEach(standings => { %>
+        <li><%= standings.information %></li>
+      <% }) %>
       </ul>
     </div>
   </div>
+
+
+
+
   <footer id="footer" class="footer wf-section">
     <div class="w-container">
       <div class="footer-flex-container">

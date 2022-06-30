@@ -4,6 +4,7 @@ const genPassword = require("../lib/passwordUtils").genPassword;
 const connection = require("../config/database");
 const User = connection.models.User;
 const Article = connection.models.Article;
+const Standings = connection.models.Standings;
 const isAuth = require("./authMiddleware").isAuth;
 
 /**
@@ -45,12 +46,13 @@ router.post(
 
 router.get("/", (req, res, next) => {
   res.render("home");
-  next()
+  next();
 });
 
-router.get("/about", (req, res, next) => {
-  res.render("about");
-  next()
+router.get("/about", async (req, res, next) => {
+  const standings = await Standings.find().sort({ information: "desc" });
+  res.render("about", { standings: standings });
+  next();
 });
 
 // When you visit http://localhost:3000/login, you will see "Login Page"
@@ -94,9 +96,19 @@ router.get("/login", (req, res, next) => {
 // ]
 
 router.get("/admin", isAuth, async (req, res, next) => {
-  const article = await Article.find().sort({ title: "desc" });
-  res.render("admin-panel/controlPanel", { article: article });
+  const standings = await Standings.find().sort({ information: "desc" });
+  res.render("admin-about/controlPanel", { standings: standings });
 });
+
+// router.get("/admin", isAuth, async (req, res, next) => {
+//   const article = await Article.find().sort({ title: "desc" });
+//   res.render("admin-about/controlPanel", { article: article });
+// });
+
+// router.get("/admin/standings", isAuth, async (req, res, next) => {
+//     const article = await Standings.find().sort({ title: "desc" });
+//     res.render("admin-about/controlPanel", { article: article });
+//   });
 
 // Visiting this route logs the user out
 router.get("/logout", isAuth, (req, res, next) => {
@@ -112,18 +124,45 @@ router.get("/articles/new", isAuth, (req, res, next) => {
   res.render("admin-panel/new", { article: new Article() });
 });
 
-router.get("/:id", (req, res) => {});
+// router.post("/articles", isAuth, async (req, res) => {
+//   const article = new Article({
+//     title: req.body.title,
+//     description: req.body.description,
+//   });
+//   console.log(article);
+//   try {
+//     await article.save();
+//     res.redirect(`/articles/${article.id}`);
+//   } catch (e) {
+//     console.log("nOoooo ur article didnt save");
+//   }
+// });
 
-router.post("/articles", isAuth, async (req, res) => {
-  const article = new Article({
-    title: req.body.title,
-    description: req.body.description,
+router.get("/standings/new", isAuth, (req, res, next) => {
+  res.render("admin-about/new", { standings: new Standings() });
+});
+
+router.get("/standings/:id", isAuth, async (req, res) => {
+  const standing = await Standings.findById(req.params.id);
+  res.send(standing.id);
+});
+
+router.get("standings/edit/:id", async (req, res) => {
+  const standings = await Article.findById(req.params.id);
+  res.render("admin-about/edit", { standings: standings });
+});
+
+router.post("/standings", isAuth, async (req, res) => {
+  const standings = new Standings({
+    information: req.body.information,
+    createdAt: new Date(),
   });
-  console.log(article);
   try {
-    await article.save();
-    res.redirect(`/articles/${article.id}`);
+    await standings.save();
+    res.redirect(`standings/${standings.id}`);
+    // res.redirect(`/admin`);
   } catch (e) {
+    res.render("standings/new", { standings: standings });
     console.log("nOoooo ur article didnt save");
   }
 });
