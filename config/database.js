@@ -17,7 +17,7 @@ const conn = process.env.MONGO_URI;
 
 const connection = mongoose.createConnection(conn, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
 });
 
 // Creates simple schema for a User.  The hash and salt are derived from the user's given password when they register

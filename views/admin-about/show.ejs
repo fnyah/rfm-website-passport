@@ -17,31 +17,11 @@
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
+  <body>
     <div class="contianer">
-      <h1 class="mb-4 px-3 mt-4">Edit</h1>
-      <form action="/standings/<%= standings.id %>?_method=PUT" method="POST">
-        <div class="form-group">
-          <label for="information">information:</label>
-          <input
-            required
-            type="text"
-            name="information"
-            id="information"
-            class="form-control mt-2"
-            value="<%= standings.information %>"
-          >
-        </input>
-        </div>
-        <button tpye="submit" class="btn btn-primary px-3 mt-4">Save</button>
-        <a
-        href="/admin"
-        id="confirmClickActionElementId"
-        class="btn btn-secondary px-3 mt-4"
-        >Cancel</a>
-      <a href="/admin" class="btn btn-primary px-3 mt-4"> All standings</a>
-      </form>
+      <h1 class="mb-4 px-3 mt-4"><%= standings.information %></h1>
     </div>
-  
+    <a href="/admin" class="btn btn-primary"> All standings</a>
+    <a href="/standings/edit/<%= standings.id %>" class="btn btn-secondary"> Edit</a>
   </body>
-  <script src="../../public/assets/js/confirm.js"></script>
 </html>
