@@ -19,7 +19,7 @@
   </head>
     <div class="contianer">
       <h1 class="mb-4 px-3 mt-4">Edit</h1>
-      <form action="/admin/standings/<%= standings.id %>?_method=PUT" method="POST">
+      <form action="/standings/<%= standings.id %>?_method=PUT" method="POST">
         <div class="form-group">
           <label for="information">information:</label>
           <input
@@ -34,11 +34,11 @@
         </div>
         <button tpye="submit" class="btn btn-primary px-3 mt-4">Save</button>
         <a
-        href="/admin/standings"
+        href="/standings"
         id="confirmClickActionElementId"
         class="btn btn-secondary px-3 mt-4"
         >Cancel</a>
-      <a href="/admin/standings" class="btn btn-primary px-3 mt-4"> All standings</a>
+      <a href="/standings" class="btn btn-primary px-3 mt-4"> All standings</a>
       </form>
     </div>
   

@@ -1,24 +1,24 @@
 const router = require("express").Router();
 const passport = require("passport");
-const genPassword = require("../lib/passwordUtils").genPassword;
+const genPassword = require("../lib/passwordUtils").genPassword; // Only used for creating new user from /register route
 const connection = require("../config/database");
 const User = connection.models.User;
-const Article = connection.models.Article;
 const Standings = connection.models.Standings;
 const isAuth = require("./authMiddleware").isAuth;
-const Mongoose = require("mongoose");
+const HomeInfo = connection.models.Home;
 
 /**
  * -------------- POST ROUTES ----------------
  */
 
-router.post(
-  "/login",
-  passport.authenticate("local", {
+router.post("/login", passport.authenticate("local", {
     failureRedirect: "/login-failure",
-    successRedirect: "admin",
+    successRedirect: "/admin/home",
   })
 );
+
+
+
 
 //  router.post('/register', (req, res, next) => {
 //     const saltHash = genPassword(req.body.pw);
@@ -85,13 +85,36 @@ router.get("/logout", isAuth, (req, res, next) => {
   res.send("You have been logged out.");
 });
 
+// const posts = [
+//   {
+//     title: "Testing 1",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+//   },
+//   {
+//     title: "Testing 2",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+//   },
+//   {
+//     title: "Testing 3",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+//   },
+
+// ];
+
+router.get("/admin/home", isAuth, async (req, res, next) => {
+  const posts = await HomeInfo.find().sort({ information: "desc" });
+  res.render("admin-home/controlPanel", { posts: posts });
+});
+
 router.get("/admin", isAuth, async (req, res, next) => {
-  const standings = await Standings.find().sort({ information: "desc" });
-  res.render("admin-about/controlPanel", { standings: standings });
+  res.redirect('/admin/home')
 });
 
 router.get("/login-failure", (req, res, next) => {
-  res.send("You entered the wrong password.");
+  res.send("Invalid user name or password.");
 });
 
 module.exports = router;

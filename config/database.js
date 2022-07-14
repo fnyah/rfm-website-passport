@@ -28,13 +28,17 @@ const UserSchema = new mongoose.Schema({
     admin: Boolean
 });
 
-const articleSchema = new mongoose.Schema({
+const homeSchema = new mongoose.Schema({
     title: {
       type: String
     },
     description: {
       type: String,
     },
+    createdAt: {
+      type: Date,
+      default: Date.now
+  }
   });
 
 const standingSchema = new mongoose.Schema({
@@ -45,11 +49,13 @@ const standingSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
-})
+});
+
+
 
 
 const User = connection.model('User', UserSchema);
-const Article = connection.model('Article', articleSchema)
+const Home = connection.model('Home', homeSchema)
 const Standings = connection.model('Standings', standingSchema)
 
 

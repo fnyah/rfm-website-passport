@@ -74,23 +74,24 @@
     </div>
     <div class="container">
       <h1 class="mb-4">Standings</h1>
-      <a href="standings/new" class="btn btn-success">Add new standing</a>
+      <a href="home/new" class="btn btn-success">Add new standing</a>
 
-      <% standings.forEach(standing => { %>
+      <% posts.forEach(post => { %>
       <div class="card mt-4">
         <div class="card-body">
+          <h2 class="card-text mb-2"><%= post.title %></h2>
           <div class="card-subtitle text-muted mb-2">
-            <%= standing.createdAt.toLocaleDateString() %>
+            <%= post.createdAt.toLocaleDateString() %>
           </div>
-          <div class="card-text mb-2"><%= standing.information %></div>
-          <a href="/admin/standings/<%= standing.id %>" class="btn btn-primary"
+          <div class="card-text mb-2"><%= post.description %></div>
+          <a href="/admin/home/<%= post.id %>" class="btn btn-primary"
             >Read More</a
           >
-          <a href="/admin/standings/edit/<%= standing.id %>" class="btn btn-info"
+          <a href="/admin/home/edit/<%= post.id %>" class="btn btn-info"
             >Edit</a
           >
           <form
-            action="/admin/standings/<%=standing.id%>?_method=DELETE"
+            action="/admin/home/<%=post.id%>?_method=DELETE"
             method="POST"
             class="d-inline"
           >

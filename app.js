@@ -3,8 +3,11 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 var passport = require("passport");
 var crypto = require("crypto");
-var indexRouter = require("./routes/index");
+
+const indexRouter = require("./routes/index");
 const standingsRouter = require("./routes/admin/standings")
+const homeRouter = require('./routes/admin/home')
+
 const connection = require("./config/database");
 const methodOverride = require("method-override");
 
@@ -65,7 +68,9 @@ app.use(passport.session());
 // Imports all of the routes from ./routes/index.js
 // app.use(routes)
 app.use('/', indexRouter);
-app.use('/standings', standingsRouter)
+app.use('/admin/standings', standingsRouter)
+app.use('/admin/home', homeRouter)
+
 // app.use(standings)
 
 /**

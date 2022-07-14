@@ -16,20 +16,12 @@
     <title></title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="" />
   </head>
   <body>
-    <!--[if lt IE 7]>
-      <p class="browsehappy">
-        You are using an <strong>outdated</strong> browser. Please
-        <a href="#">upgrade your browser</a> to improve your experience.
-      </p>
-    <![endif]-->
     <div class="contianer">
-      <h1 class="mb-4 px-3 mt-4">New Standings:</h1>
-      <form action="/admin/standings" method="POST" class="px-3">
-        <%- include('_form_fields') %>
-      </form>
+      <h1 class="mb-4 px-3 mt-4"><%= posts.description %></h1>
     </div>
+    <a href="/admin/home" class="btn btn-primary"> Home Page Posts</a>
+    <a href="/admin/home/edit" class="btn btn-secondary"> Edit</a>
   </body>
 </html>

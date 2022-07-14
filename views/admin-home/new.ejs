@@ -16,32 +16,20 @@
     <title></title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="" />
   </head>
+  <body>
+    <!--[if lt IE 7]>
+      <p class="browsehappy">
+        You are using an <strong>outdated</strong> browser. Please
+        <a href="#">upgrade your browser</a> to improve your experience.
+      </p>
+    <![endif]-->
     <div class="contianer">
-      <h1 class="mb-4 px-3 mt-4">Edit</h1>
-      <form action="/admin/standings/<%= standings.id %>?_method=PUT" method="POST">
-        <div class="form-group">
-          <label for="information">information:</label>
-          <input
-            required
-            type="text"
-            name="information"
-            id="information"
-            class="form-control mt-2"
-            value="<%= standings.information %>"
-          >
-        </input>
-        </div>
-        <button tpye="submit" class="btn btn-primary px-3 mt-4">Save</button>
-        <a
-        href="/admin/standings"
-        id="confirmClickActionElementId"
-        class="btn btn-secondary px-3 mt-4"
-        >Cancel</a>
-      <a href="/admin/standings" class="btn btn-primary px-3 mt-4"> All standings</a>
+      <h1 class="mb-4 px-3 mt-4">New Home Page Post:</h1>
+      <form action="/admin/home/" method="POST" class="px-3">
+        <%- include('_form_fields') %>
       </form>
     </div>
-  
   </body>
-  <script src="../../public/assets/js/confirm.js"></script>
 </html>

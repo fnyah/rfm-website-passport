@@ -1,19 +1,32 @@
 <div class="form-group">
+  <label for="information">Title:</label>
+  <input
+    required
+    type="text"
+    name="title"
+    id="title"
+    class="form-control mt-2"
+    value="<%= posts.title %>"
+  >
+</input>
+</div>
+
+<div class="form-group">
   <label for="information">information:</label>
   <input
     required
     type="text"
-    name="information"
-    id="information"
+    name="description"
+    id="description"
     class="form-control mt-2"
-    value="<%= standings.information %>"
+    value="<%= posts.description %>"
   >
 </input>
 </div>
 
 <button type="submit" class="btn btn-primary px-3 mt-4">Save</button>
 <a
-  href="/admin"
+  href="/admin/home"
   id="confirmClickActionElementId"
   class="btn btn-secondary px-3 mt-4"
   >Cancel</a
