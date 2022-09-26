@@ -16,19 +16,19 @@ router.get("/new", isAuth, (req, res, next) => {
   
   router.get("/:id", isAuth, async (req, res) => {
     let posts = await HomeInfo.findById(req.params.id);
-    console.log(posts)
     res.render("admin-home/show", { posts: posts });
   });
   
-  router.get("/:id", isAuth, async (req, res) => {
+  router.get("/edit/:id/", isAuth, async (req, res) => {
     let posts = await HomeInfo.findById(req.params.id);
     res.render("admin-home/edit", { posts: posts });
   });
 
   router.put("/:id", isAuth, async (req, res, next) => {
-      req.post = await HomeInfo.findById(req.params.id)
-      next();
-  }, savePostAndRedirect('edit'))
+    console.log("pinged the put id route")
+    req.post = await HomeInfo.findById(req.params.id)
+    next();
+}, savePostAndRedirect('edit'))
   
 
   router.post("/", isAuth, async (req, res) => {
@@ -38,7 +38,6 @@ router.get("/new", isAuth, (req, res, next) => {
         description: req.body.description,
     });
     try {
-
       await posts.save();
       console.log("posted")
       res.redirect(`/admin/home/${posts.id}`);
@@ -65,11 +64,12 @@ router.get("/new", isAuth, (req, res, next) => {
       let post = req.post
       post.title = req.body.title
       post.description = req.body.description
+      console.log(post)
       try {
         post = await post.save()
-        // res.redirect(`/standings/${standing.id}`)
+        res.redirect(`/admin/home/${post.id}`)
       } catch (e) {
-        console.log("succ")
+        console.log("success")
       }
     }
   }

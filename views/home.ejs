@@ -145,88 +145,19 @@
         <div class="div-block-11">
           <h1 class="heading-13">Courses &amp; Projects</h1>
         </div>
+        <% posts.forEach(post => { %>
+          <% console.log(post) %>
+       
         <div class="div-block-8">
           <h1 class="heading-14">
-            CTL OISE/UT Graduate Course on Public History: CTL5057
+           <%= post.title %>
           </h1>
-          <p class="paragraph-5">
-            This graduate level public history course explores the diverse
-            stories found in our communities; the history of the places and
-            spaces where we live; of people, of land, of buildings, that reflect
-            our diverse and varied historical landscape. We explore how
-            historical knowledge is transferred when it circulates between
-            different social arenas or forms of media. We explore how state and
-            local narratives have been interpreted and represented in public
-            spaces, how concepts of democratization are framed, and we root out
-            the historical truths regarding the production and sharing of public
-            knowledge. The course offers opportunities to see communities with a
-            new lens; examining how historical knowledge in institutional and
-            public space is created, contested, and shared. The course supports
-            educators seeking to widen their place-based and digital media
-            knowledge but also interested in developing strategies for expanding
-            their networks to better bridge the gaps between educational and
-            community spaces. Students will explore the theory and practice
-            reflected in a variety of sources, including websites, apps,
-            exhibits, objects, graphic novels, and through field studies that
-            will include architecture, streetscapes, monuments, archives, and
-            libraries. Students will also be exploring the wide range of
-            professional resources available in public archives, museums, parks,
-            historic sites, heritage tourism, digital history, oral history,
-            media, and public policy research. Students use the course to
-            develop a public history digital project where they reach out to
-            practitioners in the field to initiate change. 
+          <p class="paragraph-5" style="white-space: pre-line;">
+            <%= post.description %>
           </p>
+          <% }) %>
         </div>
-        <div class="div-block-10">
-          <h1 class="heading-14">
-            IDC4UI: The Study of Archives and Local History
-          </h1>
-          <p class="paragraph-5">
-            The IDC4UI (Ontario curriculum) Archives and Local History course
-            was designed to bring local communities and students together in
-            cooperative research projects that support student learning on the
-            ways in which local history has shape their lives. By linking
-            with local historical societies, archives, museums, elders and
-            others in the local community, students develop a broader
-            comprehension of the essential role that local historical work has
-            played in maintaining our past and in determining our future. The
-            course work supports students in acquiring a highly developed
-            understanding of their school, local community, and the broader
-            community in which they live and work. As a result of group and
-            independent research projects, students develop a greater knowledge
-            of the role of public memory, historical consciousness and
-            commemoration and citizenship but more importantly, students develop
-            a more in-depth understanding of themselves as Canadians. The course
-            allows students to develop a greater insight into the role of public
-            memory in the preservation of national narratives, and the
-            implications our past will have on future Canadian concerns and
-            policies about Canadian identity and unity. The students create an
-            archive in their school or community that provides a repository for
-            their research work. The independent and group research work in this
-            course provide students with advanced research and analysis skills
-            that will allow them to pursue post-secondary work with greater
-            expertise and give them the confidence to work within and beyond
-            their local communities
-          </p>
-          <div class="div-block-9">
-            <h1 class="heading-14">Herstories Cafe</h1>
-            <p class="paragraph-5">
-              Women, comprising half the population of Canada at any given time,
-              are often absent from public stories. This led me to create a
-              women’s history talk series in 2009, HerstoriesCafe
-              (https://herstoriescafe.wordpress.com) to provide public space for
-              honest examinations of women in the past. The talks showcase
-              stories from women who share their personal history or their
-              research work with the goal of creating a broader discussion about
-              how women have influenced Canadian identity. Talks take place in
-              public spaces and each talk approaches a specific theme, including
-              the arts, education, and civic activism—focused on women’s
-              historical experiences as well as links to today. Teachers
-              resources are provided.
-            </p>
-          </div>
-        </div>
-      </div>
+       
     </div>
     <script
       src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=6297e54a7a0fbb44b4a54c60"

@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 var passport = require("passport");
 var crypto = require("crypto");
+const path = require('path');
 
 const indexRouter = require("./routes/index");
 const standingsRouter = require("./routes/admin/standings")
@@ -32,6 +33,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/public", express.static("public"));
 app.use(methodOverride("_method"));
+app.use(express.static(path.join(__dirname, 'client')))
 
 /**
  * -------------- SESSION SETUP ----------------

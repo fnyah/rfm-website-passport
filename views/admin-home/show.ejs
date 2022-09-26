@@ -19,9 +19,10 @@
   </head>
   <body>
     <div class="contianer">
-      <h1 class="mb-4 px-3 mt-4"><%= posts.description %></h1>
+      <h1 class="mb-4 px-3 mt-4"><%= posts.title %></h1>
+      <p class="mb-4 px-3 mt-4"> <%= posts.description %></p>
     </div>
     <a href="/admin/home" class="btn btn-primary"> Home Page Posts</a>
-    <a href="/admin/home/edit" class="btn btn-secondary"> Edit</a>
+    <a href="/admin/home/edit/<%= posts.id %>" class="btn btn-secondary"> Edit</a>
   </body>
 </html>

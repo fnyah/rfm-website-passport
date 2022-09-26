@@ -45,8 +45,10 @@ router.post("/login", passport.authenticate("local", {
  * -------------- GET ROUTES ----------------
  */
 
-router.get("/", (req, res, next) => {
-  res.render("home");
+router.get("/", async (req, res, next) => {
+  const posts = await HomeInfo.find().sort({ information: "desc" });
+  res.render("home", { posts: posts });
+  console.log(posts)
   next();
 });
 
