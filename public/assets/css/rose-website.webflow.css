@@ -550,7 +550,6 @@
 }
 
 .container-7 {
-  position: fixed;
   left: 0%;
   top: auto;
   right: 0%;
@@ -559,6 +558,7 @@
   max-width: 940px;
   margin-right: auto;
   margin-left: auto;
+  margin-top: 50px;
 }
 
 .footer-wrapper {
