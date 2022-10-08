@@ -63,7 +63,7 @@
         <nav role="navigation" class="w-nav-menu">
           <a href="/admin" class="w-nav-link">Home</a>
           <a href="standings" class="w-nav-link">Standings/About me</a>
-          <a href="projects" class="w-nav-link">Student Projects</a>
+          <a href="#" class="w-nav-link">Student Projects</a>
           <a href="#" class="w-nav-link">Course-materials</a>
           <a href="/logout" class="w-nav-link">LOGOUT</a>
         </nav>
@@ -74,40 +74,10 @@
     </div>
     <div class="container">
       <h1 class="mb-4">Home Page Content</h1>
-      <a href="home/new" class="btn btn-success">Add new post</a>
-
-      <% posts.forEach(post => { %>
-      <div class="card mt-4">
-        <div class="card-body">
-          <h2 class="card-text mb-2"><%= post.title %></h2>
-          <div class="card-subtitle text-muted mb-2">
-            <%= post.createdAt.toLocaleDateString() %>
-          </div>
-          <div class="card-text mb-2"><%= post.description %></div>
-          <a href="/admin/home/<%= post.id %>" class="btn btn-primary"
-            >Read More</a
-          >
-          <a href="/admin/home/edit/<%= post.id %>" class="btn btn-info"
-            >Edit</a
-          >
-          <form
-            action="/admin/home/<%=post.id%>?_method=DELETE"
-            method="POST"
-            class="d-inline"
-          >
-            <button
-              type="submit"
-              class="btn btn-danger"
-              id="deleteConfirm"
-
-              >
-              Delete
-            </button>
-          </form>
+      <a href="projects/new" class="btn btn-success">Add new post</a>
         </div>
       </div>
-     
-      <% }) %>
+    
     </div>
 
     

@@ -32,18 +32,15 @@ router.get("/new", isAuth, (req, res, next) => {
   
 
   router.post("/", isAuth, async (req, res) => {
-    console.log("Pinged")
     let posts = new HomeInfo({
         title: req.body.title,
         description: req.body.description,
     });
     try {
       await posts.save();
-      console.log("posted")
       res.redirect(`/admin/home/${posts.id}`);
       // res.redirect(`/admin`);
     } catch (e) {
-      console.log("NOPOST")
     //   res.render("admin-about/new", { standings: standings });
     }
   });
@@ -64,7 +61,6 @@ router.get("/new", isAuth, (req, res, next) => {
       let post = req.post
       post.title = req.body.title
       post.description = req.body.description
-      console.log(post)
       try {
         post = await post.save()
         res.redirect(`/admin/home/${post.id}`)

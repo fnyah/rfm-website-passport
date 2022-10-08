@@ -6,6 +6,7 @@ const User = connection.models.User;
 const Standings = connection.models.Standings;
 const isAuth = require("./authMiddleware").isAuth;
 const HomeInfo = connection.models.Home;
+const Projects = connection.models.Projects
 
 /**
  * -------------- POST ROUTES ----------------
@@ -48,7 +49,6 @@ router.post("/login", passport.authenticate("local", {
 router.get("/", async (req, res, next) => {
   const posts = await HomeInfo.find().sort({ information: "desc" });
   res.render("home", { posts: posts });
-  console.log(posts)
   next();
 });
 
@@ -57,6 +57,14 @@ router.get("/about", async (req, res, next) => {
   res.render("about", { standings: standings });
   next();
 });
+
+router.get("/projects", async (req, res, next) => {
+  // const projects = await Projects.find().sort({ information: "desc" });
+  // res.render("projects", { projects: projects });
+  res.send("front end projects")
+  next();
+});
+
 
 router.get("/login", (req, res, next) => {
   res.render("admin-panel/loginpage");

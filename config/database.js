@@ -51,11 +51,22 @@ const standingSchema = new mongoose.Schema({
     }
 });
 
+const projectSchema = new mongoose.Schema({
+  information: {
+      type: String
+  },
+  createdAt: {
+      type: Date,
+      default: Date.now
+  }
+});
+
 
 
 
 const User = connection.model('User', UserSchema);
 const Home = connection.model('Home', homeSchema)
+const Projects = connection.model('Projects', projectSchema)
 const Standings = connection.model('Standings', standingSchema)
 
 
