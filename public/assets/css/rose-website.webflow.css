@@ -687,6 +687,57 @@
   font-size: 18px;
 }
 
+.div-block-13 {
+  position: relative;
+  top: -152px;
+}
+
+.container-8 {
+  margin-top: 30px;
+}
+
+.heading-18 {
+  font-family: 'Times New Roman', TimesNewRoman, Times, Baskerville, Georgia, serif;
+  font-size: 35px;
+  text-align: center;
+}
+
+.heading-19 {
+  margin-top: 60px;
+  font-family: 'Times New Roman', TimesNewRoman, Times, Baskerville, Georgia, serif;
+  font-size: 70px;
+  text-align: center;
+}
+
+.div-block-14 {
+  margin-top: 50px;
+  font-family: 'Times New Roman', TimesNewRoman, Times, Baskerville, Georgia, serif;
+}
+
+.heading-20 {
+  font-size: 35px;
+}
+
+.heading-21 {
+  font-size: 20px;
+}
+
+.paragraph-10 {
+  font-size: 35px;
+}
+
+.paragraph-11 {
+  font-size: 35px;
+}
+
+.paragraph-12 {
+  font-size: 18px;
+}
+
+.div-block-15 {
+  margin-top: 50px;
+}
+
 @media screen and (min-width: 1920px) {
   .body {
     display: -webkit-box;

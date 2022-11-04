@@ -21,8 +21,7 @@
     style="margin-left:10%;margin-right:10%;"
     class="contianer">
       <h1 class="mb-4 px-3 mt-4">Edit</h1>
-      <form action="/admin/home/<%= posts.id %>?_method=PUT" method="POST">
-       
+      <form action="/admin/projects/<%= projects.id %>?_method=PUT" method="POST">
         <div class="form-group">
           <label for="information">Title:</label>
           <input
@@ -31,7 +30,7 @@
             name="title"
             id="title"
             class="form-control mt-2"
-            value="<%= posts.title %>"
+            value="<%= projects.title %>"
           >
         </input>
           <label for="information">Information:</label>
@@ -42,20 +41,21 @@
             id="description"
             style="height:300px;white-space: pre-line;white-space: pre-wrap;"
             class="form-control mt-2">
-            <%= posts.description %>
+            <%= projects.description %>
           </textarea>
         </div>
         <button type="submit" class="btn btn-primary px-3 mt-4">Save</button>
         <a
-        href="/admin/home"
+        href="/admin/projects"
         id="confirmClickActionElementId"
         class="btn btn-secondary px-3 mt-4"
         onclick="return confirm('Are you sure you want to cancel editing?');"
         >Cancel</a>
-      <a href="/admin/home" class="btn btn-primary px-3 mt-4"> All standings</a>
+      <a href="/admin/projects" class="btn btn-primary px-3 mt-4"> All Projects</a>
+
+      
       </form>
     </div>
   
   </body>
-  <script src="../../public/assets/js/confirm.js"></script>
 </html>

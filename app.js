@@ -8,6 +8,7 @@ const path = require('path');
 const indexRouter = require("./routes/index");
 const standingsRouter = require("./routes/admin/standings")
 const homeRouter = require('./routes/admin/home')
+const projectsRouter = require('./routes/admin/projects')
 
 const connection = require("./config/database");
 const methodOverride = require("method-override");
@@ -72,6 +73,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/admin/standings', standingsRouter)
 app.use('/admin/home', homeRouter)
+app.use('/admin/projects', projectsRouter)
 
 // app.use(standings)
 
