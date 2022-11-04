@@ -6,20 +6,19 @@ const User = connection.models.User;
 const Standings = connection.models.Standings;
 const isAuth = require("./authMiddleware").isAuth;
 const HomeInfo = connection.models.Home;
-const Projects = connection.models.Projects
+const Projects = connection.models.Projects;
 
 /**
  * -------------- POST ROUTES ----------------
  */
 
-router.post("/login", passport.authenticate("local", {
+router.post(
+  "/login",
+  passport.authenticate("local", {
     failureRedirect: "/login-failure",
     successRedirect: "/admin/home",
   })
 );
-
-
-
 
 //  router.post('/register', (req, res, next) => {
 //     const saltHash = genPassword(req.body.pw);
@@ -59,12 +58,10 @@ router.get("/about", async (req, res, next) => {
 });
 
 router.get("/projects", async (req, res, next) => {
-  // const projects = await Projects.find().sort({ information: "desc" });
-  // res.render("projects", { projects: projects });
-  res.send("front end projects")
+  const projects = await Projects.find().sort({ information: "desc" });
+  res.render("projects", { projects: projects });
   next();
 });
-
 
 router.get("/login", (req, res, next) => {
   res.render("admin-panel/loginpage");
@@ -120,7 +117,7 @@ router.get("/admin/home", isAuth, async (req, res, next) => {
 });
 
 router.get("/admin", isAuth, async (req, res, next) => {
-  res.redirect('/admin/home')
+  res.redirect("/admin/home");
 });
 
 router.get("/login-failure", (req, res, next) => {
