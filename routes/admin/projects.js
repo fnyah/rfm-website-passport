@@ -38,14 +38,17 @@ router.put(
 router.post("/", isAuth, async (req, res) => {
   let projects = new Projects({
     title: req.body.title,
+    author: req.body.author,
     description: req.body.description,
     createdAt: new Date(),
   });
+  console.log(req.body.author)
   try {
     await projects.save();
     res.redirect(`projects/${projects.id}`);
     // res.redirect(`/admin`);
   } catch (e) {
+    console.log(e)
     res.render("admin-projects/new", { projects: projects });
   }
 });
@@ -65,6 +68,7 @@ function saveProjectAndRedirect(path) {
   return async (req, res) => {
     let project = req.project;
     project.title = req.body.title;
+    project.author = req.body.author;
     project.description = req.body.description;
     try {
       project = await project.save();

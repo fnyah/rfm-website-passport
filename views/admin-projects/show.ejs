@@ -19,8 +19,9 @@
   </head>
   <body>
     <div class="contianer">
-      <h1 class="mb-4 px-3 mt-4"><%= projects.title %></h1>
-      <p class="mb-4 px-3 mt-4"><%= projects.description %></p>
+      <h1 class="mb-4 px-3 mt-4">Project title: <%= projects.title %></h1>
+      <h3 class="mb-4 px-3 mt-4">Project Author: <%= projects.author %></h3>
+      <p class="mb-4 px-3 mt-4">Project description: <%= projects.description %></p>
     </div>
     <a href="/admin/projects" class="btn btn-primary"> Home Page Posts</a>
     <a href="/admin/projects/edit/<%= projects.id %>" class="btn btn-secondary">
