@@ -25,7 +25,6 @@ router.get("/new", isAuth, (req, res, next) => {
   });
 
   router.put("/:id", isAuth, async (req, res, next) => {
-    console.log("pinged the put id route")
     req.post = await HomeInfo.findById(req.params.id)
     next();
 }, savePostAndRedirect('edit'))
@@ -65,7 +64,7 @@ router.get("/new", isAuth, (req, res, next) => {
         post = await post.save()
         res.redirect(`/admin/home/${post.id}`)
       } catch (e) {
-        console.log("success")
+        console.log(e)
       }
     }
   }

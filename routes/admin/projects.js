@@ -6,7 +6,6 @@ const Mongoose = require("mongoose");
 
 router.get("/", isAuth, async (req, res, next) => {
   const projects = await Projects.find().sort({ information: "desc" });
-  console.log("hello");
   res.render("admin-projects/controlPanel", { projects: projects });
 });
 
@@ -28,7 +27,6 @@ router.put(
   "/:id",
   isAuth,
   async (req, res, next) => {
-    console.log("pinged the put id route");
     req.project = await Projects.findById(req.params.id);
     next();
   },
@@ -42,7 +40,6 @@ router.post("/", isAuth, async (req, res) => {
     description: req.body.description,
     createdAt: new Date(),
   });
-  console.log(req.body.author)
   try {
     await projects.save();
     res.redirect(`projects/${projects.id}`);
@@ -74,7 +71,7 @@ function saveProjectAndRedirect(path) {
       project = await project.save();
       res.redirect(`/admin/projects/${project.id}`);
     } catch (e) {
-      console.log("succ");
+      console.log(e);
     }
   };
 }
