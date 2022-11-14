@@ -16,14 +16,6 @@
   backdrop-filter: contrast(200%);
 }
 
-.container-about {
-  display: flex;
-  margin-bottom: 10%;
-}
-
-#about {
-  margin-top: 5%;
-}
 
 .body {
   background-color: #fff;
@@ -540,13 +532,6 @@
   min-height: 40vh;
 }
 
-.image-9 {
-  border: 1px none #000;
-  border-radius: 50px;
-  box-shadow: 2px 2px 10px -4px #000;
-  flex: 1;
-}
-
 .paragraph-8 {
   font-family: "Times New Roman", TimesNewRoman, Times, Baskerville, Georgia,
     serif;
@@ -687,13 +672,7 @@
   text-align: center;
 }
 
-.paragraph-9 {
-  position: relative;
-  float: none;
-  font-family: "Times New Roman", TimesNewRoman, Times, Baskerville, Georgia,
-    serif;
-  text-align: center;
-}
+
 
 .heading-17 {
   font-family: "Times New Roman", TimesNewRoman, Times, Baskerville, Georgia,
