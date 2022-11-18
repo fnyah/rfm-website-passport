@@ -27,7 +27,6 @@ router.put(
   "/:id",
   isAuth,
   async (req, res, next) => {
-    console.log("pinged the put id route");
     req.standing = await Standings.findById(req.params.id);
     next();
   },
@@ -68,7 +67,7 @@ function saveStandingAndRedirect(path) {
       standing = await standing.save();
       res.redirect(`/admin/standings/${standing.id}`);
     } catch (e) {
-      console.log("succ");
+      console.log(e)
     }
   };
 }
