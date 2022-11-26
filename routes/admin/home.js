@@ -4,69 +4,145 @@ const HomeInfo = connection.models.Home;
 const isAuth = require("../authMiddleware").isAuth;
 const Mongoose = require("mongoose");
 
+// Testing vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+const bodyParser = require("body-parser");
+const path = require("path");
+const crypto = require("crypto");
+const multer = require("multer");
+const { GridFsStorage } = require("multer-gridfs-storage");
+const Grid = require("gridfs-stream");
+const methodOverride = require("method-override");
 
+router.use(methodOverride("_method"));
+router.use(bodyParser.json());
+
+const mongoURI =
+  "mongodb+srv://admin:6N0r3hPt12gduyW7@cluster0.3mltss8.mongodb.net/?retryWrites=true&w=majority";
+
+const conn = Mongoose.createConnection(mongoURI);
+let gfs;
+let gridfsBucket;
+
+conn.once("open", () => {
+  gridfsBucket = new Mongoose.mongo.GridFSBucket(conn.db, {
+    bucketName: "uploads",
+  });
+
+  gfs = Grid(conn.db, Mongoose.mongo);
+  gfs.collection("uploads");
+});
+
+const storage = new GridFsStorage({
+  url: mongoURI,
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(16, (err, buf) => {
+        if (err) {
+          return reject(err);
+        }
+        const filename = buf.toString("hex") + path.extname(file.originalname);
+        const fileInfo = {
+          filename: filename,
+          bucketName: "uploads",
+        };
+        resolve(fileInfo);
+      });
+    });
+  },
+});
+
+const upload = multer({ storage });
+
+router.get("/files", (req, res) => {
+  gfs.files.find().toArray((err, files) => {
+    // Check if files
+    if (!files || files.length === 0) {
+      return res.status(404).json({
+        err: "No files exist",
+      });
+    }
+
+    // Files exist
+    return res.json(files);
+  });
+});
+
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+// Home page posts CRUD routes~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 router.get("/", isAuth, async (req, res, next) => {
   const posts = await HomeInfo.find().sort({ information: "desc" });
   res.render("admin-home/controlPanel", { posts: posts });
 });
-  
+
 router.get("/new", isAuth, (req, res, next) => {
-    res.render("admin-home/new", { posts: new HomeInfo() });
-  });
-  
-  router.get("/:id", isAuth, async (req, res) => {
-    let posts = await HomeInfo.findById(req.params.id);
-    res.render("admin-home/show", { posts: posts });
-  });
-  
-  router.get("/edit/:id/", isAuth, async (req, res) => {
-    let posts = await HomeInfo.findById(req.params.id);
-    res.render("admin-home/edit", { posts: posts });
-  });
+  res.render("admin-home/new", { posts: new HomeInfo() });
+});
 
-  router.put("/:id", isAuth, async (req, res, next) => {
-    req.post = await HomeInfo.findById(req.params.id)
+router.get("/:id", isAuth, async (req, res) => {
+  let posts = await HomeInfo.findById(req.params.id);
+  res.render("admin-home/show", { posts: posts });
+});
+
+router.get("/edit/:id/", isAuth, async (req, res) => {
+  let posts = await HomeInfo.findById(req.params.id);
+  res.render("admin-home/edit", { posts: posts });
+});
+
+router.put(
+  "/:id",
+  isAuth,
+  async (req, res, next) => {
+    req.post = await HomeInfo.findById(req.params.id);
     next();
-}, savePostAndRedirect('edit'))
-  
+  },
+  savePostAndRedirect("edit")
+);
 
-  router.post("/", isAuth, async (req, res) => {
-    let posts = new HomeInfo({
-        title: req.body.title,
-        description: req.body.description,
-    });
-    try {
-      await posts.save();
-      res.redirect(`/admin/home/${posts.id}`);
-      // res.redirect(`/admin`);
-    } catch (e) {
+router.post("/", isAuth, async (req, res) => {
+  let posts = new HomeInfo({
+    title: req.body.title,
+    description: req.body.description,
+  });
+  try {
+    await posts.save();
+    res.redirect(`/admin/home/${posts.id}`);
+    // res.redirect(`/admin`);
+  } catch (e) {
+    res.json(e)
     //   res.render("admin-about/new", { standings: standings });
-    }
-  });
-  
-  router.delete("/:id", isAuth, async (req, res, next) => {
-    const postId = Mongoose.Types.ObjectId(req.params.id);
-    try {
-      await HomeInfo.findByIdAndDelete(postId);
-      console.log("Deleted post: " + postId)
-      res.redirect("/admin/home");
-    } catch (e) {
-      res.send("error", e);
-    }
-  });
-
-  function savePostAndRedirect(path) {
-    return async (req, res) => {
-      let post = req.post
-      post.title = req.body.title
-      post.description = req.body.description
-      try {
-        post = await post.save()
-        res.redirect(`/admin/home/${post.id}`)
-      } catch (e) {
-        console.log(e)
-      }
-    }
   }
+});
 
-  module.exports = router;
+router.delete("/:id", isAuth, async (req, res, next) => {
+  const postId = Mongoose.Types.ObjectId(req.params.id);
+  try {
+    await HomeInfo.findByIdAndDelete(postId);
+    console.log("Deleted post: " + postId);
+    res.redirect("/admin/home");
+  } catch (e) {
+    res.send("error", e);
+  }
+});
+
+function savePostAndRedirect(path) {
+  return async (req, res) => {
+    let post = req.post;
+    post.title = req.body.title;
+    post.description = req.body.description;
+    try {
+      post = await post.save();
+      res.redirect(`/admin/home/${post.id}`);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+}
+
+// Home page photo upload CRUD routes~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+router.get("/photolink/new", isAuth, (req, res, next) => {
+  res.render("admin-home/home-photo-link/newphotolink");
+});
+
+module.exports = router;
