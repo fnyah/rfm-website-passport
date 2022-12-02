@@ -67,10 +67,27 @@ const projectSchema = new mongoose.Schema({
   },
 });
 
+const photoSchema = new mongoose.Schema({
+  link: {
+    type: String,
+  },
+  description: {
+    type: String,
+  },
+  file: {
+    type: String,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const User = connection.model("User", UserSchema);
 const Home = connection.model("Home", homeSchema);
 const StudentProjects = connection.model("Projects", projectSchema);
 const Standings = connection.model("Standings", standingSchema);
+const PhotoLink = connection.model("PhotoLink", photoSchema);
 
 // Expose the connection
 module.exports = connection;

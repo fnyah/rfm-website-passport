@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const connection = require("../../config/database");
 const HomeInfo = connection.models.Home;
+const PhotoLinkInfo = connection.models.PhotoLink;
 const isAuth = require("../authMiddleware").isAuth;
-const Mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
 // Testing vvvvvvvvvvvvvvvvvvvvvvvvvvvv
 const bodyParser = require("body-parser");
@@ -16,22 +17,27 @@ const methodOverride = require("method-override");
 router.use(methodOverride("_method"));
 router.use(bodyParser.json());
 
-const mongoURI =
-  "mongodb+srv://admin:6N0r3hPt12gduyW7@cluster0.3mltss8.mongodb.net/?retryWrites=true&w=majority";
+// Mongo URI
+const mongoURI = process.env.MONGO_URI;
+// use new mongo url parser
+const conn = mongoose.createConnection(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-const conn = Mongoose.createConnection(mongoURI);
+// Home page photo upload CRUD routes~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 let gfs;
 let gridfsBucket;
-
 conn.once("open", () => {
-  gridfsBucket = new Mongoose.mongo.GridFSBucket(conn.db, {
+  gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
     bucketName: "uploads",
   });
 
-  gfs = Grid(conn.db, Mongoose.mongo);
+  gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection("uploads");
 });
 
+// Create storage engine
 const storage = new GridFsStorage({
   url: mongoURI,
   file: (req, file) => {
@@ -53,27 +59,36 @@ const storage = new GridFsStorage({
 
 const upload = multer({ storage });
 
-router.get("/files", (req, res) => {
-  gfs.files.find().toArray((err, files) => {
-    // Check if files
-    if (!files || files.length === 0) {
-      return res.status(404).json({
-        err: "No files exist",
-      });
-    }
-
-    // Files exist
-    return res.json(files);
-  });
+router.get("/photolink/new", isAuth, (req, res, next) => {
+  res.render("admin-home/home-photo-link/newPhotoLink");
 });
 
-// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+// @route POST /upload
+// @desc  Uploads file to DB
+router.post("/upload", upload.single("file"), isAuth, async (req, res) => {
+  let photoLink = new PhotoLinkInfo({
+    link: req.body.link,
+    description: req.body.description,
+  });
+  try {
+    await photoLink.save();
+    console.log("Saved photo link: " + photoLink);
+    res.redirect(`/admin`);
+  } catch (e) {
+    res.json(e);
+    //   res.render("admin-about/new", { standings: standings });
+  }
+});
 
 // Home page posts CRUD routes~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-router.get("/", isAuth, async (req, res, next) => {
-  const posts = await HomeInfo.find().sort({ information: "desc" });
-  res.render("admin-home/controlPanel", { posts: posts });
+router.get("/", isAuth, async (req, res) => {
+  try {
+    const posts = await HomeInfo.find({});
+    const photolinks = await PhotoLinkInfo.find({});
+    res.render("admin-home/controlPanel", { posts: posts, photolinks: photolinks });
+  } catch (e) {
+    res.json(e);
+  }
 });
 
 router.get("/new", isAuth, (req, res, next) => {
@@ -110,13 +125,13 @@ router.post("/", isAuth, async (req, res) => {
     res.redirect(`/admin/home/${posts.id}`);
     // res.redirect(`/admin`);
   } catch (e) {
-    res.json(e)
+    res.json(e);
     //   res.render("admin-about/new", { standings: standings });
   }
 });
 
 router.delete("/:id", isAuth, async (req, res, next) => {
-  const postId = Mongoose.Types.ObjectId(req.params.id);
+  const postId = mongoose.Types.ObjectId(req.params.id);
   try {
     await HomeInfo.findByIdAndDelete(postId);
     console.log("Deleted post: " + postId);
@@ -139,10 +154,5 @@ function savePostAndRedirect(path) {
     }
   };
 }
-
-// Home page photo upload CRUD routes~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-router.get("/photolink/new", isAuth, (req, res, next) => {
-  res.render("admin-home/home-photo-link/newphotolink");
-});
 
 module.exports = router;
