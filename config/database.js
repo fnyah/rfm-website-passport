@@ -74,7 +74,7 @@ const photoSchema = new mongoose.Schema({
   description: {
     type: String,
   },
-  file: {
+  filename: {
     type: String,
   },
   createdAt: {

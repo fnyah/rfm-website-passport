@@ -52,6 +52,7 @@ const storage = new GridFsStorage({
           bucketName: "uploads",
         };
         resolve(fileInfo);
+        // console.log(fileInfo);
       });
     });
   },
@@ -66,9 +67,11 @@ router.get("/photolink/new", isAuth, (req, res, next) => {
 // @route POST /upload
 // @desc  Uploads file to DB
 router.post("/upload", upload.single("file"), isAuth, async (req, res) => {
+  console.log(req.file.filename);
   let photoLink = new PhotoLinkInfo({
     link: req.body.link,
     description: req.body.description,
+    filename: req.file.filename,
   });
   try {
     await photoLink.save();
@@ -85,10 +88,60 @@ router.get("/", isAuth, async (req, res) => {
   try {
     const posts = await HomeInfo.find({});
     const photolinks = await PhotoLinkInfo.find({});
-    res.render("admin-home/controlPanel", { posts: posts, photolinks: photolinks });
+    gfs.files.find().toArray((err, files) => {
+      // Check if files
+      if (!files || files.length === 0) {
+        res.render("admin-home/controlPanel", {
+          files: false,
+          posts: posts,
+          photolinks: photolinks,
+        });
+        console.log("files not found");
+      } else {
+        files.map((file) => {
+          if (
+            file.contentType === "image/jpeg" ||
+            file.contentType === "image/png"
+          ) {
+            file.isImage = true;
+          } else {
+            file.isImage = false;
+          }
+        });
+        res.render("admin-home/controlPanel", {
+          posts: posts,
+          photolinks: photolinks,
+          files: files,
+        });
+        console.log(files);
+      }
+    });
   } catch (e) {
     res.json(e);
   }
+});
+
+// route that displays the image by filename
+router.get("/image/:filename", (req, res) => {
+  gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
+    // Check if file
+    if (!file || file.length === 0) {
+      return res.status(404).json({
+        err: "No file exists",
+      });
+    }
+
+    // Check if image
+    if (file.contentType === "image/jpeg" || file.contentType === "image/png") {
+      // Read output to browser
+      const readstream = gridfsBucket.openDownloadStream(file._id);
+      readstream.pipe(res);
+    } else {
+      res.status(404).json({
+        err: "Not an image",
+      });
+    }
+  });
 });
 
 router.get("/new", isAuth, (req, res, next) => {
