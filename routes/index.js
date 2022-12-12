@@ -7,6 +7,8 @@ const Standings = connection.models.Standings;
 const isAuth = require("./authMiddleware").isAuth;
 const HomeInfo = connection.models.Home;
 const Projects = connection.models.Projects;
+const PhotoLinkInfo = connection.models.PhotoLink;
+
 
 /**
  * -------------- POST ROUTES ----------------
@@ -47,7 +49,8 @@ router.post(
 
 router.get("/", async (req, res, next) => {
   const posts = await HomeInfo.find().sort({ information: "desc" });
-  res.render("home", { posts: posts });
+  const photolinks = await PhotoLinkInfo.find().sort({ information: "desc" });
+  res.render("home", { posts: posts, photolinks: photolinks });
   next();
 });
 

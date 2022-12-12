@@ -121,6 +121,20 @@ router.get("/", isAuth, async (req, res) => {
   }
 });
 
+router.get("/files", (req, res) => {
+  gfs.files.find().toArray((err, files) => {
+    // Check if files
+    if (!files || files.length === 0) {
+      return res.status(404).json({
+        err: "No files exist",
+      });
+    }
+
+    // Files exist
+    return res.json(files);
+  });
+});
+
 // route that displays the image by filename
 router.get("/image/:filename", (req, res) => {
   gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
