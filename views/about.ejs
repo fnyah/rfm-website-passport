@@ -32,6 +32,7 @@
       rel="stylesheet"
       type="text/css"
     />
+    <link href="../public/assets/css/styles.css" rel="stylesheet" />
 
     <!-- [if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" type="text/javascript"></script><![endif] -->
     <script type="text/javascript">
@@ -48,30 +49,38 @@
     <link href="images/webclip.png" rel="apple-touch-icon" />
   </head>
   <body class="body-4">
-    <div
-      data-animation="default"
-      data-collapse="medium"
-      data-duration="400"
-      data-easing="ease"
-      data-easing2="ease"
-      role="banner"
-      class="navbar w-nav"
-    >
-      <div class="w-container">
-        <a href="#" class="w-nav-brand">
-          <div class="text-block">Dr. Rose Fine-Meyer<br />‍</div>
-        </a>
-        <nav role="navigation" class="w-nav-menu">
-          <a href="/" class="w-nav-link">Home</a>
-          <a href="/about" class="w-nav-link">About</a>
-          <a href="/projects" class="w-nav-link">Projects</a>
-          <a href="#" class="w-nav-link">For Educators</a>
-        </nav>
-        <div class="w-nav-button">
-          <div class="w-icon-nav-menu"></div>
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container">
+        <a class="navbar-brand" href="/">Dr. Rose Fine-Meyer</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/projects">Projects</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">For Educators</a>
+            </li>
+          </ul>
         </div>
       </div>
-    </div>
+    </nav>
     <div
       data-w-id="8dd1e449-f2b7-7917-996e-794913f64866"
       style="opacity: 1"
@@ -139,6 +148,7 @@
         phone.style.opacity = 1;
       }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
   </body>
 </html>
