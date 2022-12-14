@@ -37,4 +37,5 @@ const getPhotos = () => {
 // onload function
 window.onload = () => {
   getPhotos();
+  console.log("AAAA")
 };
