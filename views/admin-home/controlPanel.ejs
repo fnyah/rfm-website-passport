@@ -1,16 +1,12 @@
 <!DOCTYPE html>
-<!--  This site was created in Webflow. https://www.webflow.com  -->
-<!--  Last Published: Wed Jun 22 2022 19:45:52 GMT+0000 (Coordinated Universal Time)  -->
+
 <html
   data-wf-page="62b121c08171394a83424288"
   data-wf-site="6297e54a7a0fbb44b4a54c60"
 >
   <head>
     <meta charset="utf-8" />
-    <title>rose-website</title>
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <meta content="Webflow" name="generator" />
-    <!-- CSS only -->
+    <title>Admin/home</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -18,29 +14,10 @@
       crossorigin="anonymous"
     />
     <link
-      href="../public/assets/css/normalize.css"
+      href="../public/assets/css/admin.css"
       rel="stylesheet"
       type="text/css"
     />
-    <link
-      href="../public/assets/css/webflow.css"
-      rel="stylesheet"
-      type="text/css"
-    />
-    <link
-      href="../public/assets/css/rose-website.webflow.css"
-      rel="stylesheet"
-      type="text/css"
-    />
-    <link
-      href="../public/assets/css/admin-home-controlpanel.css"
-      rel="stylesheet"
-      type="text/css"
-    />
-
-    <!-- [if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" type="text/javascript"></script><![endif] -->
-    <link href="images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-    <link href="images/webclip.png" rel="apple-touch-icon" />
   </head>
   <body>
     <div
@@ -123,7 +100,7 @@
     <div id="Photos" class="tabcontent">
       <div class="container">
         <h1 class="mb-4">Photo Posts</h1>
-        <a href="/admin/home/photolink/new" class="btn btn-success"
+        <a href="/admin/home/photos/new" class="btn btn-success"
           >Add new post</a
         >
         <% photolinks.forEach(photo => { %>
@@ -139,11 +116,12 @@
             <a href="/admin/photos/<%= photo.id %>" class="btn btn-primary"
               >Read More</a
             >
-            <a href="/admin/photos/edit/<%= photo.id %>" class="btn btn-info"
-              >Edit</a
-            >
+            <a
+              href="/admin/home/photos/edit/<%= photo.id %>"
+              class="btn btn-info"
+            >Edit</a>
             <form
-              action="/admin/photos/<%=photo.id%>?_method=DELETE"
+              action="/admin/home/photos/<%=photo.id%>?_method=DELETE"
               method="POST"
               class="d-inline"
             >
@@ -171,10 +149,7 @@
       integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
       crossorigin="anonymous"
     ></script>
-    <script
-      src="../public/assets/js/webflow.js"
-      type="text/javascript"
-    ></script>
+
     <script>
       function openTab(evt, idName) {
         var i, tabcontent, tablinks;

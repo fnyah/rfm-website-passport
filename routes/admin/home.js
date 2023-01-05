@@ -60,14 +60,13 @@ const storage = new GridFsStorage({
 
 const upload = multer({ storage });
 
-router.get("/photolink/new", isAuth, (req, res, next) => {
+router.get("/photos/new", isAuth, (req, res, next) => {
   res.render("admin-home/home-photo-link/newPhotoLink");
 });
 
 // @route POST /upload
 // @desc  Uploads file to DB
 router.post("/upload", upload.single("file"), isAuth, async (req, res) => {
-  console.log(req.file.filename);
   let photoLink = new PhotoLinkInfo({
     link: req.body.link,
     description: req.body.description,
@@ -76,10 +75,29 @@ router.post("/upload", upload.single("file"), isAuth, async (req, res) => {
   try {
     await photoLink.save();
     console.log("Saved photo link: " + photoLink);
-    res.redirect(`/admin`);
+    res.redirect(`/admin/home`);
   } catch (e) {
     res.json(e);
     //   res.render("admin-about/new", { standings: standings });
+  }
+});
+
+router.get("/photos/edit/:id", isAuth, async (req, res) => {
+  console.log(req.params.id);
+  let photos = await PhotoLinkInfo.findById(req.params.id);
+
+  res.render("admin-home/home-photo-link/photoLinkEdit", { photos: photos });
+});
+
+// route to delet photo link
+router.delete("/photos/:id", isAuth, async (req, res) => {
+  let photos = await PhotoLinkInfo.findById(req.params.id);
+  console.log(photos);
+  try {
+    await photos.remove();
+    res.redirect("/admin/home");
+  } catch (e) {
+    res.json(e);
   }
 });
 
@@ -113,7 +131,6 @@ router.get("/", isAuth, async (req, res) => {
           photolinks: photolinks,
           files: files,
         });
-        console.log(files);
       }
     });
   } catch (e) {
@@ -121,18 +138,9 @@ router.get("/", isAuth, async (req, res) => {
   }
 });
 
-router.get("/files", (req, res) => {
-  gfs.files.find().toArray((err, files) => {
-    // Check if files
-    if (!files || files.length === 0) {
-      return res.status(404).json({
-        err: "No files exist",
-      });
-    }
-
-    // Files exist
-    return res.json(files);
-  });
+router.get("/files", async (req, res) => {
+  const files = await PhotoLinkInfo.find({});
+  res.json(files);
 });
 
 // route that displays the image by filename
