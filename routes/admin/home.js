@@ -67,8 +67,10 @@ router.get("/photos/new", isAuth, (req, res, next) => {
 // @route POST /upload
 // @desc  Uploads file to DB
 router.post("/upload", upload.single("file"), isAuth, async (req, res) => {
+  let trimmedlink = req.body.link.replace(/(^\w+:|^)\/\//, "");
+  let fixedLink = "https://" + trimmedlink;
   let photoLink = new PhotoLinkInfo({
-    link: req.body.link,
+    link: fixedLink,
     description: req.body.description,
     filename: req.file.filename,
   });

@@ -1,46 +1,57 @@
-const getPhotos = () => {
-  $.ajax({
-    url: "http://localhost:3000/admin/home/files",
-    type: "GET",
-    success: function (data) {
-      const images = [];
-      for (let i = 0; i < data.length; i++) {
-        console.log(data[i]);
-        images.push("/admin/home/image/" + data[i].filename);
-      }
-      createSlides(images);
-    },
-    error: function (err) {
-      console.log(err);
-    },
-  });
+const getPhotos = async () => {
+  const images = [];
+  try {
+    const response = await fetch("http://localhost:3000/admin/home/files");
+    const data = await response.json();
+    data.map((data) => {
+      images.push({
+        image: "/admin/home/image/" + data.filename,
+        link: data.link,
+        description: data.description,
+      });
+    });
+  } catch (err) {
+    console.log(err);
+  }
+  createSlides(images);
 };
 
 const createSlides = (images) => {
-  for (let i = 0; i < images.length; i++) {
-    console.log(images);
-    const slidesHost = document.getElementById("slides-host");
-    const newSlide = document.createElement("li");
-    newSlide.classList.add("slide");
-    newSlide.style.backgroundImage = `url(${images[i]})`;
-    newSlide.style.backgroundSize = "cover";
-    newSlide.style.backgroundPosition = "center";
-    newSlide.style.width = "300px";
-    newSlide.style.height = "300px";
-    newSlide.style.display = "inline-block";
-    newSlide.style.boxShadow = "0 0 10px rgba(0,0,0,0.5)";
-    newSlide.style.borderRadius = "5px";
-    newSlide.style.margin = "5px";
+  const slidesHost = document.getElementById("slides-host");
 
-    // if there are more than 8 slides than drop the first one to prioritize the new ones
-
-    slidesHost.appendChild(newSlide);
-
-    console.log(newSlide);
-  }
+  images.map((image) => {
+    if (image.link) {
+      const a = document.createElement("a");
+      a.href = image.link;
+      const newSlide = document.createElement("div");
+      const background = document.createElement("div");
+      background.classList.add("slide-background");
+      background.style.backgroundImage = `url(${image.image})`;
+      newSlide.classList.add("slide", "slide-with-link");
+      const slideDescription = document.createElement("div");
+      slideDescription.classList.add("slide-description");
+      slideDescription.innerText = image.description;
+      newSlide.appendChild(background);
+      newSlide.appendChild(slideDescription);
+      a.appendChild(newSlide);
+      slidesHost.append(a);
+    } else {
+      const newSlide = document.createElement("div");
+      const background = document.createElement("div");
+      background.classList.add("slide-background");
+      background.style.backgroundImage = `url(${image.image})`;
+      newSlide.classList.add("slide");
+      const slideDescription = document.createElement("div");
+      slideDescription.classList.add("slide-description");
+      slideDescription.innerText = image.description;
+      newSlide.appendChild(background);
+      newSlide.appendChild(slideDescription);
+      slidesHost.append(newSlide);
+    }
+  });
 };
 
 // onload funciton
-window.onload = () => {
+window.addEventListener("DOMContentLoaded", () => {
   getPhotos();
-};
+});
