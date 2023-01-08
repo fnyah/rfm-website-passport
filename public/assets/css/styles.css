@@ -55,7 +55,7 @@ main {
   border-radius: 5px;
 }
 
-.slide-with-link:hover .slide-background{
+.slide-with-link:hover .slide-background {
   opacity: 0.2;
   filter: blur(2px);
   -webkit-transition: opacity 1s ease-in-out;
@@ -71,11 +71,3 @@ main {
   -o-transition: opacity 0.5s ease-in-out;
   transition: opacity 0.5s ease-in-out;
 }
-
-
-
-
-
-
-
-
