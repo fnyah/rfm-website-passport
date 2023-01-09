@@ -10,6 +10,17 @@
       crossorigin="anonymous"
     />
     <link href="../public/assets/css/styles.css" rel="stylesheet" />
+    <style>
+      .footer {
+        position: absolute;
+        left: 0;
+        bottom: 100%;
+        width: 100%;
+        background-color: red;
+        color: white;
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
     <!-- Responsive navbar-->
@@ -47,36 +58,39 @@
         </div>
       </div>
     </nav>
-    <div class="container">
-      <img
-        src="../public/assets/images/Rose-Fine-Meyer-2021-IMG_6151---Copy-p-500.jpeg"
-        alt="Rose Fine-Meyer"
-        class="img-fluid"
-        width="200px"
-      />
+    <main>
+      <div class="container mb-5">
+        <img
+          src="../public/assets/images/Rose-Fine-Meyer-2021-IMG_6151---Copy-p-500.jpeg"
+          alt="Rose Fine-Meyer"
+          class="img-fluid"
+          width="200px"
+        />
+        <p>
+          My name is Rose Fine-Meyer, and I’m a Senior Lecturer in the Master of
+          Teaching program at the Ontario Institute for Studies in Education
+          (OISE), University of Toronto.
+        </p>
 
-      <p>
-        My name is Rose Fine-Meyer, and I’m a Senior Lecturer in the Master of
-        Teaching program at the Ontario Institute for Studies in Education
-        (OISE), University of Toronto.
-      </p>
-
-      <ul>
-        <h3>My Standings</h3>
-        <% standings.forEach(standings => { %>
-        <li style="margin-bottom: 10px"><%= standings.information %></li>
-        <% }) %>
-      </ul>
-    </div>
-    <div class="container">
-      <p>
-        ​Rose Fine-Meyer, PhD<br />Department of Curriculum, Teaching and
-        Learning<br />Ontario Institute for Studies in Education<br />University
-        of Toronto<br />Toronto, ON, M5S 1V6
-      </p>
-      <p class="paragraph-9" id="hideInfo" onclick="revealPhone()">
-        Click to reveal contact info.
-      </p>
-    </div>
+        <ul>
+          <h3>My Standings</h3>
+          <% standings.forEach(standings => { %>
+          <li style="margin-bottom: 10px"><%= standings.information %></li>
+          <% }) %>
+        </ul>
+      </div>
+      <hr style="width: 70%; margin: auto;">
+      <div class="container mt-5" style="text-align: center;" >
+        <p>
+          ​Rose Fine-Meyer, PhD<br />Department of Curriculum, Teaching and
+          Learning<br />Ontario Institute for Studies in Education<br />University
+          of Toronto<br />Toronto, ON, M5S 1V6
+        </p>
+        <p class="paragraph-9" id="hideInfo" onclick="revealPhone()">
+          Click to reveal contact info.
+        </p>
+      </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
