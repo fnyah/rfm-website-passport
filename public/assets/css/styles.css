@@ -33,10 +33,16 @@ main {
   opacity: 0;
 }
 
+#slides-host {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .slide {
   width: 300px;
   height: 300px;
-  display: inline-block;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   border-radius: 5px;
   margin: 5px;
@@ -72,7 +78,6 @@ main {
   transition: opacity 0.5s ease-in-out;
 }
 
-
 .slide-without-link:hover .slide-background {
   opacity: 0.2;
   filter: blur(2px);
@@ -90,40 +95,134 @@ main {
   transition: opacity 0.5s ease-in-out;
 }
 
-
-
-
 #main-header-text {
   color: black;
   text-align: center;
   z-index: 1;
 }
 
-/* shrink slides and description when screen is small and keep the container centered*/
-@media screen and (max-width: 1300px) {
-  .slide {
-    width: 250px;
-    height: 250px;
+#mobile-header-text {
+  color: black;
+  text-align: center;
+  font-size: 200px;
+  z-index: 1;
+  display: none;
+}
+
+/* ----------- iPhone 4 and 4S ----------- */
+
+/* Portrait and Landscape */
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
+}
+
+/* Portrait */
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+}
+
+/* Landscape */
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {
+}
+
+/* ----------- iPhone 5, 5S, 5C and 5SE ----------- */
+
+/* Portrait and Landscape */
+@media only screen and (min-device-width: 320px) and (max-device-width: 568px) and (-webkit-min-device-pixel-ratio: 2) {
+}
+
+/* Portrait */
+@media only screen and (min-device-width: 320px) and (max-device-width: 568px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+}
+
+/* Landscape */
+@media only screen and (min-device-width: 320px) and (max-device-width: 568px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {
+}
+
+/* ----------- iPhone 6, 6S, 7 and 8 ----------- */
+
+/* Portrait and Landscape */
+@media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) {
+}
+
+/* Portrait */
+@media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+}
+
+/* Landscape */
+@media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: landscape) {
+}
+
+/* ----------- iPhone 6+, 7+ and 8+ ----------- */
+
+/* Portrait and Landscape */
+@media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) {
+}
+
+/* Portrait */
+@media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
+}
+
+/* Landscape */
+@media only screen and (min-device-width: 414px) and (max-device-width: 736px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+}
+
+/* ----------- iPhone X ----------- */
+
+/* Portrait and Landscape */
+@media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) {
+  #slides-host {
+    display: none;
   }
-  .slide-description {
-    font-size: 15px;
+  #main-header-text {
+    display: none;
+  }
+  #mobile-header-text {
+    display: block;
+    margin-top: 30%;
+  }
+  #learn-more-button {
+    width: 300px;
+    height: 100px;
+    border-radius: 100px;
+    font-size: 40px;
+  }
+  .home-title {
+    font-size: 40px;
+  }
+  .home-description {
+    font-size: 30px;
+  }
+  #courses-header {
+    font-size: 90px;
+  }
+  .navbar-brand {
+    font-size: 40px;
+  }
+  .navbar-toggler {
+    font-size: 30px;
+  }
+  .nav-item {
+    font-size: 30px;
   }
 }
 
-/* shrink slides and description when screen is smaller and keep the container centered*/
-@media screen and (max-width: 1200px) {
-  .slide {
-    width: 200px;
-    height: 200px;
-  }
-  .slide-description {
-    font-size: 10px;
-  }
+/* Portrait */
+@media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
 }
 
+/* Landscape */
+@media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+}
 
+/* ---------- Laptop Screens ----------- */
 
+/* ----------- Non-Retina Screens ----------- */
+@media screen and (min-device-width: 1200px) and (max-device-width: 1600px) and (-webkit-min-device-pixel-ratio: 1) {
+}
 
-
-
-
+/* ----------- Retina Screens ----------- */
+@media screen and (min-device-width: 1200px) and (max-device-width: 1600px) and (-webkit-min-device-pixel-ratio: 2) and (min-resolution: 192dpi) {
+  .slide {
+    max-width: 225px;
+    max-height: 225px;
+  }
+}
