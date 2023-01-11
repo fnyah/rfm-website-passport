@@ -16,6 +16,12 @@ main {
   min-width: 900px;
 }
 
+#about {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
 #section-1 {
   max-width: 100%;
   height: auto;
@@ -101,12 +107,39 @@ main {
   z-index: 1;
 }
 
+#about-me-card {
+  float: right;
+  padding: 40px;
+  margin-left: 20px;
+}
+
 #mobile-header-text {
   color: black;
   text-align: center;
   font-size: 200px;
   z-index: 1;
   display: none;
+}
+
+#about-me-image {
+  border-radius: 3%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+#mobile-about-me-image {
+  border-radius: 3%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+#my-description {
+  max-width: 200px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.contact-info {
+  text-align: center;
+  margin-top: 5%;
 }
 
 /* ----------- iPhone 4 and 4S ----------- */
@@ -169,6 +202,11 @@ main {
 
 /* Portrait and Landscape */
 @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) {
+ 
+}
+
+/* Portrait */
+@media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
   #slides-host {
     display: none;
   }
@@ -203,14 +241,44 @@ main {
   .nav-item {
     font-size: 30px;
   }
-}
+  #standing {
+    font-size: 30px;
+  }
+  #standings-header {
+    font-size: 60px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  #about-me-image {
+    display: block;
+    width: 600px;
+    border-radius: 50px;
+  }
+  #my-description {
+    font-size: 30px;
+    max-width: fit-content;
+  }
+  #contact-div {
+    display: flex;
+    position: relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    justify-content: center;
+    align-items: center;
+  }
+  .contact-info {
+    font-size: 25px;
+    margin-top: 0px;
+    margin-bottom: 50px;
+  }
 
-/* Portrait */
-@media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: portrait) {
 }
 
 /* Landscape */
 @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) and (orientation: landscape) {
+  
+  
 }
 
 /* ---------- Laptop Screens ----------- */
