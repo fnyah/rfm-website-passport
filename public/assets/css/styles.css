@@ -142,6 +142,16 @@ main {
   text-align: center;
 }
 
+.proj-title {
+  text-align: center;
+}
+
+.proj-author {
+  text-align: center;
+}
+
+
+
 /* ----------- iPhone 4 and 4S ----------- */
 
 /* Portrait and Landscape */
@@ -197,7 +207,6 @@ main {
     font-size: 30px;
     max-width: fit-content;
   }
-
   .contact-info {
     font-size: 25px;
     margin-top: 0px;

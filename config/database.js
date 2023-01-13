@@ -65,6 +65,9 @@ const projectSchema = new mongoose.Schema({
   author: {
     type: String,
   },
+  filename: {
+    type: Array,
+  },
 });
 
 const photoSchema = new mongoose.Schema({
