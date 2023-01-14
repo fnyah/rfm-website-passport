@@ -4,13 +4,14 @@ const Projects = connection.models.Projects;
 const isAuth = require("../authMiddleware").isAuth;
 const mongoose = require("mongoose");
 
+// Testing vvvvvvvvvvvvvvvvvvvvvvvvvvvv
 const bodyParser = require("body-parser");
 const path = require("path");
+const crypto = require("crypto");
 const multer = require("multer");
 const { GridFsStorage } = require("multer-gridfs-storage");
 const Grid = require("gridfs-stream");
 const methodOverride = require("method-override");
-const e = require("express");
 
 router.use(methodOverride("_method"));
 router.use(bodyParser.json());
@@ -23,15 +24,16 @@ const conn = mongoose.createConnection(mongoURI, {
   useUnifiedTopology: true,
 });
 
+// Home page photo upload CRUD routes~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 let gfs;
 let gridfsBucket;
 conn.once("open", () => {
   gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
-    bucketName: "uploads",
+    bucketName: "projectphotos",
   });
 
   gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection("uploads");
+  gfs.collection("projectphotos");
 });
 
 // Create storage engine
@@ -46,16 +48,19 @@ const storage = new GridFsStorage({
         const filename = buf.toString("hex") + path.extname(file.originalname);
         const fileInfo = {
           filename: filename,
-          bucketName: "uploads",
+          bucketName: "projectphotos",
         };
         resolve(fileInfo);
-        // console.log(fileInfo);
       });
     });
   },
 });
 
 const upload = multer({ storage });
+
+router.post("/", upload.single("file"), isAuth, async (req, res) => {
+  res.json({ file: req.file});
+});
 
 router.get("/", isAuth, async (req, res, next) => {
   const projects = await Projects.find().sort({ information: "desc" });
@@ -86,74 +91,74 @@ router.put(
   saveProjectAndRedirect("edit")
 );
 
-router.post("/", isAuth, async (req, res) => {
-  if (req.body.file.length > 1) {
-    upload.array("file", req.body.file.length)(req, res, (err) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(req.body.file)
-      }
-      let projects = new Projects({
-        title: req.body.title,
-        author: req.body.author,
-        description: req.body.description,
-        filename: req.body.file,
-        createdAt: new Date(),
-      });
-      try {
-        projects.save();
-        res.redirect(`projects/${projects.id}`);
-        // res.redirect(`/admin`);
-      }
-      catch (e) {
-        console.log(e);
-        res.render("admin-projects/new", { projects: projects });
-      }
-      console.log(projects);
-    });
-  } else if (req.body.file) {
-    upload.single("file")(req, res, (err) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(req.body.file);
-      }
-    });
-    let projects = new Projects({
-      title: req.body.title,
-      author: req.body.author,
-      description: req.body.description,
-      filename: req.body.file,
-      createdAt: new Date(),
-    });
-    try {
-      await projects.save();
-      res.redirect(`projects/${projects.id}`);
-      // res.redirect(`/admin`);
-    } catch (e) {
-      console.log(e);
-      res.render("admin-projects/new", { projects: projects });
-    }
-    console.log(projects);
-  } else {
-    let projects = new Projects({
-      title: req.body.title,
-      author: req.body.author,
-      description: req.body.description,
-      createdAt: new Date(),
-    });
-    console.log(projects);
-    try {
-      await projects.save();
-      res.redirect(`projects/${projects.id}`);
-      // res.redirect(`/admin`);
-    } catch (e) {
-      console.log(e);
-      res.render("admin-projects/new", { projects: projects });
-    }
-  }
-});
+// router.post("/", isAuth, async (req, res) => {
+//   if (req.body.file.length > 1) {
+//     upload.array("file")(req, res, (err) => {
+//       if (err) {
+//         console.log(err);
+//       } else {
+//         console.log(req.body.file)
+//       }
+//       let projects = new Projects({
+//         title: req.body.title,
+//         author: req.body.author,
+//         description: req.body.description,
+//         filename: req.body.file,
+//         createdAt: new Date(),
+//       });
+//       try {
+//         projects.save();
+//         res.redirect(`projects/${projects.id}`);
+//         // res.redirect(`/admin`);
+//       }
+//       catch (e) {
+//         console.log(e);
+//         res.render("admin-projects/new", { projects: projects });
+//       }
+//       console.log(projects);
+//     });
+//   } else if (req.body.file) {
+//     upload.single("file")(req, res, (err) => {
+//       if (err) {
+//         console.log(err);
+//       } else {
+//         console.log(req.body.filename);
+//       }
+//     });
+//     let projects = new Projects({
+//       title: req.body.title,
+//       author: req.body.author,
+//       description: req.body.description,
+//       filename: req.body.filename,
+//       createdAt: new Date(),
+//     });
+//     try {
+//       await projects.save();
+//       res.redirect(`projects/${projects.id}`);
+//       // res.redirect(`/admin`);
+//     } catch (e) {
+//       console.log(e);
+//       res.render("admin-projects/new", { projects: projects });
+//     }
+//     console.log(projects);
+//   } else {
+//     let projects = new Projects({
+//       title: req.body.title,
+//       author: req.body.author,
+//       description: req.body.description,
+//       createdAt: new Date(),
+//     });
+//     console.log(projects);
+//     try {
+//       await projects.save();
+//       res.redirect(`projects/${projects.id}`);
+//       // res.redirect(`/admin`);
+//     } catch (e) {
+//       console.log(e);
+//       res.render("admin-projects/new", { projects: projects });
+//     }
+//   }
+// });
 
 router.delete("/:id", isAuth, async (req, res, next) => {
   const projectId = mongoose.Types.ObjectId(req.params.id);

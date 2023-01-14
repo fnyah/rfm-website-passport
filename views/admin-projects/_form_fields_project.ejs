@@ -31,10 +31,13 @@
     class="form-control mt-2">
     <%= projects.description %>
   </textarea>
-    <label for="image" style="margin: 10px">Image(s):</label>
-    <br /> 
-    <input type="file" name="file" id="file" class="custom-file-input" multiple/>
   </div>
+
+  <div class="form-group mt-2">
+    <label for="image">Image</label>
+    <input type="file" name="file" id="file" class="custom-file-input" multiple>
+  </div>
+  
 </div>
 <button type="submit" class="btn btn-primary px-3 mt-4">Save</button>
 <a

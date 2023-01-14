@@ -58,17 +58,28 @@ const projectSchema = new mongoose.Schema({
   description: {
     type: String,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
+  filename: {
+    type: String,
   },
   author: {
     type: String,
   },
-  filename: {
-    type: Array,
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
 });
+
+// const projectPhots = new mongoose.Schema({
+//   filename: {
+//     type: Array,
+//   },
+//   createdAt: {
+//     type: Date,
+//     default: Date.now,
+//   },
+// });
+
 
 const photoSchema = new mongoose.Schema({
   link: {
