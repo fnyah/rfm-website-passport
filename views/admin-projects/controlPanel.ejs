@@ -59,7 +59,13 @@
         <div class="card-body">
           <h2 class="card-text mb-2"><%= project.title %></h2>
           <h3 class="card-text mb-2"><%= project.author %></h3>
-          <h4 class="card-text mb-2"><%= project.filename %></h4>
+          <% project.filename.forEach(image => { %> 
+          <img
+            style="width: 100px; height: 100px"
+            src="/projectimages/<%= image %>"
+            alt=""
+          />
+          <% }) %>
           <div class="card-subtitle text-muted mb-2">
             <%= project.createdAt.toLocaleDateString() %>
           </div>

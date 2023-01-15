@@ -113,7 +113,6 @@ router.get("/projectimages/:filename", async (req, res) => {
               err: "No file exists",
             });
           }
-
           // Check if image
           if (
             file.contentType === "image/jpeg" ||
