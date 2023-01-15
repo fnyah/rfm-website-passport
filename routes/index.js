@@ -42,6 +42,17 @@ conn.once("open", () => {
   gfs.collection("uploads");
 });
 
+let gfs2;
+let gridfsBucket2;
+conn.once("open", () => {
+  gridfsBucket2 = new mongoose.mongo.GridFSBucket(conn.db, {
+    bucketName: "projectphotos",
+  });
+
+  gfs2 = Grid(conn.db, mongoose.mongo);
+  gfs2.collection("projectphotos");
+});
+
 router.get("/files", async (req, res) => {
   const files = await PhotoLinkInfo.find({});
   res.json(files);
@@ -68,6 +79,80 @@ router.get("/image/:filename", (req, res) => {
     }
   });
 });
+
+router.get("/projectimages", async (req, res) => {
+  // find only the images
+  // images = []
+  // const projects = await Projects.find({});
+  // projects.map((project) => {
+  //   if (project.filename) {
+  //     project.filename.map((filename) => {
+  //       images.push(filename)
+  //     })
+  //   }
+  // })
+  // console.log(images)
+  // res.json(projects);
+  const projects = await Projects.find({});
+  res.json(projects);
+});
+
+// route to display the project images
+router.get("/projectimages/:filename", async (req, res) => {
+  const projects = await Projects.find({});
+  const fileToFind = req.params.filename;
+  console.log(fileToFind);
+  projects.map((project) => {
+    project.filename.map((filename) => {
+      if (filename === fileToFind) {
+        console.log("Match found: " + filename);
+        gfs2.files.findOne({ filename }).then((file) => {
+          // Check if file
+          if (!file || file.length === 0) {
+            return res.status(404).json({
+              err: "No file exists",
+            });
+          }
+
+          // Check if image
+          if (
+            file.contentType === "image/jpeg" ||
+            file.contentType === "image/png"
+          ) {
+            // Read output to browser
+            const readstream = gridfsBucket2.openDownloadStream(file._id);
+            readstream.pipe(res);
+          } else {
+            res.status(404).json({
+              err: "Not an image",
+            });
+          }
+        });
+      }
+    });
+  });
+});
+
+// gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
+//   // Check if file
+//   if (!file || file.length === 0) {
+//     return res.status(404).json({
+//       err: "No file exists",
+//     });
+//   }
+
+//   // Check if image
+//   if (file.contentType === "image/jpeg" || file.contentType === "image/png") {
+//     // Read output to browser
+//     const readstream = gridfsBucket.openDownloadStream(file._id);
+//     readstream.pipe(res);
+//   } else {
+//     res.status(404).json({
+//       err: "Not an image",
+//     });
+//   }
+// });
+
 // End of routes to display images from database ~~~~~~~~~~~~~~~~~~~~
 
 //  router.post('/register', (req, res, next) => {
@@ -113,11 +198,6 @@ router.get("/projects", async (req, res, next) => {
   res.render("projects", { projects: projects });
   next();
 });
-
-
-  
-
-
 
 router.get("/login", (req, res, next) => {
   res.render("admin-panel/loginpage");

@@ -58,13 +58,57 @@ const storage = new GridFsStorage({
 
 const upload = multer({ storage });
 
-router.post("/", upload.single("file"), isAuth, async (req, res) => {
-  res.json({ file: req.file});
+router.post("/", upload.any("file"), isAuth, async (req, res) => {
+  // filesnames to array
+  const filenames = req.files.map((file) => file.filename);
+  console.log(filenames);
+  const projects = new Projects({
+    title: req.body.title,
+    author: req.body.author,
+    description: req.body.description,
+    filename: filenames,
+  });
+  try {
+    await projects.save();
+    console.log("Saved Project: " + projects);
+    res.redirect("/admin/projects");
+  } catch (err) {
+    console.log(err);
+    res.render("admin-projects/new", { projects: projects });
+  }
 });
 
 router.get("/", isAuth, async (req, res, next) => {
-  const projects = await Projects.find().sort({ information: "desc" });
-  res.render("admin-projects/controlPanel", { projects: projects });
+  // const projects = await Projects.find().sort({ information: "desc" });
+  // res.render("admin-projects/controlPanel", { projects: projects });
+  try {
+    const projects = await Projects.find().sort({ createdAt: "desc" });
+    gfs.files.find().toArray((err, files) => {
+      // Check if files
+      if (!files || files.length === 0) {
+        res.render("admin-projects/controlPanel", {
+          files: false,
+          projects: projects,
+        });
+      } else {
+        files.map((file) => {
+          if (
+            file.contentType === "image/jpeg" ||
+            file.contentType === "image/png"
+          ) {
+            file.isImage = true;
+          }
+        });
+        res.render("admin-projects/controlPanel", {
+          files: files,
+          projects: projects,
+        });
+      }
+    });
+  }
+  catch (err) {
+    console.log(err);
+  }
 });
 
 router.get("/new", isAuth, (req, res, next) => {

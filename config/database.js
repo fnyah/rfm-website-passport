@@ -59,7 +59,7 @@ const projectSchema = new mongoose.Schema({
     type: String,
   },
   filename: {
-    type: String,
+    type: Array,
   },
   author: {
     type: String,
