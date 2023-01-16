@@ -13,6 +13,7 @@ const multer = require("multer");
 const { GridFsStorage } = require("multer-gridfs-storage");
 const Grid = require("gridfs-stream");
 const methodOverride = require("method-override");
+const e = require("express");
 
 router.use(methodOverride("_method"));
 router.use(bodyParser.json());
@@ -67,20 +68,36 @@ router.get("/photos/new", isAuth, (req, res, next) => {
 // @route POST /upload
 // @desc  Uploads file to DB
 router.post("/upload", upload.single("file"), isAuth, async (req, res) => {
-  let trimmedlink = req.body.link.replace(/(^\w+:|^)\/\//, "");
-  let fixedLink = "https://" + trimmedlink;
-  let photoLink = new PhotoLinkInfo({
-    link: fixedLink,
-    description: req.body.description,
-    filename: req.file.filename,
-  });
-  try {
-    await photoLink.save();
-    console.log("Saved photo link: " + photoLink);
-    res.redirect(`/admin/home`);
-  } catch (e) {
-    res.json(e);
-    //   res.render("admin-about/new", { standings: standings });
+  if (req.body.link) {
+    let trimmedlink = req.body.link.replace(/(^\w+:|^)\/\//, "");
+    let fixedLink = "https://" + trimmedlink;
+    let photoLink = new PhotoLinkInfo({
+      link: fixedLink,
+      description: req.body.description,
+      filename: req.file.filename,
+    });
+    try {
+      await photoLink.save();
+      console.log("Saved photo link: " + photoLink);
+      res.redirect(`/admin/home`);
+    } catch (e) {
+      res.json(e);
+      //   res.render("admin-about/new", { standings: standings });
+    }
+  } else {
+    let photoLink = new PhotoLinkInfo({
+      description: req.body.description,
+      filename: req.file.filename,
+    });
+
+    try {
+      await photoLink.save();
+      console.log("Saved photo link: " + photoLink);
+      res.redirect(`/admin/home`);
+    } catch (e) {
+      res.json(e);
+      //   res.render("admin-about/new", { standings: standings });
+    }
   }
 });
 
