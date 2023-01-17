@@ -13,49 +13,52 @@
     />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title></title>
+    <title>aaa</title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
-    <div 
-    style="margin-left:10%;margin-right:10%;"
-    class="contianer">
+  <body>
+    <div style="margin-left: 10%; margin-right: 10%" class="contianer">
       <h1 class="mb-4 px-3 mt-4">Edit</h1>
-      <form action="/admin/home/<%= photos.id %>?_method=PUT" method="POST">
+      <form action="<%= photos.id %>?_method=PUT" method="POST" enctype="multipart/form-data">
         <div class="form-group">
           <label for="information">Link:</label>
           <input
             required
             type="text"
-            name="title"
-            id="title"
+            name="link"
+            id="link"
             class="form-control mt-2"
             value="<%= photos.link %>"
+          />
+          <label for="description"
+            >Short description (120 character limit)</label
           >
-        </input>
-        <label for="description">Short description (120 character limit)</label>
-        <input
-          required
-          type="text"
-          name="title"
-          id="title"
-          class="form-control mt-2"
-          value="<%= photos.description %>"
-        >
-      </input>
-
+          <input
+            required
+            type="text"
+            name="description"
+            id="description"
+            class="form-control mt-2"
+            maxlength="120"
+            value="<%= photos.description %>"
+          />
+          <div class="form-group mt-2">
+            <label for="image">Image</label>
+            <input type="file" name="file" id="file" class="custom-file-input" />
+          </div>
         </div>
         <button type="submit" class="btn btn-primary px-3 mt-4">Save</button>
         <a
-        href="/admin/home"
-        id="confirmClickActionElementId"
-        class="btn btn-secondary px-3 mt-4"
-        onclick="return confirm('Are you sure you want to cancel editing?');"
-        >Cancel</a>
-      <a href="/admin/home" class="btn btn-primary px-3 mt-4"> All photos</a>
+          href="/admin/home"
+          id="confirmClickActionElementId"
+          class="btn btn-secondary px-3 mt-4"
+          onclick="return confirm('Are you sure you want to cancel editing?');"
+          >Cancel</a
+        >
+        <a href="/admin/home" class="btn btn-primary px-3 mt-4"> All photos</a>
       </form>
     </div>
-  
   </body>
   <script src="../../public/assets/js/confirm.js"></script>
 </html>

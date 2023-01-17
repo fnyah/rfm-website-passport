@@ -130,6 +130,7 @@ body {
 
 .contact-info {
   text-align: center;
+  margin-top:200px
 }
 
 #projects-container {
@@ -155,6 +156,7 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   margin-bottom: 50px;
+  background-color: bisque;
 }
 
 .project-image {

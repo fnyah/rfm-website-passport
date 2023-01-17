@@ -61,7 +61,6 @@ const upload = multer({ storage });
 router.post("/", upload.any("file"), isAuth, async (req, res) => {
   // filesnames to array
   const filenames = req.files.map((file) => file.filename);
-  console.log(filenames);
   const projects = new Projects({
     title: req.body.title,
     author: req.body.author,

@@ -4,6 +4,7 @@ const HomeInfo = connection.models.Home;
 const PhotoLinkInfo = connection.models.PhotoLink;
 const isAuth = require("../authMiddleware").isAuth;
 const mongoose = require("mongoose");
+const fs = require("fs");
 
 // Testing vvvvvvvvvvvvvvvvvvvvvvvvvvvv
 const bodyParser = require("body-parser");
@@ -102,11 +103,28 @@ router.post("/upload", upload.single("file"), isAuth, async (req, res) => {
 });
 
 router.get("/photos/edit/:id", isAuth, async (req, res) => {
-  console.log(req.params.id);
   let photos = await PhotoLinkInfo.findById(req.params.id);
-
   res.render("admin-home/home-photo-link/photoLinkEdit", { photos: photos });
 });
+
+router.put("/photos/edit/:id", upload.single("file"), isAuth, async (req, res, next) => {
+  console.log(req.body, req.params, req.file)
+  const editedPhotoLink = await PhotoLinkInfo.findByIdAndUpdate(req.params.id, {
+    link: req.body.link,
+    description: req.body.description,
+    filename: req.file.filename,
+  });
+  try {
+    await editedPhotoLink.save();
+    console.log("Saved photo link: " + editedPhotoLink);
+    res.redirect(`/admin/home`);
+  } catch (e) {
+    res.json(e);
+    //   res.render("admin-about/new", { standings: standings });
+  }
+
+
+  });
 
 // route to delet photo link
 router.delete("/photos/:id", isAuth, async (req, res) => {
@@ -248,5 +266,6 @@ function savePostAndRedirect(path) {
     }
   };
 }
+
 
 module.exports = router;

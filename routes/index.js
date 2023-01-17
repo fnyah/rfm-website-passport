@@ -101,11 +101,9 @@ router.get("/projectimages", async (req, res) => {
 router.get("/projectimages/:filename", async (req, res) => {
   const projects = await Projects.find({});
   const fileToFind = req.params.filename;
-  console.log(fileToFind);
   projects.map((project) => {
     project.filename.map((filename) => {
       if (filename === fileToFind) {
-        console.log("Match found: " + filename);
         gfs2.files.findOne({ filename }).then((file) => {
           // Check if file
           if (!file || file.length === 0) {
@@ -201,6 +199,8 @@ router.get("/projects", async (req, res, next) => {
 router.get("/login", (req, res, next) => {
   res.render("admin-panel/loginpage");
 });
+
+
 
 // When you visit http://localhost:3000/register, you will see "Register Page"
 // router.get('/register', (req, res, next) => {
