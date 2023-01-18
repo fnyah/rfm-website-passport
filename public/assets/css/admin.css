@@ -38,24 +38,73 @@ body {
   border: 1px solid #ccc;
   border-top: none;
 }
-.btn-color{
+.btn-color {
   background-color: #0e1c36;
   color: #fff;
-  
 }
 
-.profile-image-pic{
+.profile-image-pic {
   height: 200px;
   width: 200px;
   object-fit: cover;
 }
 
-
-
-.cardbody-color{
+.cardbody-color {
   background-color: #ebf2fa;
 }
 
-a{
+a {
   text-decoration: none;
+}
+
+.photolink-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.photolink-card {
+  margin: 10px;
+  width: 300px;
+  overflow: hidden;
+}
+
+.admin-photolink-edit-photo {
+  width: 80%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.admin-photolink-card-text {
+  height: 260px;
+  margin-top:10%
+}
+
+.photolink-buttons {
+  width: 80px;
+  margin: 3px;
+}
+
+.standing-container { 
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.standing-card {
+  margin: 10px;
+  width: 300px;
+  height: 250px;
+  overflow: hidden;
+}
+
+.standing-buttons-container {
+  display: flex;
+  bottom: 0;
+  position: absolute;
+  margin-bottom: 10px;
+}
+
+.standing-button {
+  margin: 3px;
 }

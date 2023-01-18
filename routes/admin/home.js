@@ -4,6 +4,7 @@ const HomeInfo = connection.models.Home;
 const PhotoLinkInfo = connection.models.PhotoLink;
 const isAuth = require("../authMiddleware").isAuth;
 const mongoose = require("mongoose");
+const fs = require("fs");
 
 // Testing vvvvvvvvvvvvvvvvvvvvvvvvvvvv
 const bodyParser = require("body-parser");
@@ -102,11 +103,51 @@ router.post("/upload", upload.single("file"), isAuth, async (req, res) => {
 });
 
 router.get("/photos/edit/:id", isAuth, async (req, res) => {
-  console.log(req.params.id);
   let photos = await PhotoLinkInfo.findById(req.params.id);
-
   res.render("admin-home/home-photo-link/photoLinkEdit", { photos: photos });
 });
+
+router.put(
+  "/photos/edit/:id",
+  upload.single("file"),
+  isAuth,
+  async (req, res, next) => {
+    let trimmedlink = req.body.link.replace(/(^\w+:|^)\/\//, "");
+    let fixedLink = "https://" + trimmedlink;
+    if (req.file) {
+      const editedPhotoLink = await PhotoLinkInfo.findByIdAndUpdate(
+        req.params.id,
+        {
+          link: fixedLink,
+          description: req.body.description,
+          filename: req.file.filename,
+        }
+      );
+      try {
+        await editedPhotoLink.save();
+        res.redirect(`/admin/home`);
+      } catch (e) {
+        res.json(e);
+        //   res.render("admin-about/new", { standings: standings });
+      }
+    } else {
+      const editedPhotoLink = await PhotoLinkInfo.findByIdAndUpdate(
+        req.params.id,
+        {
+          link: fixedLink,
+          description: req.body.description,
+        }
+      );
+      try {
+        await editedPhotoLink.save();
+        res.redirect(`/admin/home`);
+      } catch (e) {
+        res.json(e);
+        //   res.render("admin-about/new", { standings: standings });
+      }
+    }
+  }
+);
 
 // route to delet photo link
 router.delete("/photos/:id", isAuth, async (req, res) => {

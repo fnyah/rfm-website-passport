@@ -19,15 +19,18 @@ body {
 }
 
 .slide-description {
-  position: absolute;
-  bottom: 50%;
-  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  color: black;
+  color: white;
   font-size: 20px;
   z-index: 1;
   width: 100%;
+  height: 100%;
   opacity: 0;
+  background-color: black;
+  border-radius: 2%;
 }
 
 #slides-host {
@@ -130,6 +133,7 @@ body {
 
 .contact-info {
   text-align: center;
+  margin-top:200px
 }
 
 #projects-container {
@@ -155,6 +159,7 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   margin-bottom: 50px;
+  background-color: bisque;
 }
 
 .project-image {

@@ -48,7 +48,12 @@
               <a class="nav-link" href="#">Course Materials</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/logout">Log Out</a>
+              <a
+                class="nav-link"
+                href="/logout"
+                onclick="return confirm('Are you sure you want to log out?')"
+                >Log Out</a
+              >
             </li>
           </ul>
         </div>
@@ -69,7 +74,9 @@
     <div id="Textposts" class="tabcontent">
       <div class="container">
         <h1 class="mb-4">Home Page Content</h1>
-        <a href="home/new" class="btn btn-success">Add new post</a>
+        <a href="home/new" class="btn btn-success" style="margin-top: 20px"
+          >Add new post</a
+        >
 
         <% posts.forEach(post => { %>
         <div class="card mt-4">
@@ -109,45 +116,61 @@
     <div id="Photos" class="tabcontent">
       <div class="container">
         <h1 class="mb-4">Photo Posts</h1>
-        <a href="/admin/home/photos/new" class="btn btn-success"
+        <h4>Reccomended 8 posts at any one time</h4>
+        <a
+          href="/admin/home/photos/new"
+          class="btn btn-success"
+          style="margin-top: 20px"
           >Add new post</a
         >
-        <% photolinks.forEach(photo => { %>
-        <div class="card mt-4">
-          <div class="card-body">
-            <h2 class="card-text mb-2"><%= photo.title %></h2>
-            <div class="card-subtitle text-muted mb-2">
-              <%= photo.createdAt.toLocaleDateString() %>
-            </div>
-            <img src="/admin/home/image/<%= photo.filename %>" width="200" />
-            <div class="card-text mb-2"><%= photo.description %></div>
-            <div class="card-text mb-2"><%= photo.link %></div>
-            <a href="/admin/photos/<%= photo.id %>" class="btn btn-primary"
-              >Read More</a
-            >
-            <a
-              href="/admin/home/photos/edit/<%= photo.id %>"
-              class="btn btn-info"
-              >Edit</a
-            >
-            <form
-              action="/admin/home/photos/<%=photo.id%>?_method=DELETE"
-              method="POST"
-              class="d-inline"
-            >
-              <button
-                type="submit"
-                class="btn btn-danger"
-                id="deleteConfirm"
-                onclick="return confirm('Are you sure you want to delete this post?')"
-              >
-                Delete
-              </button>
-            </form>
-          </div>
-        </div>
+        <div class="photolink-container">
+          <% photolinks.forEach(photo => { %>
+          <div class="card mt-4 photolink-card">
+            <div class="card-body">
+              <h2 class="card-text mb-2"><%= photo.title %></h2>
+              <div class="card-subtitle text-muted mb-2">
+                <%= photo.createdAt.toLocaleDateString() %>
+              </div>
+              <img
+                src="/admin/home/image/<%= photo.filename %>"
+                width="200"
+                class="admin-photolink-edit-photo"
+              />
+              <div class="admin-photolink-card-text">
+                <h4>Description:</h4>
+                <div class="card-text mb-2"><%= photo.description %></div>
+                <h4>Link:</h4>
+                <div class="card-text mb-2">
+                  <%= photo.link.substring(0,50) %>
+                </div>
+              </div>
 
-        <% }) %>
+              <div class="admin-photolink-buttons">
+                <a
+                  href="/admin/home/photos/edit/<%= photo.id %>"
+                  class="btn btn-info photolink-buttons"
+                  >Edit</a
+                >
+                <form
+                  action="/admin/home/photos/<%=photo.id%>?_method=DELETE"
+                  method="POST"
+                  class="d-inline"
+                >
+                  <button
+                    type="submit"
+                    class="btn btn-danger photolink-buttons"
+                    id="deleteConfirm"
+                    onclick="return confirm('Are you sure you want to delete this post?')"
+                  >
+                    Delete
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <% }) %>
+        </div>
       </div>
     </div>
 

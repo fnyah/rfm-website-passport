@@ -101,11 +101,9 @@ router.get("/projectimages", async (req, res) => {
 router.get("/projectimages/:filename", async (req, res) => {
   const projects = await Projects.find({});
   const fileToFind = req.params.filename;
-  console.log(fileToFind);
   projects.map((project) => {
     project.filename.map((filename) => {
       if (filename === fileToFind) {
-        console.log("Match found: " + filename);
         gfs2.files.findOne({ filename }).then((file) => {
           // Check if file
           if (!file || file.length === 0) {
