@@ -129,13 +129,13 @@
                 <h4>Description:</h4>
                 <div class="card-text mb-2"><%= photo.description %></div>
                 <h4>Link:</h4>
-                <div class="card-text mb-2"><%= photo.link %></div>
+                <div class="card-text mb-2"><%= photo.link.substring(0,50) %></div>
               </div>
 
-              <div>
+              <div class="admin-photolink-buttons">
                 <a
                   href="/admin/home/photos/edit/<%= photo.id %>"
-                  class="btn btn-info"
+                  class="btn btn-info photolink-buttons"
                   >Edit</a
                 >
                 <form
@@ -145,7 +145,7 @@
                 >
                   <button
                     type="submit"
-                    class="btn btn-danger"
+                    class="btn btn-danger photolink-buttons"
                     id="deleteConfirm"
                     onclick="return confirm('Are you sure you want to delete this post?')"
                   >
