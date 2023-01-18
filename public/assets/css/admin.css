@@ -85,3 +85,26 @@ a {
   margin: 3px;
 }
 
+.standing-container { 
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.standing-card {
+  margin: 10px;
+  width: 300px;
+  height: 250px;
+  overflow: hidden;
+}
+
+.standing-buttons-container {
+  display: flex;
+  bottom: 0;
+  position: absolute;
+  margin-bottom: 10px;
+}
+
+.standing-button {
+  margin: 3px;
+}

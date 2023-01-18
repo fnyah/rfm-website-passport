@@ -200,8 +200,6 @@ router.get("/login", (req, res, next) => {
   res.render("admin-panel/loginpage");
 });
 
-
-
 // When you visit http://localhost:3000/register, you will see "Register Page"
 // router.get('/register', (req, res, next) => {
 
