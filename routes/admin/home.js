@@ -107,24 +107,47 @@ router.get("/photos/edit/:id", isAuth, async (req, res) => {
   res.render("admin-home/home-photo-link/photoLinkEdit", { photos: photos });
 });
 
-router.put("/photos/edit/:id", upload.single("file"), isAuth, async (req, res, next) => {
-  console.log(req.body, req.params, req.file)
-  const editedPhotoLink = await PhotoLinkInfo.findByIdAndUpdate(req.params.id, {
-    link: req.body.link,
-    description: req.body.description,
-    filename: req.file.filename,
-  });
-  try {
-    await editedPhotoLink.save();
-    console.log("Saved photo link: " + editedPhotoLink);
-    res.redirect(`/admin/home`);
-  } catch (e) {
-    res.json(e);
-    //   res.render("admin-about/new", { standings: standings });
+router.put(
+  "/photos/edit/:id",
+  upload.single("file"),
+  isAuth,
+  async (req, res, next) => {
+    let trimmedlink = req.body.link.replace(/(^\w+:|^)\/\//, "");
+    let fixedLink = "https://" + trimmedlink;
+    if (req.file) {
+      const editedPhotoLink = await PhotoLinkInfo.findByIdAndUpdate(
+        req.params.id,
+        {
+          link: fixedLink,
+          description: req.body.description,
+          filename: req.file.filename,
+        }
+      );
+      try {
+        await editedPhotoLink.save();
+        res.redirect(`/admin/home`);
+      } catch (e) {
+        res.json(e);
+        //   res.render("admin-about/new", { standings: standings });
+      }
+    } else {
+      const editedPhotoLink = await PhotoLinkInfo.findByIdAndUpdate(
+        req.params.id,
+        {
+          link: fixedLink,
+          description: req.body.description,
+        }
+      );
+      try {
+        await editedPhotoLink.save();
+        res.redirect(`/admin/home`);
+      } catch (e) {
+        res.json(e);
+        //   res.render("admin-about/new", { standings: standings });
+      }
+    }
   }
-
-
-  });
+);
 
 // route to delet photo link
 router.delete("/photos/:id", isAuth, async (req, res) => {
@@ -266,6 +289,5 @@ function savePostAndRedirect(path) {
     }
   };
 }
-
 
 module.exports = router;

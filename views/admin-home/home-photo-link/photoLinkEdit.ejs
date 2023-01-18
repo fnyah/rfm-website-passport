@@ -19,8 +19,12 @@
   </head>
   <body>
     <div style="margin-left: 10%; margin-right: 10%" class="contianer">
-      <h1 class="mb-4 px-3 mt-4">Edit</h1>
+      <h1 class="mb-4 px-3 mt-4">Home Page Photo Edit</h1>
       <form action="<%= photos.id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+
+        <h2>Current Photo:</h2>
+        <img style="margin: 20px; width: 300px" src="/admin/home/image/<%= photos.filename %>" width="200" />
+
         <div class="form-group">
           <label for="information">Link:</label>
           <input
