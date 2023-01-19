@@ -104,8 +104,7 @@ router.get("/", isAuth, async (req, res, next) => {
         });
       }
     });
-  }
-  catch (err) {
+  } catch (err) {
     console.log(err);
   }
 });
@@ -134,75 +133,6 @@ router.put(
   saveProjectAndRedirect("edit")
 );
 
-// router.post("/", isAuth, async (req, res) => {
-//   if (req.body.file.length > 1) {
-//     upload.array("file")(req, res, (err) => {
-//       if (err) {
-//         console.log(err);
-//       } else {
-//         console.log(req.body.file)
-//       }
-//       let projects = new Projects({
-//         title: req.body.title,
-//         author: req.body.author,
-//         description: req.body.description,
-//         filename: req.body.file,
-//         createdAt: new Date(),
-//       });
-//       try {
-//         projects.save();
-//         res.redirect(`projects/${projects.id}`);
-//         // res.redirect(`/admin`);
-//       }
-//       catch (e) {
-//         console.log(e);
-//         res.render("admin-projects/new", { projects: projects });
-//       }
-//       console.log(projects);
-//     });
-//   } else if (req.body.file) {
-//     upload.single("file")(req, res, (err) => {
-//       if (err) {
-//         console.log(err);
-//       } else {
-//         console.log(req.body.filename);
-//       }
-//     });
-//     let projects = new Projects({
-//       title: req.body.title,
-//       author: req.body.author,
-//       description: req.body.description,
-//       filename: req.body.filename,
-//       createdAt: new Date(),
-//     });
-//     try {
-//       await projects.save();
-//       res.redirect(`projects/${projects.id}`);
-//       // res.redirect(`/admin`);
-//     } catch (e) {
-//       console.log(e);
-//       res.render("admin-projects/new", { projects: projects });
-//     }
-//     console.log(projects);
-//   } else {
-//     let projects = new Projects({
-//       title: req.body.title,
-//       author: req.body.author,
-//       description: req.body.description,
-//       createdAt: new Date(),
-//     });
-//     console.log(projects);
-//     try {
-//       await projects.save();
-//       res.redirect(`projects/${projects.id}`);
-//       // res.redirect(`/admin`);
-//     } catch (e) {
-//       console.log(e);
-//       res.render("admin-projects/new", { projects: projects });
-//     }
-//   }
-// });
-
 router.delete("/:id", isAuth, async (req, res, next) => {
   const projectId = mongoose.Types.ObjectId(req.params.id);
   try {
@@ -216,6 +146,7 @@ router.delete("/:id", isAuth, async (req, res, next) => {
 
 function saveProjectAndRedirect(path) {
   return async (req, res) => {
+    console.log(req.body);
     let project = req.project;
     project.title = req.body.title;
     project.author = req.body.author;
