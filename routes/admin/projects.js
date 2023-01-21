@@ -123,15 +123,40 @@ router.get("/edit/:id", isAuth, async (req, res) => {
   res.render("admin-projects/edit", { projects: projects });
 });
 
-router.put(
-  "/:id",
-  isAuth,
-  async (req, res, next) => {
-    req.project = await Projects.findById(req.params.id);
-    next();
-  },
-  saveProjectAndRedirect("edit")
-);
+router.put("/:id", upload.any("file"), isAuth, async (req, res, next) => {
+  if (req.files) {
+    const filenames = req.files.map((file) => file.filename);
+    try {
+      const editedProject = await Projects.findByIdAndUpdate(req.params.id, {
+        title: req.body.title,
+        description: req.body.description,
+        filename: filenames,
+        author: req.body.author,
+      });
+      console.log("Edited project: " + editedProject);
+      res.redirect("/admin/projects");
+    } catch (err) {
+      console.log(err);
+    }
+  } else {
+    try {
+      const editedProject = await Projects.findByIdAndUpdate(req.params.id, {
+        title: req.body.title,
+        description: req.body.description,
+        author: req.body.author,
+      });
+      console.log("Edited project: " + editedProject);
+      res.redirect("/admin/projects");
+    } catch (err) {
+      console.log(err);
+    }
+  }
+});
+//   req.project = await Projects.findById(req.params.id);
+
+//   next();
+// },
+// saveProjectAndRedirect("edit")
 
 router.delete("/:id", isAuth, async (req, res, next) => {
   const projectId = mongoose.Types.ObjectId(req.params.id);

@@ -31,6 +31,7 @@
       <form
         action="/admin/projects/<%= projects.id %>?_method=PUT"
         method="POST"
+        enctype="multipart/form-data"
       >
         <div>
           <div class="contianer project-photo-box">
@@ -49,6 +50,7 @@
               </div>
             </div>
             <div class="btn-container">
+              <% if (projects.filename.length > 0) { %>
               <button
                 id="edit-images-btn"
                 type="button"
@@ -57,6 +59,7 @@
               >
                 Edit Images
               </button>
+              <% } %>
             </div>
           </div>
         </div>
@@ -92,10 +95,16 @@
         >
 
         <div class="form-group mt-2">
-          <label for="image">Image</label>
-          <input type="file" name="file" id="file" class="custom-file-input" multiple>
+          <label for="image">Add new images:</label>
+          <input
+            type="file"
+            name="file"
+            id="file"
+            class="custom-file-input"
+            multiple
+          />
         </div>
-        
+
         <button type="submit" class="btn btn-primary px-3 mt-4">Save</button>
         <a
           href="/admin/projects"
