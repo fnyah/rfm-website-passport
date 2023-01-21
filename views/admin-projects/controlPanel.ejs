@@ -76,10 +76,10 @@
             alt=""
           />
           <% }) %>
+          <div class="card-text mb-2"><%= project.description %></div>
           <div class="card-subtitle text-muted mb-2">
             <%= project.createdAt.toLocaleDateString() %>
           </div>
-          <div class="card-text mb-2"><%= project.description %></div>
           <a href="/admin/projects/<%= project.id %>" class="btn btn-primary"
             >Read More</a
           >

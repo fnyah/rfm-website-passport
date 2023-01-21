@@ -104,8 +104,7 @@ router.get("/", isAuth, async (req, res, next) => {
         });
       }
     });
-  }
-  catch (err) {
+  } catch (err) {
     console.log(err);
   }
 });
@@ -124,84 +123,40 @@ router.get("/edit/:id", isAuth, async (req, res) => {
   res.render("admin-projects/edit", { projects: projects });
 });
 
-router.put(
-  "/:id",
-  isAuth,
-  async (req, res, next) => {
-    req.project = await Projects.findById(req.params.id);
-    next();
-  },
-  saveProjectAndRedirect("edit")
-);
+router.put("/:id", upload.any("file"), isAuth, async (req, res, next) => {
+  if (req.files) {
+    const filenames = req.files.map((file) => file.filename);
+    try {
+      const editedProject = await Projects.findByIdAndUpdate(req.params.id, {
+        title: req.body.title,
+        description: req.body.description,
+        filename: filenames,
+        author: req.body.author,
+      });
+      console.log("Edited project: " + editedProject);
+      res.redirect("/admin/projects");
+    } catch (err) {
+      console.log(err);
+    }
+  } else {
+    try {
+      const editedProject = await Projects.findByIdAndUpdate(req.params.id, {
+        title: req.body.title,
+        description: req.body.description,
+        author: req.body.author,
+      });
+      console.log("Edited project: " + editedProject);
+      res.redirect("/admin/projects");
+    } catch (err) {
+      console.log(err);
+    }
+  }
+});
+//   req.project = await Projects.findById(req.params.id);
 
-// router.post("/", isAuth, async (req, res) => {
-//   if (req.body.file.length > 1) {
-//     upload.array("file")(req, res, (err) => {
-//       if (err) {
-//         console.log(err);
-//       } else {
-//         console.log(req.body.file)
-//       }
-//       let projects = new Projects({
-//         title: req.body.title,
-//         author: req.body.author,
-//         description: req.body.description,
-//         filename: req.body.file,
-//         createdAt: new Date(),
-//       });
-//       try {
-//         projects.save();
-//         res.redirect(`projects/${projects.id}`);
-//         // res.redirect(`/admin`);
-//       }
-//       catch (e) {
-//         console.log(e);
-//         res.render("admin-projects/new", { projects: projects });
-//       }
-//       console.log(projects);
-//     });
-//   } else if (req.body.file) {
-//     upload.single("file")(req, res, (err) => {
-//       if (err) {
-//         console.log(err);
-//       } else {
-//         console.log(req.body.filename);
-//       }
-//     });
-//     let projects = new Projects({
-//       title: req.body.title,
-//       author: req.body.author,
-//       description: req.body.description,
-//       filename: req.body.filename,
-//       createdAt: new Date(),
-//     });
-//     try {
-//       await projects.save();
-//       res.redirect(`projects/${projects.id}`);
-//       // res.redirect(`/admin`);
-//     } catch (e) {
-//       console.log(e);
-//       res.render("admin-projects/new", { projects: projects });
-//     }
-//     console.log(projects);
-//   } else {
-//     let projects = new Projects({
-//       title: req.body.title,
-//       author: req.body.author,
-//       description: req.body.description,
-//       createdAt: new Date(),
-//     });
-//     console.log(projects);
-//     try {
-//       await projects.save();
-//       res.redirect(`projects/${projects.id}`);
-//       // res.redirect(`/admin`);
-//     } catch (e) {
-//       console.log(e);
-//       res.render("admin-projects/new", { projects: projects });
-//     }
-//   }
-// });
+//   next();
+// },
+// saveProjectAndRedirect("edit")
 
 router.delete("/:id", isAuth, async (req, res, next) => {
   const projectId = mongoose.Types.ObjectId(req.params.id);
@@ -214,8 +169,30 @@ router.delete("/:id", isAuth, async (req, res, next) => {
   }
 });
 
+// edit project photos
+router.post("/:id", isAuth, async (req, res, next) => {
+  let photos = req.body;
+  const project = await Projects.findById(req.params.id);
+  const files = project.filename;
+  // find the difference between the two arrays
+  const difference = files.filter((x) => !photos.includes(x));
+  console.log(difference);
+
+  const editedProject = await Projects.findByIdAndUpdate(req.params.id, {
+    filename: difference,
+  });
+  try {
+    await editedProject.save();
+    console.log("Saved Project: " + editedProject);
+    res.sendStatus(200);
+  } catch (e) {
+    res.json(e);
+  }
+});
+
 function saveProjectAndRedirect(path) {
   return async (req, res) => {
+    console.log(req.body);
     let project = req.project;
     project.title = req.body.title;
     project.author = req.body.author;

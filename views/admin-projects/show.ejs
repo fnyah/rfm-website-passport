@@ -11,6 +11,11 @@
       integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
       crossorigin="anonymous"
     />
+    <link
+      href="../../public/assets/css/admin.css"
+      rel="stylesheet"
+      type="text/css"
+    />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title></title>
@@ -18,11 +23,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
-    <div class="contianer">
-      <h1 class="mb-4 px-3 mt-4">Project title: <%= projects.title %></h1>
-      <h3 class="mb-4 px-3 mt-4">Project Author: <%= projects.author %></h3>
-      <p class="mb-4 px-3 mt-4">Project description: <%= projects.description %></p>
+    <div class="contianer project-photo-box">
+      <div class="m-4 project-photo-container">
+        <div class="project-images">
+          <% projects.filename.forEach(image => { %>
+              <div class="project-image">
+                <div class="project-image-background" style="background-image: url(http://localhost:3000/projectimages/<%= image %>)"></div>
+              </div>
+           <% }) %>
+          </div>
+      </div>
     </div>
+    <div class="project-content-container">
+      <div class="project-content">
+        <h1 class="mb-4 px-3 mt-4">Project title: <%= projects.title %></h1>
+        <h3 class="mb-4 px-3 mt-4">Project Author: <%= projects.author %></h3>
+        <p class="mb-4 px-3 mt-4">
+          Project description: <%= projects.description %>
+        </p>
+      </div>
+    </div>  
     <a href="/admin/projects" class="btn btn-primary"> Home Page Posts</a>
     <a href="/admin/projects/edit/<%= projects.id %>" class="btn btn-secondary">
       Edit</a

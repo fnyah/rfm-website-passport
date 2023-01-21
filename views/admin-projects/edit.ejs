@@ -11,61 +11,114 @@
       integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
       crossorigin="anonymous"
     />
+    <link
+      href="../../../public/assets/css/admin.css"
+      rel="stylesheet"
+      type="text/css"
+    />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title></title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
-    <div 
-    style="margin-left:10%;margin-right:10%;"
-    class="contianer">
-      <h1 class="mb-4 px-3 mt-4">Edit</h1>
-      <form action="/admin/projects/<%= projects.id %>?_method=PUT" method="POST">
-        <div class="form-group">
-          <label for="information">Title:</label>
-          <input
-            required
-            type="text"
-            name="title"
-            id="title"
-            class="form-control mt-2"
-            value="<%= projects.title %>"
-          >
-        </input>
-        <label for="information">Author:</label>
+  <body>
+    <div
+      class="contianer"
+      style="margin-left: 10%; margin-right: 10%; margin-bottom: 10%"
+    >
+      <h1 class="mb-4 px-3 mt-4">Edit Student Project</h1>
+      <form
+        action="/admin/projects/<%= projects.id %>?_method=PUT"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <div>
+          <div class="contianer project-photo-box">
+            <div class="m-4 project-photo-container">
+              <div class="project-images">
+                <% projects.filename.forEach(image => { %>
+                <div class="project-image">
+                  <div
+                    class="project-image-background"
+                    style="
+                      background-image: url(http://localhost:3000/projectimages/<%= image %>);
+                    "
+                  ></div>
+                </div>
+                <% }) %>
+              </div>
+            </div>
+            <div class="btn-container">
+              <% if (projects.filename.length > 0) { %>
+              <button
+                id="edit-images-btn"
+                type="button"
+                class="btn btn-primary px-3 mt-4"
+                style="margin-bottom: 10px"
+              >
+                Edit Images
+              </button>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <label for="title">Title:</label>
         <input
           required
           type="text"
           name="title"
           id="title"
           class="form-control mt-2"
-          value="<%= projects.author %>"
-        >
-      </input>
-          <label for="information">Information:</label>
-          <textarea
+          value="<%= projects.title %>"
+        />
+        <label for="author">Author:</label>
+        <input
           required
-            type="text"
-            name="description"
-            id="description"
-            style="height:300px;white-space: pre-line;white-space: pre-wrap;"
-            class="form-control mt-2">
+          type="text"
+          name="author"
+          id="author"
+          class="form-control mt-2"
+          value="<%= projects.author %>"
+        />
+        <label for="description">Information:</label>
+        <textarea
+          required
+          type="text"
+          name="description"
+          id="description"
+          style="height: 300px; white-space: pre-line; white-space: pre-wrap"
+          class="form-control mt-2"
+        >
             <%= projects.description %>
-          </textarea>
+          </textarea
+        >
+
+        <div class="form-group mt-2">
+          <label for="image">Add new images:</label>
+          <input
+            type="file"
+            name="file"
+            id="file"
+            class="custom-file-input"
+            multiple
+          />
         </div>
+
         <button type="submit" class="btn btn-primary px-3 mt-4">Save</button>
         <a
-        href="/admin/projects"
-        id="confirmClickActionElementId"
-        class="btn btn-secondary px-3 mt-4"
-        onclick="return confirm('Are you sure you want to cancel editing?');"
-        >Cancel</a>
-      <a href="/admin/projects" class="btn btn-primary px-3 mt-4"> All Projects</a>
-
-      
+          href="/admin/projects"
+          id="confirmClickActionElementId"
+          class="btn btn-secondary px-3 mt-4"
+          onclick="return confirm('Are you sure you want to cancel editing?');"
+          >Cancel</a
+        >
+        <a href="/admin/projects" class="btn btn-primary px-3 mt-4">
+          All Projects</a
+        >
       </form>
     </div>
-  
+
+    <script src="../../../public/assets/js/editphoto.js"></script>
   </body>
 </html>
