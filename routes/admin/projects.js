@@ -144,6 +144,27 @@ router.delete("/:id", isAuth, async (req, res, next) => {
   }
 });
 
+// edit project photos
+router.post("/:id", isAuth, async (req, res, next) => {
+  let photos = req.body;
+  const project = await Projects.findById(req.params.id);
+  const files = project.filename;
+  // find the difference between the two arrays
+  const difference = files.filter((x) => !photos.includes(x));
+  console.log(difference);
+
+  const editedProject = await Projects.findByIdAndUpdate(req.params.id, {
+    filename: difference,
+  });
+  try {
+    await editedProject.save();
+    console.log("Saved Project: " + editedProject);
+    res.sendStatus(200);
+  } catch (e) {
+    res.json(e);
+  }
+});
+
 function saveProjectAndRedirect(path) {
   return async (req, res) => {
     console.log(req.body);

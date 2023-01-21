@@ -116,6 +116,7 @@ a {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  margin-bottom: 20px;
 }
 .project-images {
   display: flex;
@@ -143,4 +144,8 @@ a {
   left: 0;
   z-index: 0;
   border-radius: 5px;
+}
+
+.selected {
+  border: 10px solid #fcf800;
 }

@@ -23,7 +23,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
-    <div class="contianer" style="margin-left: 10%;margin-right: 10%; margin-bottom: 10%;">
+    <div
+      class="contianer"
+      style="margin-left: 10%; margin-right: 10%; margin-bottom: 10%"
+    >
       <h1 class="mb-4 px-3 mt-4">Edit Student Project</h1>
       <form
         action="/admin/projects/<%= projects.id %>?_method=PUT"
@@ -35,21 +38,27 @@
               <div class="project-images">
                 <% projects.filename.forEach(image => { %>
                 <div class="project-image">
-                  <div class="project-image-background" style="background-image: url(http://localhost:3000/projectimages/<%= image %>);"></div>
+                  <div
+                    class="project-image-background"
+                    style="
+                      background-image: url(http://localhost:3000/projectimages/<%= image %>);
+                    "
+                  ></div>
                 </div>
                 <% }) %>
               </div>
             </div>
-            <button
-            type="button"
-            class="btn btn-primary px-3 mt-4"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
-          >
-            Edit Images
-          </button>
+            <div class="btn-container">
+              <button
+                id="edit-images-btn"
+                type="button"
+                class="btn btn-primary px-3 mt-4"
+                style="margin-bottom: 10px"
+              >
+                Edit Images
+              </button>
+            </div>
           </div>
-         
         </div>
         <label for="title">Title:</label>
         <input
@@ -81,6 +90,12 @@
             <%= projects.description %>
           </textarea
         >
+
+        <div class="form-group mt-2">
+          <label for="image">Image</label>
+          <input type="file" name="file" id="file" class="custom-file-input" multiple>
+        </div>
+        
         <button type="submit" class="btn btn-primary px-3 mt-4">Save</button>
         <a
           href="/admin/projects"
@@ -94,5 +109,7 @@
         >
       </form>
     </div>
+
+    <script src="../../../public/assets/js/editphoto.js"></script>
   </body>
 </html>
