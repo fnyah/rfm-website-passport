@@ -43,12 +43,12 @@
               <a class="nav-link" href="/about">About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/projects"
+              <a class="nav-link" href="/projects"
                 >Projects</a
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/for-educators">For Educators</a>
+              <a class="nav-link active"  aria-current="page" href="/for-educators">For Educators</a>
             </li>
           </ul>
         </div>
@@ -56,24 +56,7 @@
     </nav>
     <!-- Content -->
     <div class="container">
-      <h1 class="display-1" style="margin-top: 50px;text-align: center;">Public History Student Projects</h1>
-      <div id="projects-container">
-        <div class="project">
-          <% projects.forEach(project => { %>
-            <h1 class="project-title"><%= project.title %></h1>
-            <h3 class="project-author"><%= project.author %></h3>
-            <div class="project-images">
-            <% project.filename.forEach(image => { %>
-                <div class="project-image">
-                  <div class="project-image-background" style="background-image: url(http://localhost:3000/projectimages/<%= image %>)"></div>
-                </div>
-             <% }) %>
-            </div>
-            <p style="white-space: pre-line" class="proj-description"><%= project.description %></p>
-            <hr style="width:80%; margin: auto; margin-top: 20px; margin-bottom: 20px; opacity: 15%;" />
-            <% }) %>
-        </div>
-      </div>
+      
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
