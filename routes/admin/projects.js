@@ -124,13 +124,15 @@ router.get("/edit/:id", isAuth, async (req, res) => {
 });
 
 router.put("/:id", upload.any("file"), isAuth, async (req, res, next) => {
-  if (req.files) {
-    const filenames = req.files.map((file) => file.filename);
+  const filenames = req.files.map((file) => file.filename);
+  const currentFiles = await Projects.findById(req.params.id);
+  const combinedFiles = [...currentFiles.filename, ...filenames];
+
+  if (req.files == "") {
     try {
       const editedProject = await Projects.findByIdAndUpdate(req.params.id, {
         title: req.body.title,
         description: req.body.description,
-        filename: filenames,
         author: req.body.author,
       });
       console.log("Edited project: " + editedProject);
@@ -143,6 +145,7 @@ router.put("/:id", upload.any("file"), isAuth, async (req, res, next) => {
       const editedProject = await Projects.findByIdAndUpdate(req.params.id, {
         title: req.body.title,
         description: req.body.description,
+        filename: combinedFiles,
         author: req.body.author,
       });
       console.log("Edited project: " + editedProject);
@@ -152,11 +155,6 @@ router.put("/:id", upload.any("file"), isAuth, async (req, res, next) => {
     }
   }
 });
-//   req.project = await Projects.findById(req.params.id);
-
-//   next();
-// },
-// saveProjectAndRedirect("edit")
 
 router.delete("/:id", isAuth, async (req, res, next) => {
   const projectId = mongoose.Types.ObjectId(req.params.id);

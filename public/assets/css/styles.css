@@ -4,6 +4,7 @@ body {
   min-width: 900px;
   font-family: "Times New Roman", TimesNewRoman, Times, Baskerville, Georgia,
     serif;
+  background-color: rgb(255, 254, 244);
 }
 
 #about {

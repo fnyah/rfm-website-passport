@@ -138,11 +138,18 @@
               />
               <div class="admin-photolink-card-text">
                 <h4>Description:</h4>
-                <div class="card-text mb-2"><%= photo.description %></div>
+                <% if (photo.description == null) { %>
+                <div class="card-text mb-2"><%= photo.description %> </div>
+                <% } else { %>
+                <div class="card-text mb-2"><%= photo.description.substring(0, 40) %></div>
+                <% } %>
                 <h4>Link:</h4>
-                <div class="card-text mb-2">
-                  <%= photo.link.substring(0,50) %>
-                </div>
+                <% if (photo.link == null) { %>
+                <div class="card-text mb-2"><%= photo.link %> </div>
+                <% } else { %>
+                <div class="card-text mb-2"><%= photo.link.substring(0,20) %></div>
+                <% } %>
+                  
               </div>
 
               <div class="admin-photolink-buttons">
