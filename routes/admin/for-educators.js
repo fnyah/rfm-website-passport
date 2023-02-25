@@ -6,8 +6,19 @@ const isAuth = require("../authMiddleware").isAuth;
 const mongoose = require("mongoose");
 const fs = require("fs");
 
-router.get("/", (req, res) => {
-  res.render("admin-for-educators/controlPanel", { title: "For Educators" });
+router.get("/", isAuth, (req, res)  => {
+  res.render("admin-for-educators/controlPanel", { title: "controlpanel" });
 });
 
+router.get("/new", isAuth, (req, res)  => {
+  res.render("admin-for-educators/new", { title: "newpost" });
+});
+
+router.get("/edit", isAuth, (req, res)  => {
+  res.render("admin-for-educators/edit", { title: "newpost" });
+});
+
+
 module.exports = router;
+
+

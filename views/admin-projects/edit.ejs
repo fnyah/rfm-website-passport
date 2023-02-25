@@ -36,8 +36,11 @@
         <div>
           <div class="contianer project-photo-box">
             <div class="m-4 project-photo-container">
+              <h1>Images:</h1>
               <div class="project-images">
+            
                 <% projects.filename.forEach(image => { %>
+
                 <div class="project-image">
                   <div
                     class="project-image-background"
@@ -93,6 +96,16 @@
             <%= projects.description %>
           </textarea
         >
+
+        <label for="videolink">Video Link:</label>
+        <input
+          required
+          type="text"
+          name="videolink"
+          id="videolink"
+          class="form-control mt-2"
+          value="<%= projects.videoLink %>"
+        />
 
         <div class="form-group mt-2">
           <label for="image">Add new images:</label>

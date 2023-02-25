@@ -45,7 +45,7 @@
               <a class="nav-link" href="projects">Student Projects</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Course Materials</a>
+              <a class="nav-link" href="for-educators">For Educators</a>
             </li>
             <li class="nav-item">
               <a
@@ -65,15 +65,15 @@
         id="OpenDefault"
         onclick="openTab(event, 'Textposts')"
       >
-        Home Page Posts
+        Home Page Text Posts
       </button>
       <button class="tablinks" onclick="openTab(event, 'Photos')">
-        Photo Posts
+        Home Page Photo Posts
       </button>
     </div>
     <div id="Textposts" class="tabcontent">
       <div class="container">
-        <h1 class="mb-4">Home Page Content</h1>
+        <h1 class="mb-4">Home Page Text Content</h1>
         <a href="home/new" class="btn btn-success" style="margin-top: 20px"
           >Add new post</a
         >
@@ -86,9 +86,6 @@
               <%= post.createdAt.toLocaleDateString() %>
             </div>
             <div class="card-text mb-2"><%= post.description %></div>
-            <a href="/admin/home/<%= post.id %>" class="btn btn-primary"
-              >Read More</a
-            >
             <a href="/admin/home/edit/<%= post.id %>" class="btn btn-info"
               >Edit</a
             >
@@ -115,8 +112,8 @@
 
     <div id="Photos" class="tabcontent">
       <div class="container">
-        <h1 class="mb-4">Photo Posts</h1>
-        <h4>Reccomended 8 posts at any one time</h4>
+        <h1 class="mb-4">Home Page Photo Content</h1>
+        <h4>Reccomended 8 posts maximum at any one time for symmetry</h4>
         <a
           href="/admin/home/photos/new"
           class="btn btn-success"

@@ -58,14 +58,39 @@ const storage = new GridFsStorage({
 
 const upload = multer({ storage });
 
+const prepVideoLink = (videoLink) => {
+  if (videoLink == "") {
+    return "";
+  } else {
+    // separate the video links into an array
+    const videoLinks = videoLink.split(",");
+    // create an array to hold the embed links
+    const embedLinks = [];
+    // loop through the video links and create the embed links
+    videoLinks.forEach((link) => {
+      if (link.includes("embed/")) {
+        embedLinks.push(link);
+        return;
+      } else {
+        const embedLink = link.replace("watch?v=", "embed/");
+        embedLinks.push(embedLink);
+      }
+    });
+    // return the embed links as a string
+    return embedLinks;
+  }
+};
+
 router.post("/", upload.any("file"), isAuth, async (req, res) => {
-  // filesnames to array
+  const embedLink = prepVideoLink(req.body.videolink);
+
   const filenames = req.files.map((file) => file.filename);
   const projects = new Projects({
     title: req.body.title,
     author: req.body.author,
     description: req.body.description,
     filename: filenames,
+    videoLink: embedLink,
   });
   try {
     await projects.save();
@@ -127,6 +152,7 @@ router.put("/:id", upload.any("file"), isAuth, async (req, res, next) => {
   const filenames = req.files.map((file) => file.filename);
   const currentFiles = await Projects.findById(req.params.id);
   const combinedFiles = [...currentFiles.filename, ...filenames];
+  const embedLink = prepVideoLink(req.body.videolink);
 
   if (req.files == "") {
     try {
@@ -134,6 +160,7 @@ router.put("/:id", upload.any("file"), isAuth, async (req, res, next) => {
         title: req.body.title,
         description: req.body.description,
         author: req.body.author,
+        videoLink: embedLink,
       });
       console.log("Edited project: " + editedProject);
       res.redirect("/admin/projects");
@@ -147,6 +174,7 @@ router.put("/:id", upload.any("file"), isAuth, async (req, res, next) => {
         description: req.body.description,
         filename: combinedFiles,
         author: req.body.author,
+        videoLink: embedLink,
       });
       console.log("Edited project: " + editedProject);
       res.redirect("/admin/projects");

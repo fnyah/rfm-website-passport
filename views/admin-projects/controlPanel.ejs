@@ -46,7 +46,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Course Materials</a>
+              <a class="nav-link" href="for-educators">For Educators</a>
             </li>
             <li class="nav-item">
               <a
@@ -67,8 +67,8 @@
       <% projects.forEach(project => { %>
       <div class="card mt-4">
         <div class="card-body">
-          <h2 class="card-text mb-2"><%= project.title %></h2>
-          <h3 class="card-text mb-2"><%= project.author %></h3>
+          <h2 class="card-text mb-2">Title: <%= project.title %></h2>
+          <h3 class="card-text mb-2">Author: <%= project.author %></h3>
           <% project.filename.forEach(image => { %>
           <img
             style="width: 100px; height: 100px"
@@ -76,7 +76,8 @@
             alt=""
           />
           <% }) %>
-          <div class="card-text mb-2"><%= project.description %></div>
+          <div class="card-text mb-2">Video link: <%= project.videoLink %></div>
+          <div class="card-text mb-2">Description: <%= project.description %></div>
           <div class="card-subtitle text-muted mb-2">
             <%= project.createdAt.toLocaleDateString() %>
           </div>

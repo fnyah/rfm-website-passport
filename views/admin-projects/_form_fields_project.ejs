@@ -7,10 +7,9 @@
     id="title"
     class="form-control mt-2"
     value="<%= projects.title %>"
-  >
-</input>
+  />
 
-<label for="information">Author:</label>
+  <label for="information">Author:</label>
   <input
     required
     type="text"
@@ -18,32 +17,40 @@
     id="author"
     class="form-control mt-2"
     value="<%= projects.author %>"
-  >
-</input>
+  />
 
   <label for="information">Project Description:</label>
   <textarea
-  required
+    required
     type="text"
     name="description"
     id="description"
-    style="height:300px;white-space: pre-line;white-space: pre-wrap;"
-    class="form-control mt-2">
+    style="height: 300px; white-space: pre-line; white-space: pre-wrap"
+    class="form-control mt-2"
+  >
     <%= projects.description %>
   </textarea>
-  </div>
 
-  <div class="form-group mt-2">
-    <label for="image">Image</label>
-    <input type="file" name="file" id="file" class="custom-file-input" multiple>
-  </div>
-  
+  <label for="information">Youtube Video Link:</label>
+  <input
+    type="text"
+    name="videolink"
+    id="videolink"
+    class="form-control mt-2"
+  />
 </div>
+
+<div class="form-group mt-2">
+  <label for="image">Image</label>
+  <input type="file" name="file" id="file" class="custom-file-input" multiple />
+</div>
+
 <button type="submit" class="btn btn-primary px-3 mt-4">Save</button>
 <a
-href="/admin/projects"
-id="confirmClickActionElementId"
-class="btn btn-secondary px-3 mt-4"
-onclick="return confirm('Are you sure you want to cancel editing?');"
->Cancel</a>
+  href="/admin/projects"
+  id="confirmClickActionElementId"
+  class="btn btn-secondary px-3 mt-4"
+  onclick="return confirm('Are you sure you want to cancel editing?');"
+  >Cancel</a
+>
 <a href="/admin/projects" class="btn btn-primary px-3 mt-4"> All Projects</a>

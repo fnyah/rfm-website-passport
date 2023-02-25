@@ -64,6 +64,9 @@ const projectSchema = new mongoose.Schema({
   author: {
     type: String,
   },
+  videoLink: {
+    type: Array,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -79,7 +82,6 @@ const projectSchema = new mongoose.Schema({
 //     default: Date.now,
 //   },
 // });
-
 
 const photoSchema = new mongoose.Schema({
   link: {
@@ -97,11 +99,23 @@ const photoSchema = new mongoose.Schema({
   },
 });
 
+// This schema is for the file upload on the 'for educators' page.
+const uploadFileSchema = new mongoose.Schema({
+  filename: {
+    type: String,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const User = connection.model("User", UserSchema);
 const Home = connection.model("Home", homeSchema);
 const StudentProjects = connection.model("Projects", projectSchema);
 const Standings = connection.model("Standings", standingSchema);
 const PhotoLink = connection.model("PhotoLink", photoSchema);
+const FileUpload = connection.model("FileUpload", uploadFileSchema);
 
 // Expose the connection
 module.exports = connection;
