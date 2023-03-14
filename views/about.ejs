@@ -16,7 +16,7 @@
     />
     <link href="../public/assets/css/styles.css" rel="stylesheet" />
   </head>
-  <body>
+  <body stlye="min-height: 100vh;">
     <!-- Responsive navbar-->
     <nav class="navbar navbar-expand-lg navbar-light">
       <div class="container">
@@ -77,6 +77,14 @@
           </li>
           <% }) %>
         </ul>
+        <ul>
+          <h3 id="standings-header">Upcoming Events</h3>
+          <% events.forEach(event => { %>
+          <li style="margin-bottom: 10px" id="standing">
+            <%= event.eventDate + " " + " - " + event.information %>
+          </li>
+          <% }) %>
+        </ul>
       </div>
       <div id="contact-div">
         <p class="contact-info" onclick="revealInfo()">
@@ -85,8 +93,10 @@
           Ontario Institute for Studies in Education<br />University of
           Toronto<br />Toronto, ON, M5S 1V6 <br />
           Click to reveal contact info.
-          <span id="phone" style="display: none">Phone: 416-978-0074</span> 
-          <span id="email" style="display: none">E-mail: rose.fine.meyer@utoronto.ca</span> 
+          <span id="phone" style="display: none">Phone: 416-978-0074</span>
+          <span id="email" style="display: none"
+            >E-mail: rose.fine.meyer@utoronto.ca</span
+          >
         </p>
       </div>
     </div>

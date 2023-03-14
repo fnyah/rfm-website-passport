@@ -8,6 +8,7 @@ const isAuth = require("./authMiddleware").isAuth;
 const HomeInfo = connection.models.Home;
 const Projects = connection.models.Projects;
 const PhotoLinkInfo = connection.models.PhotoLink;
+const Events = connection.models.Events;
 
 const mongoose = require("mongoose");
 const mongoURI = process.env.MONGO_URI;
@@ -186,7 +187,8 @@ router.get("/", async (req, res, next) => {
 
 router.get("/about", async (req, res, next) => {
   const standings = await Standings.find().sort({ information: "desc" });
-  res.render("about", { standings: standings });
+  const events = await Events.find().sort({ information: "desc" });
+  res.render("about", { standings: standings, events: events });
   next();
 });
 

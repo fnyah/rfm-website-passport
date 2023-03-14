@@ -1,17 +1,29 @@
 const router = require("express").Router();
 const connection = require("../../config/database");
 const Standings = connection.models.Standings;
+const Events = connection.models.Events;
 const isAuth = require("../authMiddleware").isAuth;
 const Mongoose = require("mongoose");
 
 router.get("/", isAuth, async (req, res, next) => {
   const standings = await Standings.find().sort({ information: "desc" });
-  res.render("admin-about/controlPanel", { standings: standings });
+  const events = await Events.find().sort({ information: "desc" });
+
+  res.render("admin-about/controlPanel", {
+    standings: standings,
+    events: events,
+  });
 });
 
 router.get("/new", isAuth, (req, res, next) => {
   res.render("admin-about/new", { standings: new Standings() });
 });
+
+router.get("/new-event", isAuth, (req, res, next) => {
+  res.render("admin-about/events/new");
+});
+
+
 
 router.get("/:id", isAuth, async (req, res) => {
   let standings = await Standings.findById(req.params.id);
@@ -47,6 +59,26 @@ router.post("/", isAuth, async (req, res) => {
   }
 });
 
+router.post("/events/upload", isAuth, (req, res, next) => {
+  let events = new Events({
+    information: req.body.information,
+    eventDate: req.body.eventDate,
+  });
+
+  console.log(req.body)
+
+
+
+  try {
+    events.save();
+    res.redirect("/admin/standings");
+  }
+  catch (e) {
+    res.render("admin-about/events/new", { events: events });
+  }
+});
+  
+
 router.delete("/:id", isAuth, async (req, res, next) => {
   const standingId = Mongoose.Types.ObjectId(req.params.id);
   try {
@@ -67,7 +99,7 @@ function saveStandingAndRedirect(path) {
       standing = await standing.save();
       res.redirect(`/admin/standings/${standing.id}`);
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   };
 }

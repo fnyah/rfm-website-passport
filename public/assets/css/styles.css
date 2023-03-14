@@ -135,7 +135,7 @@ body {
 
 .contact-info {
   text-align: center;
-  margin-top:200px
+  margin-top: 100px;
 }
 
 #projects-container {
@@ -152,6 +152,14 @@ body {
 
 .project-author {
   text-align: center;
+}
+
+.home-login {
+  text-align: right;
+  color: lightgrey;
+  margin-top: 200px;
+  font-size: 10;
+  opacity: 50%;
 }
 
 /* images side by side horizontally */
@@ -191,7 +199,6 @@ body {
 .navbar-brand {
   font-size: 2rem;
 }
-
 
 /* ----------- iPhone 4 and 4S ----------- */
 
@@ -659,7 +666,7 @@ body {
 /* ----------- iPad Pro 12.9" ----------- */
 
 /* Portrait and Landscape */
-@media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) {
+@media only screen and (min-device-width: 1024px) and (max-device-width: 1366px) and (-webkit-min-device-pixel-ratio: 1) {
   .slide {
     max-width: 200px;
     max-height: 200px;
@@ -682,4 +689,3 @@ body {
 }
 
 /* ----------- Desktops ----------- */
-

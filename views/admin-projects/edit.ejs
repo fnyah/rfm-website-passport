@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html>
   <head>
     <link
@@ -16,18 +12,13 @@
       rel="stylesheet"
       type="text/css"
     />
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title></title>
-    <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
     <div
       class="contianer"
       style="margin-left: 10%; margin-right: 10%; margin-bottom: 10%"
     >
-      <h1 class="mb-4 px-3 mt-4">Edit Student Project</h1>
+      <h1 class="mb-4 px-3 mt-4">Editing Student Project: <%= projects.title %></h1>
       <form
         action="/admin/projects/<%= projects.id %>?_method=PUT"
         method="POST"
@@ -38,9 +29,7 @@
             <div class="m-4 project-photo-container">
               <h1>Images:</h1>
               <div class="project-images">
-            
                 <% projects.filename.forEach(image => { %>
-
                 <div class="project-image">
                   <div
                     class="project-image-background"
@@ -86,7 +75,6 @@
         />
         <label for="description">Information:</label>
         <textarea
-          required
           type="text"
           name="description"
           id="description"
@@ -97,9 +85,10 @@
           </textarea
         >
 
-        <label for="videolink">Video Link:</label>
+        <label for="videolink" style="margin-top: 10px"
+          >Video Links (Separated by commas):</label
+        >
         <input
-          required
           type="text"
           name="videolink"
           id="videolink"

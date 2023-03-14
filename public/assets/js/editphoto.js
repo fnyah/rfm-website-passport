@@ -40,7 +40,7 @@ const editPhotos = () => {
   const savePhotoButton = document.createElement("button");
   savePhotoButton.type = "button";
   savePhotoButton.id = "save-images-btn";
-  savePhotoButton.innerText = "Stop Ediding Photos";
+  savePhotoButton.innerText = "Stop Editing Photos";
   savePhotoButton.classList.add("btn", "btn-primary", "px-3", "mt-4");
   savePhotoButton.style.marginBottom = "10px";
   savePhotoButton.style.marginRight = "5px";

@@ -153,12 +153,13 @@ router.put("/:id", upload.any("file"), isAuth, async (req, res, next) => {
   const currentFiles = await Projects.findById(req.params.id);
   const combinedFiles = [...currentFiles.filename, ...filenames];
   const embedLink = prepVideoLink(req.body.videolink);
+  const description = req.body.description.trim();
 
   if (req.files == "") {
     try {
       const editedProject = await Projects.findByIdAndUpdate(req.params.id, {
         title: req.body.title,
-        description: req.body.description,
+        description: description,
         author: req.body.author,
         videoLink: embedLink,
       });

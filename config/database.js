@@ -51,6 +51,38 @@ const standingSchema = new mongoose.Schema({
   },
 });
 
+const eventSchema = new mongoose.Schema({
+  information: {
+    type: String,
+  },
+  eventDate: {
+    type: String,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+const blogSchema = new mongoose.Schema({
+  title: {
+    type: String,
+  },
+  description: {
+    type: String,
+  },
+  filename: {
+    type: Array,
+  },
+  links: {
+    type: Array,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const projectSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -116,6 +148,8 @@ const StudentProjects = connection.model("Projects", projectSchema);
 const Standings = connection.model("Standings", standingSchema);
 const PhotoLink = connection.model("PhotoLink", photoSchema);
 const FileUpload = connection.model("FileUpload", uploadFileSchema);
+const Events = connection.model("Events", eventSchema);
+const Blog = connection.model("Blog", blogSchema);
 
 // Expose the connection
 module.exports = connection;
