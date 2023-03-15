@@ -48,7 +48,7 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/for-educators">For Educators</a>
+              <a class="nav-link" href="/for-educators">Blog</a>
             </li>
           </ul>
         </div>
@@ -63,18 +63,20 @@
             <h1 class="project-title"><%= project.title %></h1>
             <h3 class="project-author"><%= project.author %></h3>
             <div class="project-images">
-            <% project.filename.forEach(image => { %>
+            <% if (project.filename != null) { %>
+              <% project.filename.forEach(image => { %>
                 <div class="project-image">
                   <div class="project-image-background" style="background-image: url(http://localhost:3000/projectimages/<%= image %>)"></div>
                 </div>
              <% }) %>
-             <!--kind of a jank way to do this, but it works...  --> 
-             <!-- <% if (project.videoLink != 'https://www.youtube.com/embed/undefined') { %> 
-             <iframe class="project-image" width="1" height="1" src="<%= project.videoLink %>" title="aaaa" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-              <% } %> -->
-              <% project.videoLink.forEach(video => { %>
-                <iframe class="project-image" width="1" height="1" src="<%= video %>" title="aaaa" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-              <% }) %>
+            <% } %>
+          
+              <% if (project.videoLink) { %>
+                <% project.videoLink.forEach(video => { %>
+                  <iframe class="project-image" width="1" height="1" src="<%= video %>" title="aaaa" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                  <% }) %>
+              <% } %>
+             
             </div>
             <p style="white-space: pre-line" class="proj-description"><%= project.description %></p>
             <hr style="width:80%; margin: auto; margin-top: 20px; margin-bottom: 20px; opacity: 15%;" />

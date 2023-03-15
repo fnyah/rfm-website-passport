@@ -48,7 +48,7 @@
                 class="nav-link active"
                 aria-current="page"
                 href="for-educators"
-                >For Educators</a
+                >Blog</a
               >
             </li>
             <li class="nav-item">
@@ -64,25 +64,22 @@
       </div>
     </nav>
     <div class="container">
+      <h1 class="mb-4" style="margin-top: 55px">Blog Posts</h1>
       <a href="for-educators/new" class="btn btn-success">Add new post</a>
-      <a href="for-educators/edit" class="btn btn-success">edit post</a>
 
       <% blog.forEach(post => { %>
       <div class="card mt-4">
         <div class="card-body">
           <h2 class="card-text mb-2">Title: <%= post.title %></h2>
-          <div class="card-text mb-2">Description: <%= post.description %></div>
+          <div class="card-text mb-2">Description: <%= post.description.substring(0,100) %></div>
           <div class="card-subtitle text-muted mb-2">
             <%= post.createdAt.toLocaleDateString() %>
           </div>
-          <a href="/admin/projects/<%= post.id %>" class="btn btn-primary"
-            >Read More</a
-          >
-          <a href="/admin/projects/edit/<%= post.id %>" class="btn btn-info"
+          <a href="/admin/for-educators/edit/<%= post.id %>" class="btn btn-info"
             >Edit</a
           >
           <form
-            action="/admin/projects/<%=post.id%>?_method=DELETE"
+            action="/admin/for-educators/<%=post.id%>?_method=DELETE"
             method="POST"
             class="d-inline"
           >

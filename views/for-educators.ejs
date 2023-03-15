@@ -48,15 +48,37 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link active"  aria-current="page" href="/for-educators">For Educators</a>
+              <a class="nav-link active"  aria-current="page" href="/for-educators">Blog</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
     <!-- Content -->
-    <div class="container">
-      
+     <div class="container">
+      <h1 class="display-1" style="margin-top: 50px;text-align: center;">Blog Posts</h1>
+      <div id="projects-container">
+        <div class="project">
+          <% blog.forEach(blog => { %>
+            <h1 class="project-title"><%= blog.title %></h1>
+            <div class="project-images">
+            <% if (blog.filename != null) { %>
+              <% blog.filename.forEach(image => { %>
+                <div class="project-image">
+                  <div class="project-image-background" style="background-image: url(http://localhost:3000/blogimages/<%= image %>)"></div>
+                </div>
+             <% }) %>
+            <% } %>
+          
+            
+             
+            </div>
+            <p style="white-space: pre-line" class="proj-description"><%= blog.description %></p>
+            <hr style="width:80%; margin: auto; margin-top: 20px; margin-bottom: 20px; opacity: 15%;" />
+            <% }) %>
+           
+        </div>
+      </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>

@@ -59,9 +59,7 @@ const storage = new GridFsStorage({
 const upload = multer({ storage });
 
 const prepVideoLink = (videoLink) => {
-  if (videoLink == "") {
-    return "";
-  } else {
+  if (!videoLink) return;
     // separate the video links into an array
     const videoLinks = videoLink.split(",");
     // create an array to hold the embed links
@@ -79,9 +77,10 @@ const prepVideoLink = (videoLink) => {
     // return the embed links as a string
     return embedLinks;
   }
-};
+
 
 router.post("/", upload.any("file"), isAuth, async (req, res) => {
+
   const embedLink = prepVideoLink(req.body.videolink);
 
   const filenames = req.files.map((file) => file.filename);
@@ -217,20 +216,20 @@ router.post("/:id", isAuth, async (req, res, next) => {
   }
 });
 
-function saveProjectAndRedirect(path) {
-  return async (req, res) => {
-    console.log(req.body);
-    let project = req.project;
-    project.title = req.body.title;
-    project.author = req.body.author;
-    project.description = req.body.description;
-    try {
-      project = await project.save();
-      res.redirect(`/admin/projects/${project.id}`);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-}
+// function saveProjectAndRedirect(path) {
+//   return async (req, res) => {
+//     console.log(req.body);
+//     let project = req.project;
+//     project.title = req.body.title;
+//     project.author = req.body.author;
+//     project.description = req.body.description;
+//     try {
+//       project = await project.save();
+//       res.redirect(`/admin/projects/${project.id}`);
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   };
+// }
 
 module.exports = router;
