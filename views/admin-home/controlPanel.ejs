@@ -45,7 +45,7 @@
               <a class="nav-link" href="projects">Student Projects</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Course Materials</a>
+              <a class="nav-link" href="for-educators">Blog</a>
             </li>
             <li class="nav-item">
               <a
@@ -65,19 +65,18 @@
         id="OpenDefault"
         onclick="openTab(event, 'Textposts')"
       >
-        Home Page Posts
+        Home Page Text Posts
       </button>
       <button class="tablinks" onclick="openTab(event, 'Photos')">
-        Photo Posts
+        Home Page Photo Posts
       </button>
     </div>
     <div id="Textposts" class="tabcontent">
       <div class="container">
-        <h1 class="mb-4">Home Page Content</h1>
+        <h1 class="mb-4">Home Page Text Content</h1>
         <a href="home/new" class="btn btn-success" style="margin-top: 20px"
           >Add new post</a
         >
-
         <% posts.forEach(post => { %>
         <div class="card mt-4">
           <div class="card-body">
@@ -86,9 +85,6 @@
               <%= post.createdAt.toLocaleDateString() %>
             </div>
             <div class="card-text mb-2"><%= post.description %></div>
-            <a href="/admin/home/<%= post.id %>" class="btn btn-primary"
-              >Read More</a
-            >
             <a href="/admin/home/edit/<%= post.id %>" class="btn btn-info"
               >Edit</a
             >
@@ -115,8 +111,8 @@
 
     <div id="Photos" class="tabcontent">
       <div class="container">
-        <h1 class="mb-4">Photo Posts</h1>
-        <h4>Reccomended 8 posts at any one time</h4>
+        <h1 class="mb-4">Home Page Photo Content</h1>
+        <h4>Reccomended 8 posts maximum at any one time for symmetry</h4>
         <a
           href="/admin/home/photos/new"
           class="btn btn-success"
@@ -138,11 +134,21 @@
               />
               <div class="admin-photolink-card-text">
                 <h4>Description:</h4>
+                <% if (photo.description == null) { %>
                 <div class="card-text mb-2"><%= photo.description %></div>
-                <h4>Link:</h4>
+                <% } else { %>
                 <div class="card-text mb-2">
-                  <%= photo.link.substring(0,50) %>
+                  <%= photo.description.substring(0, 40) %>
                 </div>
+                <% } %>
+                <h4>Link:</h4>
+                <% if (photo.link == null) { %>
+                <div class="card-text mb-2"><%= photo.link %></div>
+                <% } else { %>
+                <div class="card-text mb-2">
+                  <%= photo.link.substring(0,20) %>
+                </div>
+                <% } %>
               </div>
 
               <div class="admin-photolink-buttons">
@@ -174,23 +180,7 @@
       </div>
     </div>
 
-    <script>
-      function openTab(evt, idName) {
-        var i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (i = 0; i < tabcontent.length; i++) {
-          tabcontent[i].style.display = "none";
-        }
-        tablinks = document.getElementsByClassName("tablinks");
-        for (i = 0; i < tablinks.length; i++) {
-          tablinks[i].className = tablinks[i].className.replace(" active", "");
-        }
-        document.getElementById(idName).style.display = "block";
-        evt.currentTarget.className += " active";
-      }
-
-      document.getElementById("OpenDefault").click();
-    </script>
+    <script src="../public/assets/js/multiTab.js"></script>
 
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"

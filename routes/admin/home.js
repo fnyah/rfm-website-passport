@@ -54,7 +54,6 @@ const storage = new GridFsStorage({
           bucketName: "uploads",
         };
         resolve(fileInfo);
-        // console.log(fileInfo);
       });
     });
   },

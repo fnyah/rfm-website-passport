@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "e2e": "cypress open"
   },
   "keywords": [],
   "author": "",
@@ -25,5 +26,8 @@
     "nodemon": "^2.0.16",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "cypress": "^12.3.0"
   }
 }

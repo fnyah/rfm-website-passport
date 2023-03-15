@@ -3,12 +3,13 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 var passport = require("passport");
 var crypto = require("crypto");
-const path = require('path');
+const path = require("path");
 
 const indexRouter = require("./routes/index");
-const standingsRouter = require("./routes/admin/standings")
-const homeRouter = require('./routes/admin/home')
-const projectsRouter = require('./routes/admin/projects')
+const standingsRouter = require("./routes/admin/standings");
+const homeRouter = require("./routes/admin/home");
+const projectsRouter = require("./routes/admin/projects");
+const educatorsRouter = require("./routes/admin/for-educators");
 
 const connection = require("./config/database");
 const methodOverride = require("method-override");
@@ -34,7 +35,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/public", express.static("public"));
 app.use(methodOverride("_method"));
-app.use(express.static(path.join(__dirname, 'client')))
+app.use(express.static(path.join(__dirname, "client")));
 
 /**
  * -------------- SESSION SETUP ----------------
@@ -70,10 +71,11 @@ app.use(passport.session());
 
 // Imports all of the routes from ./routes/index.js
 // app.use(routes)
-app.use('/', indexRouter);
-app.use('/admin/standings', standingsRouter)
-app.use('/admin/home', homeRouter)
-app.use('/admin/projects', projectsRouter)
+app.use("/", indexRouter);
+app.use("/admin/standings", standingsRouter);
+app.use("/admin/home", homeRouter);
+app.use("/admin/projects", projectsRouter);
+app.use("/admin/for-educators", educatorsRouter);
 
 // app.use(standings)
 

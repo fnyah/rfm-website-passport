@@ -18,31 +18,33 @@
       class="contianer"
       style="margin-left: 10%; margin-right: 10%; margin-bottom: 10%"
     >
-      <h1 class="mb-4 px-3 mt-4">Editing Student Project: <%= projects.title %></h1>
+      <h1 class="mb-4 px-3 mt-4">Editing Blog Post: <%= blog.title %></h1>
       <form
-        action="/admin/projects/<%= projects.id %>?_method=PUT"
+        action="/admin/for-educators/<%= blog.id %>?_method=PUT"
         method="POST"
         enctype="multipart/form-data"
       >
         <div>
           <div class="contianer project-photo-box">
             <div class="m-4 project-photo-container">
+
               <h1>Images:</h1>
               <div class="project-images">
-                <% projects.filename.forEach(image => { %>
+                <% blog.filename.forEach(image => { %>
                 <div class="project-image">
                   <div
                     class="project-image-background"
                     style="
-                      background-image: url(http://localhost:3000/projectimages/<%= image %>);
+                      background-image: url(http://localhost:3000/blogimages/<%= image %>);
                     "
                   ></div>
                 </div>
                 <% }) %>
+
               </div>
             </div>
             <div class="btn-container">
-              <% if (projects.filename.length > 0) { %>
+              <% if (blog.filename.length > 0) { %>
               <button
                 id="edit-images-btn"
                 type="button"
@@ -62,18 +64,9 @@
           name="title"
           id="title"
           class="form-control mt-2"
-          value="<%= projects.title %>"
+          value="<%= blog.title %>"
         />
-        <label for="author">Author:</label>
-        <input
-          required
-          type="text"
-          name="author"
-          id="author"
-          class="form-control mt-2"
-          value="<%= projects.author %>"
-        />
-        <label for="description">Information:</label>
+        <label for="description">Description:</label>
         <textarea
           type="text"
           name="description"
@@ -81,19 +74,19 @@
           style="height: 300px; white-space: pre-line; white-space: pre-wrap"
           class="form-control mt-2"
         >
-            <%= projects.description %>
+            <%= blog.description %>
           </textarea
         >
 
-        <label for="videolink" style="margin-top: 10px"
-          >Video Links (Separated by commas):</label
+        <label for="link" style="margin-top: 10px"
+          > Links (Separated by commas):</label
         >
         <input
           type="text"
-          name="videolink"
-          id="videolink"
+          name="link"
+          id="link"
           class="form-control mt-2"
-          value="<%= projects.videoLink %>"
+          value="<%= blog.links %>"
         />
 
         <div class="form-group mt-2">
@@ -109,18 +102,18 @@
 
         <button type="submit" class="btn btn-primary px-3 mt-4">Save</button>
         <a
-          href="/admin/projects"
+          href="/admin/for-educators"
           id="confirmClickActionElementId"
           class="btn btn-secondary px-3 mt-4"
           onclick="return confirm('Are you sure you want to cancel editing?');"
           >Cancel</a
         >
-        <a href="/admin/projects" class="btn btn-primary px-3 mt-4">
+        <a href="/admin/for-educators" class="btn btn-primary px-3 mt-4">
           All Projects</a
         >
       </form>
     </div>
 
-    <script src="../../../public/assets/js/editphoto.js"></script>
+    <script src="../../../public/assets/js/editBlogPhoto.js"></script>
   </body>
 </html>

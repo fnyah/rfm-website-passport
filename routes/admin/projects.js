@@ -58,14 +58,38 @@ const storage = new GridFsStorage({
 
 const upload = multer({ storage });
 
+const prepVideoLink = (videoLink) => {
+  if (!videoLink) return;
+    // separate the video links into an array
+    const videoLinks = videoLink.split(",");
+    // create an array to hold the embed links
+    const embedLinks = [];
+    // loop through the video links and create the embed links
+    videoLinks.forEach((link) => {
+      if (link.includes("embed/")) {
+        embedLinks.push(link);
+        return;
+      } else {
+        const embedLink = link.replace("watch?v=", "embed/");
+        embedLinks.push(embedLink);
+      }
+    });
+    // return the embed links as a string
+    return embedLinks;
+  }
+
+
 router.post("/", upload.any("file"), isAuth, async (req, res) => {
-  // filesnames to array
+
+  const embedLink = prepVideoLink(req.body.videolink);
+
   const filenames = req.files.map((file) => file.filename);
   const projects = new Projects({
     title: req.body.title,
     author: req.body.author,
     description: req.body.description,
     filename: filenames,
+    videoLink: embedLink,
   });
   try {
     await projects.save();
@@ -124,14 +148,19 @@ router.get("/edit/:id", isAuth, async (req, res) => {
 });
 
 router.put("/:id", upload.any("file"), isAuth, async (req, res, next) => {
-  if (req.files) {
-    const filenames = req.files.map((file) => file.filename);
+  const filenames = req.files.map((file) => file.filename);
+  const currentFiles = await Projects.findById(req.params.id);
+  const combinedFiles = [...currentFiles.filename, ...filenames];
+  const embedLink = prepVideoLink(req.body.videolink);
+  const description = req.body.description.trim();
+
+  if (req.files == "") {
     try {
       const editedProject = await Projects.findByIdAndUpdate(req.params.id, {
         title: req.body.title,
-        description: req.body.description,
-        filename: filenames,
+        description: description,
         author: req.body.author,
+        videoLink: embedLink,
       });
       console.log("Edited project: " + editedProject);
       res.redirect("/admin/projects");
@@ -143,7 +172,9 @@ router.put("/:id", upload.any("file"), isAuth, async (req, res, next) => {
       const editedProject = await Projects.findByIdAndUpdate(req.params.id, {
         title: req.body.title,
         description: req.body.description,
+        filename: combinedFiles,
         author: req.body.author,
+        videoLink: embedLink,
       });
       console.log("Edited project: " + editedProject);
       res.redirect("/admin/projects");
@@ -152,11 +183,6 @@ router.put("/:id", upload.any("file"), isAuth, async (req, res, next) => {
     }
   }
 });
-//   req.project = await Projects.findById(req.params.id);
-
-//   next();
-// },
-// saveProjectAndRedirect("edit")
 
 router.delete("/:id", isAuth, async (req, res, next) => {
   const projectId = mongoose.Types.ObjectId(req.params.id);
@@ -190,20 +216,20 @@ router.post("/:id", isAuth, async (req, res, next) => {
   }
 });
 
-function saveProjectAndRedirect(path) {
-  return async (req, res) => {
-    console.log(req.body);
-    let project = req.project;
-    project.title = req.body.title;
-    project.author = req.body.author;
-    project.description = req.body.description;
-    try {
-      project = await project.save();
-      res.redirect(`/admin/projects/${project.id}`);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-}
+// function saveProjectAndRedirect(path) {
+//   return async (req, res) => {
+//     console.log(req.body);
+//     let project = req.project;
+//     project.title = req.body.title;
+//     project.author = req.body.author;
+//     project.description = req.body.description;
+//     try {
+//       project = await project.save();
+//       res.redirect(`/admin/projects/${project.id}`);
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   };
+// }
 
 module.exports = router;

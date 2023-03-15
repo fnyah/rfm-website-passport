@@ -64,7 +64,7 @@ const editPhotos = () => {
       photo.removeEventListener("click", handlePhotoClicked);
     });
 
-    const removePhotosUrl = "/admin/projects/" + projectId;
+    const removePhotosUrl = "/admin/for-educators/" + projectId;
     const removePhotosRequest = new Request(removePhotosUrl, {
       method: "post",
       body: JSON.stringify(clickedPhotos),

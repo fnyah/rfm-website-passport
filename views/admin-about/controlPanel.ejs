@@ -46,66 +46,119 @@
               <a class="nav-link" href="projects">Student Projects</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Course Materials</a>
+              <a class="nav-link" href="for-educators">Blog</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/logout" onclick="return confirm('Are you sure you want to log out?')">Log Out</a>
+              <a
+                class="nav-link"
+                href="/logout"
+                onclick="return confirm('Are you sure you want to log out?')"
+                >Log Out</a
+              >
             </li>
           </ul>
         </div>
       </div>
     </nav>
-    <div class="container">
-      <h1 class="mb-4" style="margin-top: 55px">Standings</h1>
-      <a href="standings/new" class="btn btn-success">Add new post</a>
 
-      <div class="standing-container">
-        <% standings.forEach(standing => { %>
-        <div class="card mt-4 standing-card">
-          <div class="card-body">
-            <div class="card-subtitle text-muted mb-2">
-              <%= standing.createdAt.toLocaleDateString() %>
-            </div>
-            <div class="card-text mb-2">
-              <%= standing.information.substring(0, 150) %>
-            </div>
-            <div class="standing-buttons-container">
-              <form action="/admin/standings/<%=standing.id %>">
-                <button type="submit" class="btn btn-primary standing-button">
-                  Read More
-                </button>
-              </form>
-              <form action="/admin/standings/edit/<%=standing.id %>">
-                <button type="submit" class="btn btn-info standing-button">
-                  Edit
-                </button>
-              </form>
-              <form
-                action="/admin/standings/<%=standing.id%>?_method=DELETE"
-                method="POST"
-              >
-                <button
-                  type="submit"
-                  class="btn btn-danger standing-button"
-                  id="confirmClickActionElementId"
-                  onclick="return confirm('Are you sure you want to delete this standing?')"
+    <div class="tab">
+      <button
+        class="tablinks"
+        id="OpenDefault"
+        onclick="openTab(event, 'Textposts')"
+      >
+        Standings
+      </button>
+      <button class="tablinks" onclick="openTab(event, 'Events')">
+        Upcoming Events
+      </button>
+    </div>
+
+    <div id="Textposts" class="tabcontent" style="height: 100vh">
+      <div class="container">
+        <h1 class="mb-4" style="margin-top: 55px">Standings</h1>
+        <a href="standings/new" class="btn btn-success">Add new post</a>
+
+        <div class="standing-container">
+          <% standings.forEach(standing => { %>
+          <div class="card mt-4 standing-card">
+            <div class="card-body">
+              <div class="card-subtitle text-muted mb-2">
+                <%= standing.createdAt.toLocaleDateString() %>
+              </div>
+              <div class="card-text mb-2">
+                <%= standing.information.substring(0, 150) %>
+              </div>
+              <div class="standing-buttons-container">
+                <form action="/admin/standings/edit/<%=standing.id %>">
+                  <button type="submit" class="btn btn-info standing-button">
+                    Edit
+                  </button>
+                </form>
+                <form
+                  action="/admin/standings/<%=standing.id%>?_method=DELETE"
+                  method="POST"
                 >
-                  Delete
-                </button>
-              </form>
+                  <button
+                    type="submit"
+                    class="btn btn-danger standing-button"
+                    id="confirmClickActionElementId"
+                    onclick="return confirm('Are you sure you want to delete this standing?')"
+                  >
+                    Delete
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
+          <% }) %>
         </div>
-        <% }) %>
       </div>
     </div>
 
+    <div id="Events" class="tabcontent" style="height: 100vh">
+      <div class="container">
+        <h1 class="mb-4" style="margin-top: 55px">Events</h1>
+        <a href="standings/new-event" class="btn btn-success">Add new post</a>
+
+        <div class="standing-container">
+          <% events.forEach(event => { %>
+          <div class="card mt-4 standing-card">
+            <div class="card-body">
+              <div class="card-text mb-2">Event: <%= event.information %></div>
+              <div class="card-text mb-2">Event Date: <%= event.eventDate %></div>
+              <div class="standing-buttons-container">
+                <form action="/admin/standings/edit/<%=event.id %>">
+                  <button type="submit" class="btn btn-info standing-button">
+                    Edit
+                  </button>
+                </form>
+                <form
+                  action="/admin/standings/<%=event.id%>?_method=DELETE"
+                  method="POST"
+                >
+                  <button
+                    type="submit"
+                    class="btn btn-danger standing-button"
+                    id="confirmClickActionElementId"
+                    onclick="return confirm('Are you sure you want to delete this standing?')"
+                  >
+                    Delete
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+
+    <script src="../public/assets/js/multiTab.js"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
       integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
       crossorigin="anonymous"
     ></script>
-
-    <!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
   </body>
 </html>

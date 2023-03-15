@@ -9,34 +9,35 @@
     />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Edit standing</title>
+    <title></title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="" />
   </head>
   <body>
-    <h1 class="mb-4 px-3 mt-4">Edit Standing</h1>
-    <div class="contianer" style="padding: 10px">
+    <div class="contianer">
       <form
-        action="/admin/standings/<%= standings.id %>?_method=PUT"
+        action="/admin/standings/events/upload"
         method="POST"
+        class="px-3"
       >
-        <div class="form-group">
-          <label for="information">Standing Information:</label>
-          <input
-            required
-            type="text"
-            name="information"
-            id="information"
-            class="form-control mt-2"
-            value="<%= standings.information %>"
-          />
-        </div>
-        <button tpye="submit" class="btn btn-primary px-3 mt-4">Save</button>
+      <label for="information">information:</label>
+      <input
+        required
+        type="text"
+        name="information"
+        id="information"
+        class="form-control mt-2"
+      />
+
+        <input type="date" id="eventDate" name="eventDate" required min="2023-01-01" />
+
+        <button type="submit" class="btn btn-primary px-3 mt-4">Save</button>
         <a
           href="/admin/standings"
           id="confirmClickActionElementId"
           class="btn btn-secondary px-3 mt-4"
-          onclick="return confirm('Are you sure you want to cancel editing?');"
+          onclick="return confirm('Are you sure you want to cancel?');"
           >Cancel</a
         >
       </form>

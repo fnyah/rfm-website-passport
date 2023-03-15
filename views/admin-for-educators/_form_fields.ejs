@@ -6,50 +6,40 @@
     name="title"
     id="title"
     class="form-control mt-2"
-    value="<%= projects.title %>"
   />
 
-  <label for="information">Author:</label>
-  <input
-    required
-    type="text"
-    name="author"
-    id="author"
-    class="form-control mt-2"
-    value="<%= projects.author %>"
-  />
-
-  <label for="information">Project Description:</label>
+  <label for="information">Description:</label>
   <textarea
+    required
     type="text"
     name="description"
     id="description"
     style="height: 300px; white-space: pre-line; white-space: pre-wrap"
     class="form-control mt-2"
   >
-    <%= projects.description %>
+
   </textarea>
 
-  <label for="information">Youtube Video Link:</label>
+  <label for="information">Links (separated by commas):</label>
   <input
     type="text"
-    name="videolink"
-    id="videolink"
+    name="link"
+    id="link"
     class="form-control mt-2"
   />
 </div>
 
 <div class="form-group mt-2">
-  <label for="image">Image</label>
+  <label for="image">Image(s)</label>
   <input type="file" name="file" id="file" class="custom-file-input" multiple />
 </div>
 
 <button type="submit" class="btn btn-primary px-3 mt-4">Save</button>
 <a
-  href="/admin/projects"
+  href="/admin/for-educators"
   id="confirmClickActionElementId"
   class="btn btn-secondary px-3 mt-4"
   onclick="return confirm('Are you sure you want to cancel editing?');"
   >Cancel</a
 >
-<a href="/admin/projects" class="btn btn-primary px-3 mt-4"> All Projects</a>
+<!-- <a href="/admin/projects" class="btn btn-primary px-3 mt-4"> All Projects</a> -->

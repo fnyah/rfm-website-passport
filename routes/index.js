@@ -8,6 +8,8 @@ const isAuth = require("./authMiddleware").isAuth;
 const HomeInfo = connection.models.Home;
 const Projects = connection.models.Projects;
 const PhotoLinkInfo = connection.models.PhotoLink;
+const Events = connection.models.Events;
+const Blog = connection.models.Blog;
 
 const mongoose = require("mongoose");
 const mongoURI = process.env.MONGO_URI;
@@ -42,6 +44,7 @@ conn.once("open", () => {
   gfs.collection("uploads");
 });
 
+// gfs2 is for project images
 let gfs2;
 let gridfsBucket2;
 conn.once("open", () => {
@@ -52,6 +55,19 @@ conn.once("open", () => {
   gfs2 = Grid(conn.db, mongoose.mongo);
   gfs2.collection("projectphotos");
 });
+
+// gfs3 is for blog images
+let gfs3;
+let gridfsBucket3;
+conn.once("open", () => {
+  gridfsBucket3 = new mongoose.mongo.GridFSBucket(conn.db, {
+    bucketName: "blogphotos",
+  });
+
+  gfs3 = Grid(conn.db, mongoose.mongo);
+  gfs3.collection("blogphotos");
+});
+
 
 router.get("/files", async (req, res) => {
   const files = await PhotoLinkInfo.find({});
@@ -81,21 +97,10 @@ router.get("/image/:filename", (req, res) => {
 });
 
 router.get("/projectimages", async (req, res) => {
-  // find only the images
-  // images = []
-  // const projects = await Projects.find({});
-  // projects.map((project) => {
-  //   if (project.filename) {
-  //     project.filename.map((filename) => {
-  //       images.push(filename)
-  //     })
-  //   }
-  // })
-  // console.log(images)
-  // res.json(projects);
   const projects = await Projects.find({});
   res.json(projects);
 });
+
 
 // route to display the project images
 router.get("/projectimages/:filename", async (req, res) => {
@@ -130,6 +135,44 @@ router.get("/projectimages/:filename", async (req, res) => {
   });
 });
 
+router.get("/blogimages", async (req, res) => {
+  const blog = await Blog.find({});
+  res.json(blog);
+});
+ 
+// route to display the blog images
+router.get("/blogimages/:filename", async (req, res) => {
+  const blogPosts = await Blog.find({});
+  const fileToFind = req.params.filename;
+  blogPosts.map((blog) => {
+    blog.filename.map((filename) => {
+      if (filename === fileToFind) {
+        gfs3.files.findOne({ filename }).then((file) => {
+          // Check if file
+          if (!file || file.length === 0) {
+            return res.status(404).json({
+              err: "No file exists",
+            });
+          }
+          // Check if image
+          if (
+            file.contentType === "image/jpeg" ||
+            file.contentType === "image/png"
+          ) {
+            // Read output to browser
+            const readstream = gridfsBucket3.openDownloadStream(file._id);
+            readstream.pipe(res);
+          } else {
+            res.status(404).json({
+              err: "Not an image",
+            });
+          }
+        });
+      }
+    });
+  });
+});
+        
 // gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
 //   // Check if file
 //   if (!file || file.length === 0) {
@@ -186,13 +229,20 @@ router.get("/", async (req, res, next) => {
 
 router.get("/about", async (req, res, next) => {
   const standings = await Standings.find().sort({ information: "desc" });
-  res.render("about", { standings: standings });
+  const events = await Events.find().sort({ information: "desc" });
+  res.render("about", { standings: standings, events: events });
   next();
 });
 
 router.get("/projects", async (req, res, next) => {
   const projects = await Projects.find().sort({ information: "desc" });
   res.render("projects", { projects: projects });
+  next();
+});
+
+router.get("/for-educators", async (req, res, next) => {
+  const blog = await Blog.find().sort({ information: "desc" });
+  res.render("for-educators", { blog: blog });
   next();
 });
 

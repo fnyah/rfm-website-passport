@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+
 <html>
   <head>
     <link
@@ -13,16 +10,11 @@
     />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title></title>
-    <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
-    <div 
-    style="margin-left:10%;margin-right:10%;"
-    class="contianer">
+  <body>
+    <div style="margin-left: 10%; margin-right: 10%" class="contianer">
       <h1 class="mb-4 px-3 mt-4">Edit</h1>
       <form action="/admin/home/<%= posts.id %>?_method=PUT" method="POST">
-       
         <div class="form-group">
           <label for="information">Title:</label>
           <input
@@ -32,30 +24,32 @@
             id="title"
             class="form-control mt-2"
             value="<%= posts.title %>"
-          >
-        </input>
+          />
           <label for="information">Information:</label>
           <textarea
-          required
+            required
             type="text"
             name="description"
             id="description"
-            style="height:300px;white-space: pre-line;white-space: pre-wrap;"
-            class="form-control mt-2">
+            style="height: 300px; white-space: pre-line; white-space: pre-wrap"
+            class="form-control mt-2"
+          >
             <%= posts.description %>
           </textarea>
         </div>
         <button type="submit" class="btn btn-primary px-3 mt-4">Save</button>
         <a
-        href="/admin/home"
-        id="confirmClickActionElementId"
-        class="btn btn-secondary px-3 mt-4"
-        onclick="return confirm('Are you sure you want to cancel editing?');"
-        >Cancel</a>
-      <a href="/admin/home" class="btn btn-primary px-3 mt-4"> All standings</a>
+          href="/admin/home"
+          id="confirmClickActionElementId"
+          class="btn btn-secondary px-3 mt-4"
+          onclick="return confirm('Are you sure you want to cancel editing?');"
+          >Cancel</a
+        >
+        <a href="/admin/home" class="btn btn-primary px-3 mt-4">
+          All standings</a
+        >
       </form>
     </div>
-  
   </body>
   <script src="../../public/assets/js/confirm.js"></script>
 </html>
