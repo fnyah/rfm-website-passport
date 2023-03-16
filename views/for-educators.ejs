@@ -69,14 +69,18 @@
                 </div>
              <% }) %>
             <% } %>
-          
-            
-             
             </div>
             <p style="white-space: pre-line" class="proj-description"><%= blog.description %></p>
+              <% if (blog.links != '') { %>
+                <ul>
+                <h3>Sources:</h3>
+                <% blog.links.forEach(link => { %>
+                  <li><a href="<%= link %>"><%= link %></a></li>
+                <% }) %>
+              <% } %>
+            </ul>
             <hr style="width:80%; margin: auto; margin-top: 20px; margin-bottom: 20px; opacity: 15%;" />
             <% }) %>
-           
         </div>
       </div>
     </div>

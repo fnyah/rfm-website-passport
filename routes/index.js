@@ -228,20 +228,21 @@ router.get("/", async (req, res, next) => {
 });
 
 router.get("/about", async (req, res, next) => {
-  const standings = await Standings.find().sort({ information: "desc" });
-  const events = await Events.find().sort({ information: "desc" });
+  const standings = await Standings.find().sort({ createdAt: -1 });
+  const events = await Events.find().sort({ createdAt: -1 });
   res.render("about", { standings: standings, events: events });
   next();
 });
 
 router.get("/projects", async (req, res, next) => {
-  const projects = await Projects.find().sort({ information: "desc" });
+  const projects = await Projects.find().sort({ createdAt: -1 });
   res.render("projects", { projects: projects });
   next();
 });
 
 router.get("/for-educators", async (req, res, next) => {
-  const blog = await Blog.find().sort({ information: "desc" });
+  const blog = await Blog.find().sort({ createdAt: -1 });
+  console.log(blog)
   res.render("for-educators", { blog: blog });
   next();
 });
