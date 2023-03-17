@@ -195,26 +195,26 @@ router.get("/blogimages/:filename", async (req, res) => {
 
 // End of routes to display images from database ~~~~~~~~~~~~~~~~~~~~
 
-//  router.post('/register', (req, res, next) => {
-//     const saltHash = genPassword(req.body.pw);
+ router.post('/register', (req, res, next) => {
+    const saltHash = genPassword(req.body.pw);
 
-//     const salt = saltHash.salt;
-//     const hash = saltHash.hash;
+    const salt = saltHash.salt;
+    const hash = saltHash.hash;
 
-//     const newUser = new User({
-//         username: req.body.uname,
-//         hash: hash,
-//         salt: salt,
-//         admin: true
-//     });
+    const newUser = new User({
+        username: req.body.uname,
+        hash: hash,
+        salt: salt,
+        admin: true
+    });
 
-//     newUser.save()
-//         .then((user) => {
-//             console.log(user);
-//         });
+    newUser.save()
+        .then((user) => {
+            console.log(user);
+        });
 
-//     res.redirect('/login');
-//  });
+    res.redirect('/login');
+ });
 
 /**
  * -------------- GET ROUTES ----------------
@@ -252,16 +252,16 @@ router.get("/login", (req, res, next) => {
 });
 
 // When you visit http://localhost:3000/register, you will see "Register Page"
-// router.get('/register', (req, res, next) => {
+router.get('/register', (req, res, next) => {
 
-//     const form = '<h1>Register Page</h1><form method="post" action="register">\
-//                     Enter Username:<br><input type="text" name="uname">\
-//                     <br>Enter Password:<br><input type="password" name="pw">\
-//                     <br><br><input type="submit" value="Submit"></form>';
+    const form = '<h1>Register Page</h1><form method="post" action="register">\
+                    Enter Username:<br><input type="text" name="uname">\
+                    <br>Enter Password:<br><input type="password" name="pw">\
+                    <br><br><input type="submit" value="Submit"></form>';
 
-//     res.send(form);
+    res.send(form);
 
-// });
+});
 
 /**
  * Lookup how to authenticate users on routes with Local Strategy
