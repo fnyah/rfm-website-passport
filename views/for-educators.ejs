@@ -65,7 +65,7 @@
             <% if (blog.filename != null) { %>
               <% blog.filename.forEach(image => { %>
                 <div class="project-image">
-                  <div class="project-image-background" style="background-image: url(http://localhost:3000/blogimages/<%= image %>)"></div>
+                  <div class="project-image-background" style="background-image: url(blogimages/<%= image %>)"></div>
                 </div>
              <% }) %>
             <% } %>
