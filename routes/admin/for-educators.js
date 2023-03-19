@@ -57,6 +57,22 @@ const storage = new GridFsStorage({
 
 const upload = multer({ storage });
 
+// function that adds https:// to links if it's not there and www. if it's not there
+function addHttp(link) {
+  // remove whitespace
+  link = link.trim();
+
+  if (link.includes("https://")) {
+    return link;
+  } else if (link.includes("http://")) {
+    return link;
+  } else if (link.includes("www.")) {
+    return "https://" + link;
+  } else {
+    return "https://www." + link;
+  }
+}
+
 router.get("/", isAuth, async (req, res) => {
   let blog = await Blog.find().sort({ createdAt: -1 });
   res.render("admin-for-educators/controlPanel", { blog: blog });
@@ -67,12 +83,14 @@ router.post("/", isAuth, upload.any("file"), async (req, res) => {
 
   // separate links into an array
   const links = req.body.link.split(",");
+  // add https:// to links if it's not there
+  const linksWithHttp = links.map(addHttp);
 
   const blogPost = new Blog({
     title: req.body.title,
     description: req.body.description,
     filename: filenames,
-    links: links,
+    links: linksWithHttp,
   });
   try {
     await blogPost.save();
@@ -97,13 +115,14 @@ router.put("/:id", upload.any("file"), isAuth, async (req, res, next) => {
   const combinedFiles = [...currentFiles.filename, ...filenames];
   const links = req.body.link.split(",");
   const description = req.body.description.trim();
+  const linksWithHttp = links.map(addHttp);
 
   if (req.files == "") {
     try {
       const editedProject = await Blog.findByIdAndUpdate(req.params.id, {
         title: req.body.title,
         description: description,
-        links: links,
+        links: linksWithHttp,
       });
       console.log("Edited project: " + editedProject);
       res.redirect("/admin/for-educators");
@@ -116,7 +135,7 @@ router.put("/:id", upload.any("file"), isAuth, async (req, res, next) => {
         title: req.body.title,
         description: req.body.description,
         filename: combinedFiles,
-        link: links,
+        link: linksWithHttp,
       });
       console.log("Edited project: " + editedProject);
       res.redirect("/admin/projects");
@@ -125,7 +144,6 @@ router.put("/:id", upload.any("file"), isAuth, async (req, res, next) => {
     }
   }
 });
-
 
 // edit project photos
 router.post("/:id", isAuth, async (req, res, next) => {
@@ -160,5 +178,3 @@ router.delete("/:id", isAuth, async (req, res, next) => {
 });
 
 module.exports = router;
-
-

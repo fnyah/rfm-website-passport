@@ -240,7 +240,7 @@ router.get("/projects", async (req, res, next) => {
   next();
 });
 
-router.get("/for-educators", async (req, res, next) => {
+router.get("/blog", async (req, res, next) => {
   const blog = await Blog.find().sort({ createdAt: -1 });
   console.log(blog)
   res.render("for-educators", { blog: blog });
