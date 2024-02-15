@@ -56,28 +56,6 @@ exports.updateBlogPost = asyncHandler(async (req, res) => {
   res.redirect("/admin/for-educators");
 });
 
-// exports.editBlogPhotos = asyncHandler(async (req, res) => {
-
-//   console.log(req.body);
-  // const { id } = req.params; // Get the blog post ID from the URL parameter
-  // const photosToRemove = req.body.photos; // Assuming the body contains an array of photo filenames to remove
-
-  // // Fetch the current blog post by ID
-  // const blog = await Blog.findById(id);
-  // if (!blog) {
-  //   return res.status(404).send('Blog post not found');
-  // }
-
-  // // Filter out the photos that need to be removed
-  // const updatedFilenames = blog.filename.filter(filename => !photosToRemove.includes(filename));
-
-  // // Update the blog post with the new list of filenames
-  // blog.filename = updatedFilenames;
-  // await blog.save();
-
-  // res.send({ message: 'Blog photos updated successfully', blog });
-// });
-
 exports.editBlogPhotos = asyncHandler(async (req, res) => {
   console.log(req.body);
   const { id } = req.params; // Get the blog post ID from the URL parameter
@@ -90,7 +68,6 @@ exports.editBlogPhotos = asyncHandler(async (req, res) => {
   }
 
   // Filter out the photos that need to be removed
-
   const updatedFilenames = blog.filename.filter(filename => !photosToRemove.includes(filename));
 
   // Update the blog post with the new list of filenames
