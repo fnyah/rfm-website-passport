@@ -1,77 +1,23 @@
-const router = require("express").Router();
-const connection = require("../../config/database");
-const Blog = connection.models.Blog;
+const router = require("express").Router();;
+const Blog = require("../../models/Blog");
 const isAuth = require("../authMiddleware").isAuth;
 const mongoose = require("mongoose");
+const express = require("express");
 
-const bodyParser = require("body-parser");
-const path = require("path");
-const crypto = require("crypto");
 const multer = require("multer");
-const { GridFsStorage } = require("multer-gridfs-storage");
-const Grid = require("gridfs-stream");
 const methodOverride = require("method-override");
 
-router.use(methodOverride("_method"));
-router.use(bodyParser.json());
+const { makeGridFsStorage } = require("../../utils/gridfsStorageutil");
+const { addHttp } = require("../../utils/addhttpUtil");
 
-// Mongo URI
+router.use(express.json());
+router.use(methodOverride('_method'));
+
 const mongoURI = process.env.MONGO_URI;
-// use new mongo url parser
-const conn = mongoose.createConnection(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-// Photo upload
-let gfs;
-let gridfsBucket;
-conn.once("open", () => {
-  gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
-    bucketName: "blogphotos",
-  });
-
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection("blogphotos");
-});
 
 // Create storage engine
-const storage = new GridFsStorage({
-  url: mongoURI,
-  file: (req, file) => {
-    return new Promise((resolve, reject) => {
-      crypto.randomBytes(16, (err, buf) => {
-        if (err) {
-          return reject(err);
-        }
-        const filename = buf.toString("hex") + path.extname(file.originalname);
-        const fileInfo = {
-          filename: filename,
-          bucketName: "blogphotos",
-        };
-        resolve(fileInfo);
-      });
-    });
-  },
-});
-
+const storage = makeGridFsStorage(mongoURI, "blogphotos");
 const upload = multer({ storage });
-
-// function that adds https:// to links if it's not there and www. if it's not there
-function addHttp(link) {
-  // remove whitespace
-  link = link.trim();
-
-  if (link.includes("https://")) {
-    return link;
-  } else if (link.includes("http://")) {
-    return link;
-  } else if (link.includes("www.")) {
-    return "https://" + link;
-  } else {
-    return "https://www." + link;
-  }
-}
 
 router.get("/", isAuth, async (req, res) => {
   let blog = await Blog.find().sort({ createdAt: -1 });

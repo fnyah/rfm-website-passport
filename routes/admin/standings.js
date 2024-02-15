@@ -1,7 +1,6 @@
 const router = require("express").Router();
-const connection = require("../../config/database");
-const Standings = connection.models.Standings;
-const Events = connection.models.Events;
+const Standings = require("../../models/Standings");
+const Events = require("../../models/Events")
 const isAuth = require("../authMiddleware").isAuth;
 const Mongoose = require("mongoose");
 
@@ -22,8 +21,6 @@ router.get("/new", isAuth, (req, res, next) => {
 router.get("/new-event", isAuth, (req, res, next) => {
   res.render("admin-about/events/new");
 });
-
-
 
 router.get("/:id", isAuth, async (req, res) => {
   let standings = await Standings.findById(req.params.id);

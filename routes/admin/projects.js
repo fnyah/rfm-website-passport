@@ -1,6 +1,5 @@
 const router = require("express").Router();
-const connection = require("../../config/database");
-const Projects = connection.models.Projects;
+const Projects = require("../../models/Projects")
 const isAuth = require("../authMiddleware").isAuth;
 const mongoose = require("mongoose");
 

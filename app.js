@@ -11,7 +11,7 @@ const homeRouter = require("./routes/admin/home");
 const projectsRouter = require("./routes/admin/projects");
 const educatorsRouter = require("./routes/admin/for-educators");
 
-const connection = require("./config/database");
+const connection = require("./config/databaseConnect");
 const methodOverride = require("method-override");
 
 // Package documentation - https://www.npmjs.com/package/connect-mongo
