@@ -1,7 +1,7 @@
 require("dotenv").config();
 const router = require("express").Router();
 const passport = require("passport");
-const genPassword = require("../lib/passwordUtils").genPassword; // Only used for creating new user from /register route
+const genPassword = require("../utils/passwordUtils").genPassword; // Only used for creating new user from /register route
 const User = require("../models/User");
 const Standings = require("../models/Standings");
 const isAuth = require("./authMiddleware").isAuth;

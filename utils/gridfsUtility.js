@@ -1,46 +1,57 @@
 const mongoose = require('mongoose');
-const Grid = require('gridfs-stream');
+const { GridFSBucket } = require('mongodb');
 
 const connections = {};
-let isDbConnected = false;
 
-mongoose.connection.once('open', () => {
-  isDbConnected = true;
-});
-
-function initializeGridFS(mongoURI, bucketName) {
+// Improved initialization to ensure a single connection per URI and reuse it
+async function initializeGridFS(mongoURI, bucketName) {
     if (!connections[mongoURI]) {
-        const conn = mongoose.createConnection(mongoURI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+        try {
+            const conn = await mongoose.createConnection(mongoURI, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+            });
+            console.log(`Connection established for GridFS bucket: ${bucketName}`);
 
-        conn.once('open', () => {
-            console.log(`Connection to mongodb-gfs established for bucket ${bucketName}.`);
-            const gfs = Grid(conn.db, mongoose.mongo);
-            gfs.collection(bucketName);
-            // Initialize the gfs object for this URI and bucketName
-            if (!connections[mongoURI]) {
-                connections[mongoURI] = { conn, gfs: {} };
-            }
-            connections[mongoURI].gfs[bucketName] = gfs;
-        });
+            // Using GridFSBucket for a modern approach over Grid
+            const gridFSBucket = new GridFSBucket(conn.db, { bucketName });
+            if (!connections[mongoURI]) connections[mongoURI] = { conn, gfs: {} };
+            connections[mongoURI].gfs[bucketName] = gridFSBucket;
+
+        } catch (error) {
+            console.error(`Failed to initialize GridFS for bucket ${bucketName}:`, error);
+        }
     } else if (!connections[mongoURI].gfs[bucketName]) {
-        // This ensures that for an existing connection, a new GridFS stream is only initialized if it hasn't been for the specified bucketName
-        const gfs = Grid(connections[mongoURI].conn.db, mongoose.mongo);
-        gfs.collection(bucketName);
-        connections[mongoURI].gfs[bucketName] = gfs;
+        // Initialize GridFSBucket if it hasn't been for the specified bucketName
+        const gridFSBucket = new GridFSBucket(connections[mongoURI].conn.db, { bucketName });
+        connections[mongoURI].gfs[bucketName] = gridFSBucket;
     }
 }
 
+// Stream file from GridFS
+const streamFile = async (req, res, bucketName, filename) => {
+    const gfs = getGridFSStream(process.env.MONGO_URI, bucketName);
+    if (!gfs) {
+        return res.status(500).send("Failed to access file storage.");
+    }
 
+    gfs.find({ filename }).toArray((err, files) => {
+        if (!files[0] || files.length === 0 || err) {
+            return res.status(404).send('No file exists');
+        }
+        const readStream = gfs.openDownloadStreamByName(filename);
+        readStream.pipe(res);
+    });
+};
+
+// Retrieve the GridFS stream
 function getGridFSStream(mongoURI, bucketName) {
     if (connections[mongoURI] && connections[mongoURI].gfs[bucketName]) {
         return connections[mongoURI].gfs[bucketName];
     } else {
-        console.error(`GridFS stream not initialized for ${bucketName}.`);
+        console.error(`GridFS stream not initialized for bucket: ${bucketName}.`);
         return null;
     }
 }
 
-module.exports = { initializeGridFS, getGridFSStream };
+module.exports = { initializeGridFS, getGridFSStream, streamFile };

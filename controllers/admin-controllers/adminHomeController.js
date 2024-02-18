@@ -1,81 +1,66 @@
 const HomeInfo = require("../../models/Home");
-const asyncHandler = require("../../middleware/asyncHandler");
 const PhotoLinkInfo = require("../../models/Photos");
+const asyncHandler = require("../../middleware/asyncHandler");
+const { streamFile } = require("../../utils/gridfsUtility");
 
-
+// Handles the creation of text posts
 exports.createTextPost = asyncHandler(async (req, res) => {
-    const { title, description } = req.body;
-
-    const post = new HomeInfo({
-        title,
-        description,
-    });
-
-    await post.save();
-    res.redirect(`/admin/home/${post.id}`);
+    const newPost = new HomeInfo(req.body);
+    await newPost.save();
+    res.redirect(`/admin/home/${newPost.id}`);
 });
 
+// Handles editing of text posts
 exports.editTextPost = asyncHandler(async (req, res) => {
-    const post = await HomeInfo.findById(req.params.id);
-    post.title = req.body.title;
-    post.description = req.body.description;
-    await post.save();
-    res.redirect(`/admin/home/${post.id}`);
+    await HomeInfo.findByIdAndUpdate(req.params.id, req.body);
+    res.redirect(`/admin/home/${req.params.id}`);
 });
 
+// Deletes a text post
 exports.deleteTextPost = asyncHandler(async (req, res) => {
-    console.log("Deleting post ID:", req.params.id); // Add this line
     await HomeInfo.findByIdAndDelete(req.params.id);
     res.redirect("/admin/home");
 });
 
+// Fetches and displays all photos
 exports.getPhotos = asyncHandler(async (req, res) => {
     const files = await PhotoLinkInfo.find({});
     res.render("admin-home/controlPanel", { files });
 });
 
+// Uploads a new photo
 exports.uploadPhoto = asyncHandler(async (req, res) => {
-    let trimmedlink = req.body.link ? req.body.link.replace(/(^\w+:|^)\/\//, "") : null;
-    let fixedLink = trimmedlink ? "https://" + trimmedlink : null;
-
-    let photoLink = new PhotoLinkInfo({
-        link: fixedLink,
+    const link = req.body.link ? "https://" + req.body.link.replace(/(^\w+:|^)\/\//, "") : null;
+    const newPhotoLink = new PhotoLinkInfo({
+        link,
         description: req.body.description,
         filename: req.file.filename,
     });
-
-    try {
-        await photoLink.save();
-        console.log("Saved photo link: " + photoLink);
-        res.redirect(`/admin/home`);
-    } catch (e) {
-        res.json(e);
-    }
+    await newPhotoLink.save();
+    res.redirect(`/admin/home`);
 });
 
+// Edits an existing photo post
 exports.editPhotoPost = asyncHandler(async (req, res) => {
-    let trimmedlink = req.body.link.replace(/(^\w+:|^)\/\//, "");
-    let fixedLink = "https://" + trimmedlink;
-
-    const updateData = {
-        link: fixedLink,
-        description: req.body.description,
-    };
-
-    if (req.file) {
-        updateData.filename = req.file.filename;
-    }
-
-    const editedPhotoLink = await PhotoLinkInfo.findByIdAndUpdate(
-        req.params.id,
-        updateData
-    );
-
-    try {
-        await editedPhotoLink.save();
-        res.redirect(`/admin/home`);
-    } catch (e) {
-        res.json(e);
-    }
+    const updateData = { ...req.body, link: "https://" + req.body.link.replace(/(^\w+:|^)\/\//, "") };
+    if (req.file) updateData.filename = req.file.filename;
+    await PhotoLinkInfo.findByIdAndUpdate(req.params.id, updateData);
+    res.redirect(`/admin/home`);
 });
 
+// Fetches and displays home content
+exports.getHomeContent = asyncHandler(async (req, res) => {
+    const [posts, photolinks] = await Promise.all([HomeInfo.find({}), PhotoLinkInfo.find({})]);
+    res.render("admin-home/controlPanel", { posts, photolinks });
+});
+
+// Streams a file by its filename
+exports.getImageByFilename = (req, res) => {
+    streamFile(req, res, 'uploads', req.params.filename);
+};
+
+// Deletes a photo link
+exports.deletePhotoLink = asyncHandler(async (req, res) => {
+    await PhotoLinkInfo.findByIdAndDelete(req.params.id);
+    res.redirect("/admin/home");
+});

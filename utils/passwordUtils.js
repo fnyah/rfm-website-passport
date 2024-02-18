@@ -1,3 +1,5 @@
+// need to move this to utils folder and update the require statements in the files that use it
+
 const crypto = require('crypto');
 
 function genPassword(password) {

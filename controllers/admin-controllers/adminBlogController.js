@@ -1,84 +1,64 @@
 const Blog = require("../../models/Blog");
-const { addHttp } = require("../../utils/addhttpUtil");
+const { addHttpToLinks } = require("../../middleware/addhttp");
 const asyncHandler = require("../../middleware/asyncHandler");
 
-exports.getBlogPosts = async (req, res) => {
-  let blog = await Blog.find().sort({ createdAt: -1 });
-  res.render("admin-for-educators/controlPanel", { blog });
-};
+// Fetches and displays all blog posts
+exports.getBlogPosts = asyncHandler(async (req, res) => {
+  const blogPosts = await Blog.find().sort({ createdAt: -1 });
+  res.render("admin-for-educators/controlPanel", { blog: blogPosts });
+});
 
-exports.createBlogPost = async (req, res) => {
-  const filenames = req.files.map((file) => file.filename);
-  const links = req.body.link.split(",");
-
-  const linksWithHttp = links.map(addHttp);
-
-  const blogPost = new Blog({
-    title: req.body.title,
-    description: req.body.description,
-    filename: filenames,
-    links: linksWithHttp,
-  });
-  try {
-    await blogPost.save();
-    res.redirect("/admin/for-educators");
-  } catch (err) {
-    console.log(err);
-  };
-};
-
-exports.updateBlogPost = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+// Creates a new blog post
+exports.createBlogPost = asyncHandler(async (req, res) => {
   const { title, description, link } = req.body;
-  const newFilenames = req.files.map(file => file.filename); // New filenames from the uploaded files
-  const links = link.split(",");
-  const linksWithHttp = links.map(addHttp);
+  const filenames = req.files.map(file => file.filename);
+  const links = link.split(",").map(addHttpToLinks);
 
-  // Fetch the existing blog post to get current filenames
-  const blog = await Blog.findById(id);
-  if (!blog) {
-    return res.status(404).send('Blog post not found');
-  }
-
-  // Combine existing filenames with new filenames
-  const updatedFilenames = blog.filename ? [...blog.filename, ...newFilenames] : newFilenames;
-
-  // Prepare the update object
-  const update = {
+  const newBlogPost = new Blog({
     title,
     description,
-    links: linksWithHttp,
-    filename: updatedFilenames // Use the combined filenames
-  };
+    filename: filenames,
+    links
+  });
 
-  // Perform the update operation
-  await Blog.findByIdAndUpdate(id, update, { new: true });
+  await newBlogPost.save();
   res.redirect("/admin/for-educators");
 });
 
-exports.editBlogPhotos = asyncHandler(async (req, res) => {
-  console.log(req.body);
-  const { id } = req.params; // Get the blog post ID from the URL parameter
-  const photosToRemove = req.body; 
+// Updates an existing blog post
+exports.updateBlogPost = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { title, description, link } = req.body;
+  const newFilenames = req.files.map(file => file.filename);
+  const links = link.split(",").map(addHttpToLinks);
 
-  // Fetch the current blog post by ID
   const blog = await Blog.findById(id);
   if (!blog) {
     return res.status(404).send('Blog post not found');
   }
 
-  // Filter out the photos that need to be removed
-  const updatedFilenames = blog.filename.filter(filename => !photosToRemove.includes(filename));
+  const updatedFilenames = [...blog.filename, ...newFilenames];
+  await Blog.findByIdAndUpdate(id, { title, description, links: linksWithHttp, filename: updatedFilenames }, { new: true });
+  res.redirect("/admin/for-educators");
+});
 
-  // Update the blog post with the new list of filenames
-  blog.filename = updatedFilenames;
+// Edits photos associated with a blog post
+exports.editBlogPhotos = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const photosToRemove = req.body.photosToRemove;
+
+  const blog = await Blog.findById(id);
+  if (!blog) {
+    return res.status(404).send('Blog post not found');
+  }
+
+  blog.filename = blog.filename.filter(filename => !photosToRemove.includes(filename));
   await blog.save();
-
   res.send({ message: 'Blog photos updated successfully', blog });
 });
 
+// Deletes a blog post
 exports.deleteBlogPost = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  await Blog.findByIdAndDelete(id);
+  await Blog.findByIdAndDelete(req.params.id);
   res.redirect("/admin/for-educators");
 });
