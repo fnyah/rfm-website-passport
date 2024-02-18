@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const Projects = require('../../models/Projects');
 const multer = require('multer');
 const methodOverride = require('method-override');
 const isAuth = require('../authMiddleware').isAuth;
@@ -27,12 +27,12 @@ router.use(methodOverride('_method'));
 router.get('/', isAuth, asyncHandler(getProjects));
 router.get('/new', isAuth, (req, res) => res.render('admin-projects/new', { projects: new Projects() }));
 router.get('/:id', isAuth, asyncHandler(async (req, res) => {
-    const project = await Projects.findById(req.params.id);
-    res.render('admin-projects/show', { project });
+    const projects = await Projects.findById(req.params.id);
+    res.render('admin-projects/show', { projects });
 }));
 router.get('/edit/:id', isAuth, asyncHandler(async (req, res) => {
-    const project = await Projects.findById(req.params.id);
-    res.render('admin-projects/edit', { project });
+    const projects = await Projects.findById(req.params.id);
+    res.render('admin-projects/edit', { projects });
 }));
 
 // File upload route
@@ -43,6 +43,6 @@ router.put('/:id', [isAuth, upload.any('file')], asyncHandler(editProject));
 router.delete('/:id', isAuth, asyncHandler(deleteProject));
 
 // Route to edit project photos specifically
-router.post('/:id/photos', isAuth, asyncHandler(editProjectPhotos));
+router.post('/:id', isAuth, asyncHandler(editProjectPhotos));
 
 module.exports = router;

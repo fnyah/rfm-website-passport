@@ -1,5 +1,5 @@
 const asyncHandler = require("../../middleware/asyncHandler");
-const { prepVideoLink } = require("../../middleware/prepVideoLink");
+const prepVideoLink  = require("../../middleware/prepVideoLink");
 const Projects = require("../../models/Projects");
 
 // Utility function for handling project file uploads
@@ -52,10 +52,22 @@ exports.deleteProject = asyncHandler(async (req, res) => {
 });
 
 exports.editProjectPhotos = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const photosToRemove = req.body.photos; // Assuming the body contains an array of filenames to remove
-    const project = await Projects.findById(id);
-    const updatedFilenames = project.filename.filter(filename => !photosToRemove.includes(filename));
-    await Projects.findByIdAndUpdate(id, { filename: updatedFilenames });
-    res.redirect(`/admin/projects/edit/${id}`);
+    const project = await Projects.findById(req.params.id);
+    const files = project.filename;
+    const photos = req.body;
+  
+    const difference = files.filter((x) => !photos.includes(x));
+    console.log(difference);
+
+    const editedProject = await Projects.findByIdAndUpdate(req.params.id, {
+        filename: difference,
+    });
+
+    try {
+        await editedProject.save();
+        console.log("Saved Project:", editedProject);
+        res.sendStatus(200);
+    } catch (err) {
+        res.json({ message: err.message });
+    }
 });

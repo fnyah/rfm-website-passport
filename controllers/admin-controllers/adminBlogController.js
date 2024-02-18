@@ -1,5 +1,5 @@
 const Blog = require("../../models/Blog");
-const { addHttpToLinks } = require("../../middleware/addhttp");
+const addhttp = require("../../middleware/addhttp");
 const asyncHandler = require("../../middleware/asyncHandler");
 
 // Fetches and displays all blog posts
@@ -12,7 +12,7 @@ exports.getBlogPosts = asyncHandler(async (req, res) => {
 exports.createBlogPost = asyncHandler(async (req, res) => {
   const { title, description, link } = req.body;
   const filenames = req.files.map(file => file.filename);
-  const links = link.split(",").map(addHttpToLinks);
+  const links = link.split(",").map(addhttp);
 
   const newBlogPost = new Blog({
     title,
@@ -30,7 +30,8 @@ exports.updateBlogPost = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { title, description, link } = req.body;
   const newFilenames = req.files.map(file => file.filename);
-  const links = link.split(",").map(addHttpToLinks);
+  // Correct variable name used here
+  const links = link.split(",").map(addhttp); 
 
   const blog = await Blog.findById(id);
   if (!blog) {
@@ -38,9 +39,11 @@ exports.updateBlogPost = asyncHandler(async (req, res) => {
   }
 
   const updatedFilenames = [...blog.filename, ...newFilenames];
-  await Blog.findByIdAndUpdate(id, { title, description, links: linksWithHttp, filename: updatedFilenames }, { new: true });
+  // Use the 'links' variable which holds the processed URLs
+  await Blog.findByIdAndUpdate(id, { title, description, links, filename: updatedFilenames }, { new: true });
   res.redirect("/admin/for-educators");
 });
+
 
 // Edits photos associated with a blog post
 exports.editBlogPhotos = asyncHandler(async (req, res) => {
