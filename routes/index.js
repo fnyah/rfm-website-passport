@@ -5,24 +5,14 @@ const passport = require("passport");
 const mongoose = require("mongoose");
 
 // Utils
-const { genPassword } = require("../utils/passwordUtils");
 const { initializeGridFS } = require('../utils/gridfsUtility');
 
-// Models
-const User = require("../models/User");
-const Standings = require("../models/Standings");
-const HomeInfo = require("../models/Home");
-const PhotoLinkInfo = require("../models/Photos");
-const Events = require("../models/Events");
-const Blog = require("../models/Blog");
-const Projects = require("../models/Projects");
-
+// Controllers
 const { getBlogData, displayBlogImage } = require('../controllers/blogController');
 const { getProjectsData, displayProjectImage } = require('../controllers/projectsController');
 const { registerUser, logoutUser, registerUserPage } = require('../controllers/indexController');
 const { getAboutData } = require('../controllers/aboutController');
 const { getHomeData, displayHomeImage } = require('../controllers/fileController');
-
 
 // Middleware
 const isAuth = require("./authMiddleware").isAuth;
