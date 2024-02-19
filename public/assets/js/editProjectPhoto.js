@@ -113,3 +113,7 @@ editPhotoButton.addEventListener("click", editPhotos);
 
 // need to used named functions for event listeners to be able to remove them
 
+
+
+
+

@@ -26,7 +26,6 @@ const verifyCallback = (username, password, done) => {
         .catch((err) => {
             done(err);
         });
-
 }
 
 const strategy = new LocalStrategy(customFields, verifyCallback);

@@ -2,16 +2,17 @@ const Standings = require("../../models/Standings");
 const Events = require("../../models/Events");
 const asyncHandler = require("../../middleware/asyncHandler");
 
-// Consolidated error handling for saving documents and redirecting or rendering
-const saveDocument = async (doc, redirectPath, renderPath, res, renderOptions = {}) => {
+// Refines saving and error handling for both new and existing documents
+const handleDocumentSave = async (doc, redirectPath, res, renderOptions = {}, renderPath = null) => {
   try {
-    await doc.save();
-    return res.redirect(redirectPath);
-  } catch (e) {
+    const savedDoc = await doc.save();
+    res.redirect(redirectPath.replace(':id', savedDoc.id)); // Use dynamic path replacement for ID
+  } catch (error) {
+    console.error("Error saving document:", error);
     if (renderPath) {
-      return res.render(renderPath, { ...renderOptions, error: e });
+      res.render(renderPath, { ...renderOptions, error });
     } else {
-      return res.status(400).json({ error: e.toString() });
+      res.status(400).json({ error: error.message });
     }
   }
 };
@@ -26,8 +27,9 @@ exports.getStandingsAndEvents = asyncHandler(async (req, res) => {
 
 exports.editStandings = asyncHandler(async (req, res) => {
   const standing = await Standings.findById(req.params.id);
+  if (!standing) return res.status(404).send("Standing not found.");
   standing.information = req.body.information;
-  await saveDocument(standing, `/admin/standings/${standing.id}`, "admin-about/edit", res, { standing });
+  await handleDocumentSave(standing, `/admin/standings/:id`, res, { standing }, "admin-about/edit");
 });
 
 exports.deleteStanding = asyncHandler(async (req, res) => {
@@ -36,17 +38,11 @@ exports.deleteStanding = asyncHandler(async (req, res) => {
 });
 
 exports.newStanding = asyncHandler(async (req, res) => {
-  const standing = new Standings({
-    information: req.body.information,
-    createdAt: new Date(),
-  });
-  await saveDocument(standing, `standings/${standing.id}`, "admin-about/new", res, { standing });
+  const standing = new Standings({ information: req.body.information });
+  await handleDocumentSave(standing, `/admin/standings/:id`, res, { standing }, "admin-about/new");
 });
 
 exports.newEvent = asyncHandler(async (req, res) => {
-  const event = new Events({
-    information: req.body.information,
-    eventDate: req.body.eventDate,
-  });
-  await saveDocument(event, "/admin/standings", "admin-about/events/new", res, { event });
+  const event = new Events({ information: req.body.information, eventDate: req.body.eventDate });
+  await handleDocumentSave(event, "/admin/standings", res, { event }, "admin-about/events/new");
 });

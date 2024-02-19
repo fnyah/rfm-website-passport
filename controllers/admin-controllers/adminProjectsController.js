@@ -1,73 +1,60 @@
 const asyncHandler = require("../../middleware/asyncHandler");
-const prepVideoLink  = require("../../middleware/prepVideoLink");
+const prepVideoLink = require("../../middleware/prepVideoLink");
 const Projects = require("../../models/Projects");
 
-// Utility function for handling project file uploads
-const handleProjectFiles = (req, existingProject = null) => {
-    const filenames = req.files.map(file => file.filename);
-    const videoEmbedLinks = prepVideoLink(req.body.videolink);
-    const projectData = {
-        title: req.body.title,
-        author: req.body.author,
-        description: req.body.description.trim(),
-        filename: existingProject ? [...existingProject.filename, ...filenames] : filenames,
-        videoLink: videoEmbedLinks,
-    };
-    return projectData;
+// Simplifies handling of project data, including files and video links
+const prepareProjectData = async (req, existingProject = null) => {
+  const filenames = req.files?.map(file => file.filename) || [];
+  const videoEmbedLinks = prepVideoLink(req.body.videolink);
+
+  // Combine existing filenames with new ones if updating an existing project
+  const combinedFilenames = existingProject ? [...existingProject.filename, ...filenames] : filenames;
+
+  return {
+    title: req.body.title,
+    author: req.body.author,
+    description: req.body.description.trim(),
+    filename: combinedFilenames,
+    videoLink: videoEmbedLinks,
+  };
 };
 
 exports.getProjects = asyncHandler(async (req, res) => {
-    const projects = await Projects.find().sort({ createdAt: -1 });
-    res.render("admin-projects/controlPanel", { projects });
+  const projects = await Projects.find().sort({ createdAt: -1 });
+  res.render("admin-projects/controlPanel", { projects });
 });
 
 exports.uploadProject = asyncHandler(async (req, res) => {
-    const projectData = handleProjectFiles(req);
-    try {
-        const newProject = new Projects(projectData);
-        await newProject.save();
-        console.log("Saved Project:", newProject);
-        res.redirect("/admin/projects");
-    } catch (err) {
-        console.error(err);
-        res.render("admin-projects/new", { projects: projectData, error: err.message });
-    }
+  const projectData = await prepareProjectData(req);
+  const newProject = new Projects(projectData);
+  await newProject.save();
+  res.redirect("/admin/projects");
 });
 
 exports.editProject = asyncHandler(async (req, res) => {
-    const projectData = handleProjectFiles(req, await Projects.findById(req.params.id));
-    try {
-        const editedProject = await Projects.findByIdAndUpdate(req.params.id, projectData, { new: true });
-        console.log("Edited project:", editedProject);
-        res.redirect("/admin/projects");
-    } catch (err) {
-        console.error(err);
-        res.render("admin-projects/edit", { projects: projectData, error: err.message });
-    }
+  const existingProject = await Projects.findById(req.params.id);
+  if (!existingProject) {
+    return res.status(404).send("Project not found");
+  }
+
+  const projectData = await prepareProjectData(req, existingProject);
+  await Projects.findByIdAndUpdate(req.params.id, projectData);
+  res.redirect("/admin/projects");
 });
 
 exports.deleteProject = asyncHandler(async (req, res) => {
-    await Projects.findByIdAndDelete(req.params.id);
-    res.redirect("/admin/projects");
+  await Projects.findByIdAndDelete(req.params.id);
+  res.redirect("/admin/projects");
 });
 
 exports.editProjectPhotos = asyncHandler(async (req, res) => {
-    const project = await Projects.findById(req.params.id);
-    const files = project.filename;
-    const photos = req.body;
-  
-    const difference = files.filter((x) => !photos.includes(x));
-    console.log(difference);
+  const project = await Projects.findById(req.params.id);
+  if (!project) {
+    return res.status(404).send("Project not found");
+  }
 
-    const editedProject = await Projects.findByIdAndUpdate(req.params.id, {
-        filename: difference,
-    });
-
-    try {
-        await editedProject.save();
-        console.log("Saved Project:", editedProject);
-        res.sendStatus(200);
-    } catch (err) {
-        res.json({ message: err.message });
-    }
+  // Assuming `req.body.photos` is an array of filenames to remove
+  const updatedFilenames = project.filename.filter(filename => !req.body.photos.includes(filename));
+  await Projects.findByIdAndUpdate(req.params.id, { filename: updatedFilenames });
+  res.sendStatus(200);
 });
