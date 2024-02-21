@@ -1,5 +1,7 @@
 const express = require('express');
 const multer = require('multer');
+const HomeInfo = require('../../models/Home');
+const PhotoLinkInfo = require('../../models/Photos'); 
 const methodOverride = require('method-override');
 const asyncHandler = require('../../middleware/asyncHandler');
 const { makeGridFsStorage } = require('../../utils/gridfsStorageutil');

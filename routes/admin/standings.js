@@ -13,46 +13,46 @@ const {
     deleteEvent
 } = require("../../controllers/admin-controllers/adminStandingsController");
 
-// Combined view routes
+// --------------------------- General Standings Routes ---------------------------
+// Combined view for standings and events
 router.get('/', isAuth, asyncHandler(getStandingsAndEvents));
+
+// New standing form
 router.get("/new", isAuth, (req, res) => res.render("admin-about/new", { standings: new Standings() }));
-router.get("/events/new-event", isAuth, (req, res) => res.render("admin-about/events/new"));
 
-// working on gettig events to edit
-router.get("/events/edit/:id", isAuth, async (req, res) => {
-  const events = await Events.findById(req.params.id);
-  res.render("admin-about/events/edit", { events });
-});
+// Standings CRUD operations
+router.route("/:id")
+  .get(isAuth, async (req, res) => { // Show specific standing
+    const standings = await Standings.findById(req.params.id);
+    res.render("admin-about/show", { standings });
+  })
+  .put(isAuth, asyncHandler(editStandings)) // Edit specific standing
+  .delete(isAuth, asyncHandler(deleteStanding)); // Delete specific standing
 
-
-router.delete("/events/:id", isAuth, asyncHandler(deleteEvent));
-
-
-router.get("/:id", isAuth, async (req, res) => {
-  const standings = await Standings.findById(req.params.id);
-  res.render("admin-about/show", { standings });
-});
-router.put("/:id", isAuth, asyncHandler(editStandings))
-router.delete("/:id", isAuth, asyncHandler(deleteStanding)); 
-
+// Edit standing form
 router.get("/edit/:id", isAuth, async (req, res) => {
   const standings = await Standings.findById(req.params.id);
   res.render("admin-about/edit", { standings });
 });
 
-
-
-// Action routes
+// Create a new standing
 router.post("/", isAuth, asyncHandler(newStanding));
 
-router.post("/events/upload", isAuth, asyncHandler(newEvent));
-// route to edit event
-router.put("/events/:id", isAuth, asyncHandler(async (req, res) => {
-  let events = await Events.findById(req.params.id);
-  events = Object.assign(events, req.body);
-  console.log(events);
-  await events.save();
-  res.redirect(`/admin/standings`);
-}));
+// --------------------------- Event-specific Routes ---------------------------
+// New event form
+router.get("/events/new-event", isAuth, (req, res) => res.render("admin-about/events/new"));
+
+// Edit event form
+router.get("/events/edit/:id", isAuth, async (req, res) => {
+  const events = await Events.findById(req.params.id);
+  res.render("admin-about/events/edit", { events });
+});
+
+// Event CRUD operations
+router.post("/events/upload", isAuth, asyncHandler(newEvent)); // Create a new event
+
+router.route("/events/:id")
+  .delete(isAuth, asyncHandler(deleteEvent)) // Delete specific event
+  .put(isAuth, asyncHandler(editEvent)); // Edit specific event
 
 module.exports = router;

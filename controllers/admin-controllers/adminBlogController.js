@@ -3,25 +3,15 @@ const addHttp = require("../../middleware/addhttp"); // Assuming you've moved th
 const asyncHandler = require("../../middleware/asyncHandler");
 
 
-const prepareBlogData = (req = {}) => {
+const prepareBlogData = (req, existingFilenames = []) => {
   if (!req.body) {
-    return {
-      title: undefined,
-      description: undefined,
-      filename: undefined,
-      links: undefined,
-    };
+    return { title: undefined, description: undefined, filename: undefined, links: undefined };
   }
   const { title, description, link } = req.body;
-  const filenames = req.files.map(file => file.filename);
-  const links = link.split(",").map(addHttp);
-
-  return {
-    title,
-    description,
-    filename: filenames,
-    links,
-  };
+  const filenames = existingFilenames.concat(req.files?.map(file => file.filename) ?? []);
+  const links = link ? link.split(",").map(addHttp) : [];
+  
+  return { title, description, filename: filenames, links };
 };
 
 // Fetches and displays all blog posts
@@ -30,11 +20,10 @@ exports.getBlogPosts = asyncHandler(async (req, res) => {
   res.render("admin-for-educators/controlPanel", { blog });
 });
 
-
 // Creates a new blog post
 exports.createBlogPost = asyncHandler(async (req, res) => {
   const newBlogPost = new Blog(prepareBlogData(req));
-  await newBlogPost.save();
+  await newBlogPost.save(); 
   res.redirect("/admin/for-educators");
 });
 
@@ -46,21 +35,24 @@ exports.updateBlogPost = asyncHandler(async (req, res) => {
     return res.status(404).send('Blog post not found');
   }
 
-  const updateData = prepareBlogData(req, { filename: [...existingBlog.filename, ...req.files.map(file => file.filename)] });
+  // Correctly passing existing filenames to prepareBlogData
+  const updateData = prepareBlogData(req, existingBlog.filename);
   await Blog.findByIdAndUpdate(id, updateData, { new: true });
   res.redirect("/admin/for-educators");
 });
 
 // Edits photos associated with a blog post
 exports.editBlogPhotos = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  const blog = await Blog.findById(id);
-  if (!blog) {
+  const photosToRemove = req.body; // Assuming this is an array of photo filenames to remove
+  const files = req.params.id
+
+  const blogPost = await Blog.findById(files);
+  if (!blogPost) {
     return res.status(404).send('Blog post not found');
   }
 
-  const updatedFilenames = blog.filename.filter(filename => !req.body.photos.includes(filename));
-  await Blog.findByIdAndUpdate(id, { filename: updatedFilenames });
-  res.send({ message: 'Blog photos updated successfully' });
-});
+  const updatedPhotos = blogPost.filename.filter(photo => !photosToRemove.includes(photo));
 
+  await Blog.findByIdAndUpdate(files, { filename: updatedPhotos });
+  res.sendStatus(200);
+}); 

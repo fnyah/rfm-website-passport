@@ -48,13 +48,21 @@ exports.deleteProject = asyncHandler(async (req, res) => {
 });
 
 exports.editProjectPhotos = asyncHandler(async (req, res) => {
-  const project = await Projects.findById(req.params.id);
+  const photosToRemove = req.body; // Assuming this is an array of photo filenames to remove
+  const projectId = req.params.id;
+
+  // Retrieve the current project
+  const project = await Projects.findById(projectId);
   if (!project) {
-    return res.status(404).send("Project not found");
+    return res.status(404).send('Project not found');
   }
 
-  // Assuming `req.body.photos` is an array of filenames to remove
-  const updatedFilenames = project.filename.filter(filename => !req.body.photos.includes(filename));
-  await Projects.findByIdAndUpdate(req.params.id, { filename: updatedFilenames });
+  // Filter out the photos to remove
+  const updatedPhotos = project.filename.filter(photo => !photosToRemove.includes(photo));
+
+  // Update the project's photo array without the need to call save() afterward
+  await Projects.findByIdAndUpdate(projectId, { filename: updatedPhotos });
+
+  // If successful, send back a success status
   res.sendStatus(200);
 });

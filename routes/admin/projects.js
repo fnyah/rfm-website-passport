@@ -36,10 +36,10 @@ router.get('/edit/:id', isAuth, asyncHandler(async (req, res) => {
 }));
 
 // File upload route
-router.post('/', [isAuth, upload.any('file')], asyncHandler(uploadProject));
+router.post('/', isAuth, upload.any('file'), asyncHandler(uploadProject));
 
 // Project modification routes
-router.put('/:id', [isAuth, upload.any('file')], asyncHandler(editProject));
+router.put('/:id', isAuth, upload.any('file'), asyncHandler(editProject));
 router.delete('/:id', isAuth, asyncHandler(deleteProject));
 
 // Route to edit project photos specifically
