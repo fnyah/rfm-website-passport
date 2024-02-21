@@ -72,16 +72,12 @@ app.use(passport.session());
 // Imports all of the routes from ./routes/index.js
 // app.use(routes)
 app.use("/", indexRouter);
-app.use("/admin/standings", standingsRouter);
+app.use(["/admin/standings", "admin/standings/events"], standingsRouter);
 app.use("/admin/home", homeRouter);
 app.use("/admin/projects", projectsRouter);
 app.use("/admin/for-educators", educatorsRouter);
 
-// app.use(standings)
 
-/**
- * -------------- SERVER ----------------
- */
 
 // Server listens on http://localhost:3000
 app.listen(3000);

@@ -5,8 +5,9 @@ const isAuth = require("../authMiddleware").isAuth;
 const multer = require("multer");
 const methodOverride = require("method-override");
 const { makeGridFsStorage } = require("../../utils/gridfsStorageutil");
-const { createBlogPost, getBlogPosts, updateBlogPost, editBlogPhotos, deleteBlogPost } = require("../../controllers/admin-controllers/adminBlogController");
+const { createBlogPost, updateBlogPost, editBlogPhotos, deleteBlogPost, getBlogPosts } = require("../../controllers/admin-controllers/adminBlogController");
 const asyncHandler = require("../../middleware/asyncHandler");
+
 
 router.use(express.json());
 router.use(methodOverride('_method'));
@@ -15,7 +16,7 @@ router.use(methodOverride('_method'));
 const storage = makeGridFsStorage(process.env.MONGO_URI, "blogphotos");
 const upload = multer({ storage });
 
-// Blog posts listing
+// Gets all blog posts
 router.get("/", isAuth, asyncHandler(getBlogPosts));
 
 // Create a new blog post form
