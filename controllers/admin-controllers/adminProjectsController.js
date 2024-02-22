@@ -25,10 +25,25 @@ exports.getProjects = asyncHandler(async (req, res) => {
 });
 
 exports.uploadProject = asyncHandler(async (req, res) => {
-  const projectData = await prepareProjectData(req);
-  const newProject = new Projects(projectData);
-  await newProject.save();
-  res.redirect("/admin/projects");
+  const embedLink = prepVideoLink(req.body.videolink);
+  const filenames = req.files.map((file) => file.filename);
+
+  const projectData = {
+    title: req.body.title,
+    author: req.body.author,
+    description: req.body.description,
+    filename: filenames,
+    videoLink: embedLink,
+  };
+
+  try {
+    const project = await Projects.create(projectData);
+    console.log("Saved Project: " + project);
+    res.redirect("/admin/projects");
+  } catch (err) {
+    console.log(err);
+    res.render("admin-projects/new", { projects: projectData });
+  }
 });
 
 exports.editProject = asyncHandler(async (req, res) => {

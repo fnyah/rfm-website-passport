@@ -1,6 +1,7 @@
 const HomeInfo = require("../../models/Home");
 const PhotoLinkInfo = require("../../models/Photos");
 const asyncHandler = require("../../middleware/asyncHandler");
+const addHttp = require("../../middleware/addhttp");
 const { streamFile } = require("../../utils/gridfsUtility");
 
 // Handles the creation of text posts
@@ -42,11 +43,22 @@ exports.uploadPhoto = asyncHandler(async (req, res) => {
 
 // Edits an existing photo post
 exports.editPhotoPost = asyncHandler(async (req, res) => {
-    const updateData = { ...req.body, link: "https://" + req.body.link.replace(/(^\w+:|^)\/\//, "") };
-    if (req.file) updateData.filename = req.file.filename;
+    let updateData = { ...req.body };
+
+    // Check if link is provided and not empty
+    if (req.body.link && req.body.link.trim()) {
+        // Correctly use addHttp to modify and assign the link
+        updateData.link = addHttp(req.body.link);
+    }
+
+    if (req.file) {
+        updateData.filename = req.file.filename;
+    }
+
     await PhotoLinkInfo.findByIdAndUpdate(req.params.id, updateData);
     res.redirect(`/admin/home`);
 });
+
 
 // Fetches and displays home content
 exports.getHomeContent = asyncHandler(async (req, res) => {

@@ -55,3 +55,4 @@ router.post('/', isAuth, asyncHandler(createTextPost));
 router.delete('/:id', isAuth, asyncHandler(deleteTextPost));
 
 module.exports = router;
+

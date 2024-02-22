@@ -12,7 +12,7 @@ const asyncHandler = require("../../middleware/asyncHandler");
 router.use(express.json());
 router.use(methodOverride('_method'));
 
-// Assuming makeGridFsStorage correctly initializes GridFS storage
+
 const storage = makeGridFsStorage(process.env.MONGO_URI, "blogphotos");
 const upload = multer({ storage });
 

@@ -11,6 +11,7 @@ const prepareBlogData = (req, existingFilenames = []) => {
   const filenames = existingFilenames.concat(req.files?.map(file => file.filename) ?? []);
   const links = link ? link.split(",").map(addHttp) : [];
   
+
   return { title, description, filename: filenames, links };
 };
 
@@ -45,7 +46,6 @@ exports.updateBlogPost = asyncHandler(async (req, res) => {
 exports.editBlogPhotos = asyncHandler(async (req, res) => {
   const photosToRemove = req.body; // Assuming this is an array of photo filenames to remove
   const files = req.params.id
-
   const blogPost = await Blog.findById(files);
   if (!blogPost) {
     return res.status(404).send('Blog post not found');
