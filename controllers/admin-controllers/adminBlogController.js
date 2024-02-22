@@ -56,3 +56,9 @@ exports.editBlogPhotos = asyncHandler(async (req, res) => {
   await Blog.findByIdAndUpdate(files, { filename: updatedPhotos });
   res.sendStatus(200);
 }); 
+
+exports.deleteBlogPost = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  await Blog.findByIdAndDelete(id);
+  res.redirect("/admin/for-educators"); 
+}); 

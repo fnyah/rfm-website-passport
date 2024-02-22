@@ -36,10 +36,7 @@ router.get('/edit/:id', isAuth, asyncHandler(async (req, res) => {
 }));
 
 // File upload route
-// router.post('/', isAuth, upload.any('file'), asyncHandler(uploadProject));
-router.post('/', isAuth, upload.any('file'), asyncHandler(async (req, res) => {
-    console.log(req.file);
- })); 
+router.post('/', isAuth, upload.any('file'), asyncHandler(uploadProject));
 
 // Project modification routes
 router.put('/:id', isAuth, upload.any('file'), asyncHandler(editProject));

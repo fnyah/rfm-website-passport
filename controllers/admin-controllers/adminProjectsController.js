@@ -5,9 +5,14 @@ const Projects = require("../../models/Projects");
 // Simplifies handling of project data, including files and video links
 const prepareProjectData = async (req, existingProject = null) => {
   const filenames = req.files?.map(file => file.filename) || [];
-  const videoEmbedLinks = prepVideoLink(req.body.videolink);
 
-  // Combine existing filenames with new ones if updating an existing project
+  // Check if video link input is provided and not empty
+  let videoEmbedLinks = req.body.videolink ? prepVideoLink(req.body.videolink) : [];
+
+  if (existingProject && !req.body.videolink) {
+    videoEmbedLinks = []; // Clear existing video links if input is empty
+  }
+
   const combinedFilenames = existingProject ? [...existingProject.filename, ...filenames] : filenames;
 
   return {
@@ -15,7 +20,7 @@ const prepareProjectData = async (req, existingProject = null) => {
     author: req.body.author,
     description: req.body.description.trim(),
     filename: combinedFilenames,
-    videoLink: videoEmbedLinks,
+    videoLink: videoEmbedLinks, // This will now be empty if input is empty, clearing old links
   };
 };
 
@@ -38,7 +43,6 @@ exports.uploadProject = asyncHandler(async (req, res) => {
 
   try {
     const project = await Projects.create(projectData);
-    console.log("Saved Project: " + project);
     res.redirect("/admin/projects");
   } catch (err) {
     console.log(err);
