@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>rose-website</title>
+    <title>Admin - Standings</title>
     <!-- CSS only -->
     <link
       rel="stylesheet"
@@ -119,7 +119,7 @@
     <div id="Events" class="tabcontent" style="height: 100vh">
       <div class="container">
         <h1 class="mb-4" style="margin-top: 55px">Events</h1>
-        <a href="standings/new-event" class="btn btn-success">Add new post</a>
+        <a href="standings/events/new-event" class="btn btn-success">Add new post</a>
 
         <div class="standing-container">
           <% events.forEach(event => { %>
@@ -128,13 +128,13 @@
               <div class="card-text mb-2">Event: <%= event.information %></div>
               <div class="card-text mb-2">Event Date: <%= event.eventDate %></div>
               <div class="standing-buttons-container">
-                <form action="/admin/standings/edit/<%=event.id %>">
+                <form action="/admin/standings/events/edit/<%=event.id %>">
                   <button type="submit" class="btn btn-info standing-button">
                     Edit
                   </button>
                 </form>
                 <form
-                  action="/admin/standings/<%=event.id%>?_method=DELETE"
+                  action="/admin/standings/events/<%=event.id%>?_method=DELETE"
                   method="POST"
                 >
                   <button

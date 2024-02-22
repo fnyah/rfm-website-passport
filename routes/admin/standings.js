@@ -1,107 +1,58 @@
 const router = require("express").Router();
-const connection = require("../../config/database");
-const Standings = connection.models.Standings;
-const Events = connection.models.Events;
+const Standings = require("../../models/Standings");
+const Events = require("../../models/Events");
 const isAuth = require("../authMiddleware").isAuth;
-const Mongoose = require("mongoose");
+const asyncHandler = require("../../middleware/asyncHandler");
+const { 
+    getStandingsAndEvents, 
+    editStandings, 
+    deleteStanding, 
+    newStanding, 
+    newEvent,
+    editEvent,
+    deleteEvent
+} = require("../../controllers/admin-controllers/adminStandingsController");
 
-router.get("/", isAuth, async (req, res, next) => {
-  const standings = await Standings.find().sort({ information: "desc" });
-  const events = await Events.find().sort({ information: "desc" });
+// --------------------------- General Standings Routes ---------------------------
+// Combined view for standings and events
+router.get('/', isAuth, asyncHandler(getStandingsAndEvents));
 
-  res.render("admin-about/controlPanel", {
-    standings: standings,
-    events: events,
-  });
-});
+// New standing form
+router.get("/new", isAuth, (req, res) => res.render("admin-about/new", { standings: new Standings() }));
 
-router.get("/new", isAuth, (req, res, next) => {
-  res.render("admin-about/new", { standings: new Standings() });
-});
+// Standings CRUD operations
+router.route("/:id")
+  .get(isAuth, async (req, res) => { // Show specific standing
+    const standings = await Standings.findById(req.params.id);
+    res.render("admin-about/show", { standings });
+  })
+  .put(isAuth, asyncHandler(editStandings)) // Edit specific standing
+  .delete(isAuth, asyncHandler(deleteStanding)); // Delete specific standing
 
-router.get("/new-event", isAuth, (req, res, next) => {
-  res.render("admin-about/events/new");
-});
-
-
-
-router.get("/:id", isAuth, async (req, res) => {
-  let standings = await Standings.findById(req.params.id);
-  res.render("admin-about/show", { standings: standings });
-});
-
+// Edit standing form
 router.get("/edit/:id", isAuth, async (req, res) => {
-  let standings = await Standings.findById(req.params.id);
-  res.render("admin-about/edit", { standings: standings });
+  const standings = await Standings.findById(req.params.id);
+  res.render("admin-about/edit", { standings });
 });
 
-router.put(
-  "/:id",
-  isAuth,
-  async (req, res, next) => {
-    req.standing = await Standings.findById(req.params.id);
-    next();
-  },
-  saveStandingAndRedirect("edit")
-);
+// Create a new standing
+router.post("/", isAuth, asyncHandler(newStanding));
 
-router.post("/", isAuth, async (req, res) => {
-  let standings = new Standings({
-    information: req.body.information,
-    createdAt: new Date(),
-  });
-  try {
-    await standings.save();
-    res.redirect(`standings/${standings.id}`);
-    // res.redirect(`/admin`);
-  } catch (e) {
-    res.render("admin-about/new", { standings: standings });
-  }
+// --------------------------- Event-specific Routes ---------------------------
+// New event form
+router.get("/events/new-event", isAuth, (req, res) => res.render("admin-about/events/new"));
+
+// Edit event form
+router.get("/events/edit/:id", isAuth, async (req, res) => {
+  const events = await Events.findById(req.params.id);
+  res.render("admin-about/events/edit", { events });
 });
 
-router.post("/events/upload", isAuth, (req, res, next) => {
-  let events = new Events({
-    information: req.body.information,
-    eventDate: req.body.eventDate,
-  });
+// Event CRUD operations
+router.post("/events/upload", isAuth, asyncHandler(newEvent)); // Create a new event
 
-  console.log(req.body)
-
-
-
-  try {
-    events.save();
-    res.redirect("/admin/standings");
-  }
-  catch (e) {
-    res.render("admin-about/events/new", { events: events });
-  }
-});
-  
-
-router.delete("/:id", isAuth, async (req, res, next) => {
-  const standingId = Mongoose.Types.ObjectId(req.params.id);
-  try {
-    await Standings.findByIdAndDelete(standingId);
-    console.log("Deleted standing: " + standingId);
-    res.redirect("/admin/standings");
-  } catch (e) {
-    res.send("error", e);
-  }
-});
-
-function saveStandingAndRedirect(path) {
-  return async (req, res) => {
-    let standing = req.standing;
-    standing.information = req.body.information;
-    console.log(standing);
-    try {
-      standing = await standing.save();
-      res.redirect(`/admin/standings/${standing.id}`);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-}
+router.route("/events/:id")
+  .delete(isAuth, asyncHandler(deleteEvent)) // Delete specific event
+  .put(isAuth, asyncHandler(editEvent)); // Edit specific event
 
 module.exports = router;

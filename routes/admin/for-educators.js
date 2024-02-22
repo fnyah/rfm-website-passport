@@ -1,180 +1,40 @@
 const router = require("express").Router();
-const connection = require("../../config/database");
-const Blog = connection.models.Blog;
+const express = require("express");
+const Blog = require("../../models/Blog");
 const isAuth = require("../authMiddleware").isAuth;
-const mongoose = require("mongoose");
-
-const bodyParser = require("body-parser");
-const path = require("path");
-const crypto = require("crypto");
 const multer = require("multer");
-const { GridFsStorage } = require("multer-gridfs-storage");
-const Grid = require("gridfs-stream");
 const methodOverride = require("method-override");
+const { makeGridFsStorage } = require("../../utils/gridfsStorageutil");
+const { createBlogPost, updateBlogPost, editBlogPhotos, deleteBlogPost, getBlogPosts } = require("../../controllers/admin-controllers/adminBlogController");
+const asyncHandler = require("../../middleware/asyncHandler");
 
-router.use(methodOverride("_method"));
-router.use(bodyParser.json());
 
-// Mongo URI
-const mongoURI = process.env.MONGO_URI;
-// use new mongo url parser
-const conn = mongoose.createConnection(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+router.use(express.json());
+router.use(methodOverride('_method'));
 
-// Photo upload
-let gfs;
-let gridfsBucket;
-conn.once("open", () => {
-  gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
-    bucketName: "blogphotos",
-  });
 
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection("blogphotos");
-});
-
-// Create storage engine
-const storage = new GridFsStorage({
-  url: mongoURI,
-  file: (req, file) => {
-    return new Promise((resolve, reject) => {
-      crypto.randomBytes(16, (err, buf) => {
-        if (err) {
-          return reject(err);
-        }
-        const filename = buf.toString("hex") + path.extname(file.originalname);
-        const fileInfo = {
-          filename: filename,
-          bucketName: "blogphotos",
-        };
-        resolve(fileInfo);
-      });
-    });
-  },
-});
-
+const storage = makeGridFsStorage(process.env.MONGO_URI, "blogphotos");
 const upload = multer({ storage });
 
-// function that adds https:// to links if it's not there and www. if it's not there
-function addHttp(link) {
-  // remove whitespace
-  link = link.trim();
+// Gets all blog posts
+router.get("/", isAuth, asyncHandler(getBlogPosts));
 
-  if (link.includes("https://")) {
-    return link;
-  } else if (link.includes("http://")) {
-    return link;
-  } else if (link.includes("www.")) {
-    return "https://" + link;
-  } else {
-    return "https://www." + link;
-  }
-}
+// Create a new blog post form
+router.get("/new", isAuth, (req, res) => res.render("admin-for-educators/new", { title: "newpost" }));
 
-router.get("/", isAuth, async (req, res) => {
-  let blog = await Blog.find().sort({ createdAt: -1 });
-  res.render("admin-for-educators/controlPanel", { blog: blog });
-});
-
-router.post("/", isAuth, upload.any("file"), async (req, res) => {
-  const filenames = req.files.map((file) => file.filename);
-
-  // separate links into an array
-  const links = req.body.link.split(",");
-  // add https:// to links if it's not there
-  const linksWithHttp = links.map(addHttp);
-
-  const blogPost = new Blog({
-    title: req.body.title,
-    description: req.body.description,
-    filename: filenames,
-    links: linksWithHttp,
-  });
-  try {
-    await blogPost.save();
-    res.redirect("/admin/for-educators");
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-router.get("/new", isAuth, (req, res) => {
-  res.render("admin-for-educators/new", { title: "newpost" });
-});
-
-router.get("/edit/:id", isAuth, async (req, res) => {
-  let blog = await Blog.findById(req.params.id);
-  res.render("admin-for-educators/edit", { blog: blog });
-});
-
-router.put("/:id", upload.any("file"), isAuth, async (req, res, next) => {
-  const filenames = req.files.map((file) => file.filename);
-  const currentFiles = await Blog.findById(req.params.id);
-  const combinedFiles = [...currentFiles.filename, ...filenames];
-  const links = req.body.link.split(",");
-  const description = req.body.description.trim();
-  const linksWithHttp = links.map(addHttp);
-
-  if (req.files == "") {
-    try {
-      const editedProject = await Blog.findByIdAndUpdate(req.params.id, {
-        title: req.body.title,
-        description: description,
-        links: linksWithHttp,
-      });
-      console.log("Edited project: " + editedProject);
-      res.redirect("/admin/for-educators");
-    } catch (err) {
-      console.log(err);
-    }
-  } else {
-    try {
-      const editedProject = await Blog.findByIdAndUpdate(req.params.id, {
-        title: req.body.title,
-        description: req.body.description,
-        filename: combinedFiles,
-        link: linksWithHttp,
-      });
-      console.log("Edited project: " + editedProject);
-      res.redirect("/admin/projects");
-    } catch (err) {
-      console.log(err);
-    }
-  }
-});
-
-// edit project photos
-router.post("/:id", isAuth, async (req, res, next) => {
-  let photos = req.body;
+// Fetch a blog for editing
+router.get("/edit/:id", isAuth, asyncHandler(async (req, res) => {
   const blog = await Blog.findById(req.params.id);
-  const files = blog.filename;
-  // find the difference between the two arrays
-  const difference = files.filter((x) => !photos.includes(x));
-  console.log(difference);
-
-  const editedBlog = await Blog.findByIdAndUpdate(req.params.id, {
-    filename: difference,
-  });
-  try {
-    await editedBlog.save();
-    console.log("Saved Blog: " + editedBlog);
-    res.sendStatus(200);
-  } catch (e) {
-    res.json(e);
+  if (!blog) {
+    return res.status(404).send("Blog post not found.");
   }
-});
+  res.render("admin-for-educators/edit", { blog });
+}));
 
-router.delete("/:id", isAuth, async (req, res, next) => {
-  const blogId = mongoose.Types.ObjectId(req.params.id);
-  try {
-    await Blog.findByIdAndDelete(blogId);
-    console.log("Deleted project: " + blogId);
-    res.redirect("/admin/for-educators");
-  } catch (e) {
-    res.send("error", e);
-  }
-});
+// Create, update, and delete blog posts
+router.post("/", isAuth, upload.any("file"), asyncHandler(createBlogPost));
+router.put("/:id", upload.any("file"), isAuth, asyncHandler(updateBlogPost));
+router.post("/:id", isAuth, asyncHandler(editBlogPhotos));
+router.delete("/:id", isAuth, asyncHandler(deleteBlogPost));
 
 module.exports = router;
