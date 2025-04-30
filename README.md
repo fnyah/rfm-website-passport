@@ -7,7 +7,7 @@ The live website is available at: [drrosefinemeyer.com](https://drrosefinemeyer.
 ## Key Features
 
 - **Dynamic Templating**: Built with EJS (Embedded JavaScript Templates) to deliver server-rendered views.
-- **User Authentication**: Likely powered by **Passport.js**, ensuring secure and robust login mechanisms.
+- **User Authentication**: Built with **Passport.js**, ensuring secure and robust login mechanisms.
 - **Custom Backend Admin Panel**: Enables photo uploads and data management with ease.
 - **Student Resource Hub**: Designed to support learning and provide essential resources for Dr. Fine-Meyer’s students at the University of Toronto.
 - **Scalable Architecture**: Designed with scalability and maintainability in mind.
