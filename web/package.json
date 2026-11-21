@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "dev:seed": "node scripts/dev-seed.cjs",
+    "test:e2e": "playwright test",
     "migrate:blob": "node scripts/migrate-gridfs-to-blob.cjs",
     "migrate:blob:dry-run": "node scripts/migrate-gridfs-to-blob.cjs --dry-run"
   },
@@ -36,6 +37,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

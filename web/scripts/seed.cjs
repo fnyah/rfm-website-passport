@@ -1,22 +1,17 @@
 /**
- * Local-only smoke-test helper: spins up an in-memory MongoDB, seeds it with
- * fixture documents matching the real collection names/shapes, writes the
- * connection string to .env.local, and stays running so `next dev` can use
- * it. NOT part of the app or the deploy — dev tooling only, safe to delete.
+ * Shared test fixtures: starts an in-memory MongoDB and seeds it with
+ * documents matching the real collection names/shapes. Used by
+ * scripts/dev-seed.cjs (local smoke testing) and scripts/e2e-server.cjs
+ * (Playwright). Dev tooling only — not part of the app or the deploy.
  */
+const crypto = require("crypto");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const { MongoClient } = require("mongodb");
-const fs = require("fs");
-const path = require("path");
 
-async function main() {
-  const mongod = await MongoMemoryServer.create();
-  const uri = mongod.getUri("rfm_dev");
+const DB_NAME = "rfm_dev";
+const ADMIN = { username: "admin", password: "devpassword123" };
 
-  const client = new MongoClient(uri);
-  await client.connect();
-  const db = client.db("rfm_dev");
-
+async function seed(db) {
   const now = new Date();
 
   await db.collection("homes").insertMany([
@@ -30,6 +25,13 @@ async function main() {
       title: "Curriculum & Teaching Methods",
       description:
         "<p>Graduate coursework on teaching history in secondary classrooms, with an emphasis on primary sources.</p>",
+      createdAt: now,
+    },
+    {
+      // Legacy content from the old Express app: plain text with "\n" breaks.
+      title: "Legacy Oral History Seminar",
+      description:
+        "Students record interviews with long-time residents.\nRecordings are archived with the city.\n\nThe seminar ends with a public listening night & discussion.",
       createdAt: now,
     },
   ]);
@@ -95,37 +97,25 @@ async function main() {
     },
   ]);
 
-  // Password is "devpassword123" — pbkdf2 hash generated with the app's own
-  // src/lib/password.ts algorithm so Auth.js sign-in can be smoke-tested too.
-  const crypto = require("crypto");
+  // pbkdf2 hash generated with the app's own src/lib/password.ts algorithm
+  // so Auth.js sign-in can be tested too.
   const salt = crypto.randomBytes(32).toString("hex");
-  const hash = crypto.pbkdf2Sync("devpassword123", salt, 10000, 64, "sha512").toString("hex");
-  await db.collection("users").insertOne({ username: "admin", hash, salt, admin: true });
-
-  await client.close();
-
-  const envPath = path.join(__dirname, "..", ".env.local");
-  const existing = fs.existsSync(envPath) ? fs.readFileSync(envPath, "utf8") : "";
-  const withoutMongo = existing
-    .split("\n")
-    .filter((line) => !line.startsWith("MONGO_URI="))
-    .join("\n");
-  fs.writeFileSync(envPath, `${withoutMongo}\nMONGO_URI=${uri}\n`.trimStart() + "\n");
-
-  console.log("Seeded in-memory MongoDB at", uri);
-  console.log("Wrote MONGO_URI to .env.local");
-  console.log("Dev login: username=admin password=devpassword123");
-  console.log("Press Ctrl+C to stop.");
-
-  // Keep process alive so the mongod child process keeps running.
-  process.stdin.resume();
-  process.on("SIGINT", async () => {
-    await mongod.stop();
-    process.exit(0);
-  });
+  const hash = crypto.pbkdf2Sync(ADMIN.password, salt, 10000, 64, "sha512").toString("hex");
+  await db.collection("users").insertOne({ username: ADMIN.username, hash, salt, admin: true });
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+/** Starts an in-memory MongoDB, seeds it, and returns its URI and server. */
+async function startSeededMongo() {
+  const mongod = await MongoMemoryServer.create();
+  const uri = mongod.getUri(DB_NAME);
+  const client = new MongoClient(uri);
+  await client.connect();
+  try {
+    await seed(client.db(DB_NAME));
+  } finally {
+    await client.close();
+  }
+  return { mongod, uri };
+}
+
+module.exports = { startSeededMongo, ADMIN };
