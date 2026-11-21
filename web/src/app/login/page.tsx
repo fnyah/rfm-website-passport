@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { ArrowLeft } from "lucide-react";
 import { auth } from "@/auth";
 import { LoginForm } from "@/components/admin/login-form";
 
@@ -17,22 +18,24 @@ export default async function LoginPage({
   const { callbackUrl } = await searchParams;
 
   return (
-    <div className="flex min-h-full flex-col items-center justify-center bg-muted/40 px-4 py-16">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <h1 className="font-heading text-2xl font-medium">
-            Dr. Rose Fine-Meyer
+    <div className="admin-ui flex min-h-full flex-1 flex-col items-center justify-center bg-muted/40 px-5 py-16">
+      <div className="w-full max-w-md">
+        <div className="mb-8">
+          <p className="text-lg text-muted-foreground">Dr. Rose Fine-Meyer</p>
+          <h1 className="mt-1 font-heading text-4xl font-medium tracking-tight sm:text-5xl">
+            Sign in to update your website
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Sign in to manage your website content
-          </p>
         </div>
-        <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8">
           <LoginForm callbackUrl={callbackUrl} />
         </div>
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          <Link href="/" className="underline underline-offset-2 hover:text-foreground">
-            &larr; Back to the site
+        <p className="mt-6">
+          <Link
+            href="/"
+            className="-ml-2 inline-flex min-h-12 items-center gap-2 rounded-lg px-2 text-lg font-medium text-primary underline-offset-4 hover:underline"
+          >
+            <ArrowLeft className="size-5" aria-hidden />
+            Back to my website
           </Link>
         </p>
       </div>

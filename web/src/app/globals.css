@@ -159,3 +159,23 @@
     @apply list-decimal;
   }
 }
+
+/* Admin panel and login: one strong, unmistakable focus outline on every
+   control. `body:has(.admin-ui)` also reaches the delete dialog and the phone
+   menu, which render in a portal outside the admin layout. */
+body:has(.admin-ui) {
+  /* Field edges need 3:1 against the page so every box is plainly a box,
+     and Delete's red needs to clear AA comfortably at body size. */
+  --input: oklch(0.62 0.03 60);
+  --destructive: oklch(0.5 0.19 27);
+}
+
+body:has(.admin-ui) :is(a, button, input, textarea, select, [role="button"], [contenteditable]):focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 3px;
+  box-shadow: none;
+}
+
+.admin-ui {
+  @apply text-lg;
+}
