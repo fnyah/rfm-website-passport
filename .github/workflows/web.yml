@@ -1,0 +1,55 @@
+name: web
+
+on:
+  push:
+  pull_request:
+
+defaults:
+  run:
+    working-directory: web
+
+env:
+  # Never inherit NODE_ENV=development: `next build` fails with it.
+  NODE_ENV: production
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      # NODE_ENV=production would skip devDependencies; the checks need them.
+      - run: npm ci --include=dev
+
+      - run: npx tsc --noEmit
+
+      - run: npm run lint
+
+      # src/lib/db.ts requires MONGO_URI when page modules load during the
+      # build; it is not baked into the output, so a placeholder is enough.
+      - run: npx next build
+        env:
+          MONGO_URI: mongodb://127.0.0.1:27017/build-placeholder
+
+      - run: npx playwright install --with-deps chromium
+
+      # Reuses the build above; scripts/e2e-server.cjs starts its own seeded Mongo.
+      - run: npm run test:e2e
+        env:
+          E2E_SKIP_BUILD: "1"
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            web/playwright-report/
+            web/test-results/
+          retention-days: 7
