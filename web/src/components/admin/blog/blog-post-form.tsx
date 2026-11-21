@@ -1,87 +1,71 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { useActionState } from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { DialogFooter } from "@/components/ui/dialog";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { ImageUploader } from "@/components/admin/image-uploader";
+import {
+  Field,
+  FormActions,
+  formClassName,
+  inputClassName,
+  textareaClassName,
+} from "@/components/admin/form-parts";
 import { saveBlogPost } from "@/lib/actions/blog";
 import type { ActionState } from "@/lib/actions/shared";
 import type { BlogPostDoc } from "@/models/Blog";
 
-export function BlogPostForm({
-  post,
-  onSuccess,
-}: {
-  post?: BlogPostDoc;
-  onSuccess: () => void;
-}) {
+export function BlogPostForm({ post }: { post?: BlogPostDoc }) {
   const action = saveBlogPost.bind(null, post?._id ?? null);
-  const [state, formAction, pending] = useActionState<ActionState, FormData>(
-    action,
-    {}
-  );
-
-  useEffect(() => {
-    if (state.success) {
-      toast.success(post ? "Post updated." : "Post added.");
-      onSuccess();
-    }
-  }, [state, post, onSuccess]);
+  const [state, formAction, pending] = useActionState<ActionState, FormData>(action, {});
 
   return (
-    <form action={formAction} className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="title">Title</Label>
-        <Input id="title" name="title" defaultValue={post?.title} required />
-      </div>
+    <form action={formAction} className={formClassName}>
+      <Field id="title" label="Title" hint="Shown as the heading on the For educators page.">
+        <Input id="title" name="title" defaultValue={post?.title} required className={inputClassName} />
+      </Field>
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="description">Description</Label>
+      <Field id="description" label="What teachers will find" hint="A short guide or summary for educators.">
         <RichTextEditor
+          id="description"
           name="description"
           defaultValue={post?.description}
-          label="Description"
+          label="What teachers will find"
           placeholder="A short guide or summary for educators"
         />
-      </div>
+      </Field>
 
       <ImageUploader
         name="filename"
-        label="Photos (optional)"
+        label="Photos"
+        optional
         multiple
         defaultUrls={post?.filename ?? []}
       />
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="links">Source links (optional)</Label>
-        <p className="text-sm text-muted-foreground">
-          Paste one or more web addresses, separated by commas.
-        </p>
+      <Field
+        id="links"
+        label="Links to resources"
+        optional
+        hint="Paste the web address of each resource. Put a comma between them."
+      >
         <Textarea
           id="links"
           name="links"
           rows={2}
           defaultValue={post?.links?.join(", ")}
-          placeholder="example.com/lesson-plan"
+          placeholder="www.example.com/lesson-plan"
+          className={textareaClassName}
         />
-      </div>
+      </Field>
 
-      {state.error && (
-        <p role="alert" className="text-sm text-destructive">
-          {state.error}
-        </p>
-      )}
-
-      <DialogFooter>
-        <Button type="submit" disabled={pending}>
-          {pending ? "Saving…" : "Save"}
-        </Button>
-      </DialogFooter>
+      <FormActions
+        pending={pending}
+        error={state.error}
+        cancelHref="/admin/for-educators"
+        saveLabel={post ? "Save changes" : "Add this resource"}
+      />
     </form>
   );
 }

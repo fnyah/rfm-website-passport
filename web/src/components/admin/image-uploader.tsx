@@ -5,29 +5,31 @@ import Image from "next/image";
 import { upload } from "@vercel/blob/client";
 import { ImagePlus, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 type UploadItem = { url: string; uploading?: boolean };
 
 /**
- * Drag-and-drop photo uploader for the admin panel. Uploads go straight to
+ * Photo picker for the admin panel: a big "Choose a photo" button (drag and
+ * drop works too) with a preview of what's chosen. Uploads go straight to
  * Vercel Blob from the browser (see src/app/api/blob-upload/route.ts for the
- * token endpoint) with a visible progress state, then the resulting URL(s)
- * are submitted as plain hidden form fields so the rest of the form still
- * works as a normal server-action <form>.
+ * token endpoint), then the resulting URL(s) are submitted as plain hidden
+ * form fields so the rest of the form still works as a normal server-action
+ * <form>.
  */
 export function ImageUploader({
   name,
   label,
   helperText,
   multiple = false,
+  optional = false,
   defaultUrls = [],
 }: {
   name: string;
   label: string;
   helperText?: string;
   multiple?: boolean;
+  optional?: boolean;
   defaultUrls?: string[];
 }) {
   const [items, setItems] = useState<UploadItem[]>(
@@ -57,7 +59,7 @@ export function ImageUploader({
             prev.map((item) => (item === placeholder ? { url: result.url } : item))
           );
         } catch {
-          setError("Couldn't upload that photo. Please try again.");
+          setError("That photo couldn’t be uploaded. Please try again, or choose a different photo.");
           setItems((prev) => prev.filter((item) => item !== placeholder));
         }
       }
@@ -68,10 +70,25 @@ export function ImageUploader({
     setItems((prev) => prev.filter((_, i) => i !== index));
   }
 
+  const chooseLabel = multiple
+    ? items.length > 0
+      ? "Add more photos"
+      : "Choose photos"
+    : items.length > 0
+      ? "Choose a different photo"
+      : "Choose a photo";
+
   return (
     <div className="flex flex-col gap-2">
-      <Label>{label}</Label>
-      {helperText && <p className="text-sm text-muted-foreground">{helperText}</p>}
+      <p className="text-xl font-semibold">
+        {label}
+        {optional && (
+          <span className="ml-2 text-lg font-normal text-muted-foreground">
+            (you can leave this empty)
+          </span>
+        )}
+      </p>
+      {helperText && <p className="-mt-1 mb-1 text-lg text-muted-foreground">{helperText}</p>}
 
       <div
         onDragOver={(e) => {
@@ -85,50 +102,51 @@ export function ImageUploader({
           handleFiles(e.dataTransfer.files);
         }}
         className={cn(
-          "rounded-lg border-2 border-dashed border-input p-4 text-center transition-colors",
+          "flex flex-col items-center gap-5 rounded-xl border-2 border-dashed border-input bg-card p-6 text-center transition-colors",
           isDragging && "border-ring bg-muted/50"
         )}
       >
         {items.length > 0 && (
-          <div className="mb-3 flex flex-wrap justify-center gap-3">
+          <ul className="flex flex-wrap justify-center gap-4">
             {items.map((item, i) => (
-              <div
-                key={item.url + i}
-                className="relative size-24 overflow-hidden rounded-md ring-1 ring-border"
-              >
-                <Image src={item.url} alt="" fill sizes="96px" className="object-cover" unoptimized={item.uploading} />
-                {item.uploading && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                    <Loader2 className="size-5 animate-spin text-white" />
-                  </div>
-                )}
+              <li key={item.url + i} className="flex flex-col items-center gap-2">
+                <div className="relative size-36 overflow-hidden rounded-lg ring-1 ring-border">
+                  <Image src={item.url} alt="" fill sizes="144px" className="object-cover" unoptimized={item.uploading} />
+                  {item.uploading && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/50 text-base font-medium text-white">
+                      <Loader2 className="size-6 animate-spin" aria-hidden />
+                      Uploading…
+                    </div>
+                  )}
+                </div>
                 {!item.uploading && (
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
                     onClick={() => removeAt(i)}
-                    aria-label="Remove photo"
-                    className="absolute top-1 right-1 rounded-full bg-black/60 p-0.5 text-white hover:bg-black/80"
+                    className="h-11 gap-1.5 px-3 text-base text-muted-foreground hover:text-destructive"
                   >
-                    <X className="size-3.5" />
-                  </button>
+                    <X aria-hidden />
+                    Remove
+                  </Button>
                 )}
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
 
         <Button
           type="button"
-          variant="outline"
-          size="sm"
+          variant={items.length > 0 ? "outline" : "default"}
+          size="xl"
           disabled={isPending}
           onClick={() => inputRef.current?.click()}
         >
-          <ImagePlus className="size-4" />
-          {multiple ? "Add photos" : items.length > 0 ? "Replace photo" : "Add a photo"}
+          <ImagePlus aria-hidden />
+          {chooseLabel}
         </Button>
-        <p className="mt-2 text-xs text-muted-foreground">
-          Drag a photo here, or click to browse. JPG, PNG, WEBP, or GIF.
+        <p className="text-base text-muted-foreground">
+          Or drag a photo from your computer onto this box.
         </p>
         <input
           ref={inputRef}
@@ -140,7 +158,11 @@ export function ImageUploader({
         />
       </div>
 
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && (
+        <p role="alert" className="text-lg font-medium text-destructive">
+          {error}
+        </p>
+      )}
 
       {items
         .filter((item) => !item.uploading)

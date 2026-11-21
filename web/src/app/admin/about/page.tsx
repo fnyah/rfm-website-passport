@@ -1,35 +1,56 @@
 import type { Metadata } from "next";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { StandingsSection } from "@/components/admin/about/standings-section";
-import { EventsSection } from "@/components/admin/about/events-section";
-import { getStandings, getEvents } from "@/lib/queries/about";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { RichText } from "@/components/rich-text";
+import { AdminPageHeader, EmptyState } from "@/components/admin/admin-page";
+import { ItemCard, ItemList } from "@/components/admin/item-card";
+import { StatusBanner } from "@/components/admin/status-banner";
+import { deleteStanding } from "@/lib/actions/about";
+import { getStandings } from "@/lib/queries/about";
 
-export const metadata: Metadata = { title: "About Page" };
+export const metadata: Metadata = { title: "About me" };
 export const dynamic = "force-dynamic";
 
-export default async function AdminAboutPage() {
-  const [standings, events] = await Promise.all([getStandings(), getEvents()]);
+export default async function AdminAboutPage({ searchParams }: PageProps<"/admin/about">) {
+  const [standings, { saved, deleted }] = await Promise.all([getStandings(), searchParams]);
 
   return (
     <div className="mx-auto max-w-4xl">
-      <h1 className="mb-1 font-heading text-2xl font-medium">About Page</h1>
-      <p className="mb-6 text-sm text-muted-foreground">
-        Manage your standings and upcoming events. Your photo and intro
-        paragraph are fixed parts of the page design.
-      </p>
+      <StatusBanner saved={saved === "1"} deleted={deleted === "1"} />
+      <AdminPageHeader
+        title="About me"
+        intro="These are the roles and honours listed under “My Standings” on your About page. Click Edit to change one, or add a new one."
+        addHref="/admin/about/new"
+        addLabel="Add a role or honour"
+      >
+        <p className="mt-4 text-lg text-muted-foreground">
+          Want to list a talk or conference?{" "}
+          <Link
+            href="/admin/about/events"
+            className="inline-flex items-center gap-1 font-medium text-primary underline underline-offset-4 hover:no-underline"
+          >
+            Change your upcoming events
+            <ArrowRight className="size-4" aria-hidden />
+          </Link>
+        </p>
+      </AdminPageHeader>
 
-      <Tabs defaultValue="standings">
-        <TabsList>
-          <TabsTrigger value="standings">Standings</TabsTrigger>
-          <TabsTrigger value="events">Events</TabsTrigger>
-        </TabsList>
-        <TabsContent value="standings" className="pt-6">
-          <StandingsSection standings={standings} />
-        </TabsContent>
-        <TabsContent value="events" className="pt-6">
-          <EventsSection events={events} />
-        </TabsContent>
-      </Tabs>
+      {standings.length === 0 ? (
+        <EmptyState>Nothing listed yet. Click &ldquo;Add a role or honour&rdquo; to add your first one.</EmptyState>
+      ) : (
+        <ItemList>
+          {standings.map((standing) => (
+            <ItemCard
+              key={standing._id}
+              editHref={`/admin/about/${standing._id}/edit`}
+              deleteAction={deleteStanding.bind(null, standing._id)}
+              deleteLabel="this role"
+            >
+              <RichText html={standing.information} className="text-foreground" />
+            </ItemCard>
+          ))}
+        </ItemList>
+      )}
     </div>
   );
 }

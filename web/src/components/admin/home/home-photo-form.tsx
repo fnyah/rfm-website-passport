@@ -1,84 +1,70 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { useActionState } from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { DialogFooter } from "@/components/ui/dialog";
 import { ImageUploader } from "@/components/admin/image-uploader";
+import {
+  Field,
+  FormActions,
+  formClassName,
+  inputClassName,
+  textareaClassName,
+} from "@/components/admin/form-parts";
 import { saveHomePhoto } from "@/lib/actions/home";
 import type { ActionState } from "@/lib/actions/shared";
 import type { PhotoDoc } from "@/models/Photo";
 
-export function HomePhotoForm({
-  photo,
-  onSuccess,
-}: {
-  photo?: PhotoDoc;
-  onSuccess: () => void;
-}) {
+export function HomePhotoForm({ photo }: { photo?: PhotoDoc }) {
   const action = saveHomePhoto.bind(null, photo?._id ?? null);
-  const [state, formAction, pending] = useActionState<ActionState, FormData>(
-    action,
-    {}
-  );
-
-  useEffect(() => {
-    if (state.success) {
-      toast.success(photo ? "Photo updated." : "Photo added.");
-      onSuccess();
-    }
-  }, [state, photo, onSuccess]);
+  const [state, formAction, pending] = useActionState<ActionState, FormData>(action, {});
 
   return (
-    <form action={formAction} className="flex flex-col gap-4">
+    <form action={formAction} className={formClassName}>
       <ImageUploader
         name="filename"
         label="Photo"
-        helperText="Shown in the scrolling banner on the homepage. Square photos work best."
+        helperText="Square photos look best in the banner."
         defaultUrls={photo?.filename ? [photo.filename] : []}
       />
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="description">Caption (optional)</Label>
-        <p className="text-sm text-muted-foreground">
-          Appears over the photo when a visitor hovers over it.
-        </p>
+      <Field
+        id="description"
+        label="Caption"
+        optional
+        hint="Appears on the photo when a visitor points at it."
+      >
         <Textarea
           id="description"
           name="description"
           rows={2}
           defaultValue={photo?.description}
+          className={textareaClassName}
         />
-      </div>
+      </Field>
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="link">Link (optional)</Label>
-        <p className="text-sm text-muted-foreground">
-          If set, clicking the photo opens this web address in a new tab.
-        </p>
+      <Field
+        id="link"
+        label="Web address to open"
+        optional
+        hint="If you add one, clicking the photo opens this page."
+      >
         <Input
           id="link"
           name="link"
           type="url"
-          placeholder="https://example.com"
+          placeholder="https://www.example.com"
           defaultValue={photo?.link}
+          className={inputClassName}
         />
-      </div>
+      </Field>
 
-      {state.error && (
-        <p role="alert" className="text-sm text-destructive">
-          {state.error}
-        </p>
-      )}
-
-      <DialogFooter>
-        <Button type="submit" disabled={pending}>
-          {pending ? "Saving…" : "Save"}
-        </Button>
-      </DialogFooter>
+      <FormActions
+        pending={pending}
+        error={state.error}
+        cancelHref="/admin/home/photos"
+        saveLabel={photo ? "Save changes" : "Add this photo"}
+      />
     </form>
   );
 }

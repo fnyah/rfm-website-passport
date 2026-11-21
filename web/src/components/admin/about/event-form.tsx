@@ -1,75 +1,57 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { useActionState } from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { DialogFooter } from "@/components/ui/dialog";
+import {
+  Field,
+  FormActions,
+  formClassName,
+  inputClassName,
+  textareaClassName,
+} from "@/components/admin/form-parts";
 import { saveEvent } from "@/lib/actions/about";
 import type { ActionState } from "@/lib/actions/shared";
 import type { EventDoc } from "@/models/Event";
 
-export function EventForm({
-  event,
-  onSuccess,
-}: {
-  event?: EventDoc;
-  onSuccess: () => void;
-}) {
+export function EventForm({ event }: { event?: EventDoc }) {
   const action = saveEvent.bind(null, event?._id ?? null);
-  const [state, formAction, pending] = useActionState<ActionState, FormData>(
-    action,
-    {}
-  );
-
-  useEffect(() => {
-    if (state.success) {
-      toast.success(event ? "Event updated." : "Event added.");
-      onSuccess();
-    }
-  }, [state, event, onSuccess]);
+  const [state, formAction, pending] = useActionState<ActionState, FormData>(action, {});
 
   return (
-    <form action={formAction} className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="eventDate">Date</Label>
-        <p className="text-sm text-muted-foreground">
-          Shown exactly as typed — e.g. &ldquo;March 2026&rdquo; or &ldquo;Fall
-          2025&rdquo;.
-        </p>
+    <form action={formAction} className={formClassName}>
+      <Field
+        id="eventDate"
+        label="When"
+        hint="Shown exactly as you type it, for example “March 2026” or “Fall 2025”."
+      >
         <Input
           id="eventDate"
           name="eventDate"
           defaultValue={event?.eventDate}
           placeholder="March 2026"
           required
+          className={inputClassName}
         />
-      </div>
+      </Field>
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="information">What&rsquo;s happening</Label>
+      <Field id="information" label="What’s happening" hint="One or two sentences about the event.">
         <Textarea
           id="information"
           name="information"
           rows={3}
           defaultValue={event?.information}
           required
+          className={textareaClassName}
         />
-      </div>
+      </Field>
 
-      {state.error && (
-        <p role="alert" className="text-sm text-destructive">
-          {state.error}
-        </p>
-      )}
-
-      <DialogFooter>
-        <Button type="submit" disabled={pending}>
-          {pending ? "Saving…" : "Save"}
-        </Button>
-      </DialogFooter>
+      <FormActions
+        pending={pending}
+        error={state.error}
+        cancelHref="/admin/about/events"
+        saveLabel={event ? "Save changes" : "Add this event"}
+      />
     </form>
   );
 }

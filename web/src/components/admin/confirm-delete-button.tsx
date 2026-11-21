@@ -2,7 +2,6 @@
 
 import { useTransition } from "react";
 import { Trash2 } from "lucide-react";
-import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,13 +17,15 @@ import { Button } from "@/components/ui/button";
 
 /**
  * A real confirmation dialog (not `window.confirm`) in front of a delete
- * server action, with a pending state so it can't be double-submitted.
+ * server action, with a pending state so it can't be double-submitted. The
+ * action redirects back to the list with a "Deleted." banner.
  */
 export function ConfirmDeleteButton({
   action,
   itemLabel,
 }: {
   action: () => Promise<void>;
+  /** e.g. "this course" — read as "Delete this course?" */
   itemLabel: string;
 }) {
   const [isPending, startTransition] = useTransition();
@@ -32,29 +33,34 @@ export function ConfirmDeleteButton({
   return (
     <AlertDialog>
       <AlertDialogTrigger
-        render={<Button variant="ghost" size="icon-sm" aria-label={`Delete ${itemLabel}`} />}
+        render={
+          <Button
+            variant="outline"
+            size="xl"
+            className="flex-1 border-destructive/50 text-destructive hover:bg-destructive/10 hover:text-destructive sm:flex-none"
+          />
+        }
       >
-        <Trash2 className="size-4" />
+        <Trash2 aria-hidden />
+        Delete
       </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Delete {itemLabel}?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This removes it from the website right away. This can&rsquo;t be undone.
+      <AlertDialogContent className="gap-6 p-6 data-[size=default]:max-w-md data-[size=default]:sm:max-w-md">
+        <AlertDialogHeader className="gap-3">
+          <AlertDialogTitle className="text-3xl">Delete {itemLabel}?</AlertDialogTitle>
+          <AlertDialogDescription className="text-lg text-foreground/80">
+            It will be removed from your website straight away. You can&rsquo;t
+            undo this.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogFooter className="-mx-6 -mb-6 gap-3 p-6">
+          <AlertDialogCancel size="xl">No, keep it</AlertDialogCancel>
           <AlertDialogAction
+            size="xl"
+            className="bg-destructive text-white hover:bg-destructive/90"
             disabled={isPending}
-            onClick={() =>
-              startTransition(async () => {
-                await action();
-                toast.success(`${itemLabel} deleted.`);
-              })
-            }
+            onClick={() => startTransition(() => action())}
           >
-            {isPending ? "Deleting…" : "Delete"}
+            {isPending ? "Deleting…" : "Yes, delete it"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

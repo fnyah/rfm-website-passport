@@ -3,48 +3,49 @@
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Field, inputClassName } from "@/components/admin/form-parts";
 import { authenticate } from "@/lib/actions/auth";
 
 export function LoginForm({ callbackUrl }: { callbackUrl?: string }) {
-  const [errorMessage, formAction, pending] = useActionState(
-    authenticate,
-    undefined
-  );
+  const [errorMessage, formAction, pending] = useActionState(authenticate, undefined);
 
   return (
-    <form action={formAction} className="flex flex-col gap-5">
+    <form action={formAction} className="flex flex-col gap-7">
       <input type="hidden" name="callbackUrl" value={callbackUrl ?? ""} />
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="username">Username</Label>
+      <Field id="username" label="Username">
         <Input
           id="username"
           name="username"
           autoComplete="username"
+          autoCapitalize="none"
           required
           autoFocus
+          className={inputClassName}
         />
-      </div>
+      </Field>
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="password">Password</Label>
+      <Field id="password" label="Password">
         <Input
           id="password"
           name="password"
           type="password"
           autoComplete="current-password"
           required
+          className={inputClassName}
         />
-      </div>
+      </Field>
 
       {errorMessage && (
-        <p role="alert" className="text-sm text-destructive">
+        <p
+          role="alert"
+          className="rounded-xl border-2 border-destructive bg-destructive/5 px-5 py-4 text-lg font-medium text-destructive"
+        >
           {errorMessage}
         </p>
       )}
 
-      <Button type="submit" disabled={pending} className="mt-2">
+      <Button type="submit" size="xl" disabled={pending} className="w-full">
         {pending ? "Signing in…" : "Sign in"}
       </Button>
     </form>

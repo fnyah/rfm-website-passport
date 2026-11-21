@@ -1,70 +1,43 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { useActionState } from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { DialogFooter } from "@/components/ui/dialog";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
+import { Field, FormActions, formClassName, inputClassName } from "@/components/admin/form-parts";
 import { saveHomePost } from "@/lib/actions/home";
 import type { ActionState } from "@/lib/actions/shared";
 import type { HomePostDoc } from "@/models/Home";
 
-export function HomePostForm({
-  post,
-  onSuccess,
-}: {
-  post?: HomePostDoc;
-  onSuccess: () => void;
-}) {
+export function HomePostForm({ post }: { post?: HomePostDoc }) {
   const action = saveHomePost.bind(null, post?._id ?? null);
-  const [state, formAction, pending] = useActionState<ActionState, FormData>(
-    action,
-    {}
-  );
-
-  useEffect(() => {
-    if (state.success) {
-      toast.success(post ? "Post updated." : "Post added.");
-      onSuccess();
-    }
-  }, [state, post, onSuccess]);
+  const [state, formAction, pending] = useActionState<ActionState, FormData>(action, {});
 
   return (
-    <form action={formAction} className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="title">Title</Label>
-        <p className="text-sm text-muted-foreground">
-          The course or project name, shown as a heading on the homepage.
-        </p>
-        <Input id="title" name="title" defaultValue={post?.title} required />
-      </div>
+    <form action={formAction} className={formClassName}>
+      <Field id="title" label="Course name" hint="Shown as a heading on your home page.">
+        <Input id="title" name="title" defaultValue={post?.title} required className={inputClassName} />
+      </Field>
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="description">Description</Label>
-        <p className="text-sm text-muted-foreground">
-          A short paragraph shown underneath the title.
-        </p>
+      <Field
+        id="description"
+        label="About this course"
+        hint="A short paragraph shown under the course name."
+      >
         <RichTextEditor
+          id="description"
           name="description"
           defaultValue={post?.description}
-          label="Description"
+          label="About this course"
           placeholder="What is this course or project about?"
         />
-      </div>
+      </Field>
 
-      {state.error && (
-        <p role="alert" className="text-sm text-destructive">
-          {state.error}
-        </p>
-      )}
-
-      <DialogFooter>
-        <Button type="submit" disabled={pending}>
-          {pending ? "Saving…" : "Save"}
-        </Button>
-      </DialogFooter>
+      <FormActions
+        pending={pending}
+        error={state.error}
+        cancelHref="/admin/home"
+        saveLabel={post ? "Save changes" : "Add this course"}
+      />
     </form>
   );
 }

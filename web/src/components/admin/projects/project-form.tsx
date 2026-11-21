@@ -1,93 +1,76 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { useActionState } from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { DialogFooter } from "@/components/ui/dialog";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { ImageUploader } from "@/components/admin/image-uploader";
+import {
+  Field,
+  FormActions,
+  formClassName,
+  inputClassName,
+  textareaClassName,
+} from "@/components/admin/form-parts";
 import { saveProject } from "@/lib/actions/projects";
 import type { ActionState } from "@/lib/actions/shared";
 import type { ProjectDoc } from "@/models/Project";
 
-export function ProjectForm({
-  project,
-  onSuccess,
-}: {
-  project?: ProjectDoc;
-  onSuccess: () => void;
-}) {
+export function ProjectForm({ project }: { project?: ProjectDoc }) {
   const action = saveProject.bind(null, project?._id ?? null);
-  const [state, formAction, pending] = useActionState<ActionState, FormData>(
-    action,
-    {}
-  );
-
-  useEffect(() => {
-    if (state.success) {
-      toast.success(project ? "Project updated." : "Project added.");
-      onSuccess();
-    }
-  }, [state, project, onSuccess]);
+  const [state, formAction, pending] = useActionState<ActionState, FormData>(action, {});
 
   return (
-    <form action={formAction} className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="title">Title</Label>
-        <Input id="title" name="title" defaultValue={project?.title} required />
-      </div>
+    <form action={formAction} className={formClassName}>
+      <Field id="title" label="Project name" hint="Shown as the heading on the Student projects page.">
+        <Input id="title" name="title" defaultValue={project?.title} required className={inputClassName} />
+      </Field>
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="author">Student name(s) (optional)</Label>
-        <Input id="author" name="author" defaultValue={project?.author} />
-      </div>
+      <Field id="author" label="Student name or names" optional>
+        <Input id="author" name="author" defaultValue={project?.author} className={inputClassName} />
+      </Field>
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="description">Description</Label>
+      <Field id="description" label="About this project" hint="What the students made, and why it matters.">
         <RichTextEditor
+          id="description"
           name="description"
           defaultValue={project?.description}
-          label="Description"
+          label="About this project"
           placeholder="What is this project about?"
         />
-      </div>
+      </Field>
 
       <ImageUploader
         name="filename"
-        label="Photos (optional)"
-        helperText="Shown as a photo grid on the project's page."
+        label="Photos"
+        optional
+        helperText="Shown together on the project’s page."
         multiple
         defaultUrls={project?.filename ?? []}
       />
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="videoLinks">Video links (optional)</Label>
-        <p className="text-sm text-muted-foreground">
-          Paste one or more YouTube links, separated by commas.
-        </p>
+      <Field
+        id="videoLinks"
+        label="YouTube videos"
+        optional
+        hint="Paste the web address of each video. Put a comma between them."
+      >
         <Textarea
           id="videoLinks"
           name="videoLinks"
           rows={2}
           defaultValue={project?.videoLink?.join(", ")}
           placeholder="https://www.youtube.com/watch?v=..."
+          className={textareaClassName}
         />
-      </div>
+      </Field>
 
-      {state.error && (
-        <p role="alert" className="text-sm text-destructive">
-          {state.error}
-        </p>
-      )}
-
-      <DialogFooter>
-        <Button type="submit" disabled={pending}>
-          {pending ? "Saving…" : "Save"}
-        </Button>
-      </DialogFooter>
+      <FormActions
+        pending={pending}
+        error={state.error}
+        cancelHref="/admin/projects"
+        saveLabel={project ? "Save changes" : "Add this project"}
+      />
     </form>
   );
 }
