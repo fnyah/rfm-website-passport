@@ -41,8 +41,11 @@ export function FormActions({
   error,
   cancelHref,
   saveLabel = "Save changes",
+  uploading = false,
 }: {
   pending: boolean;
+  /** A photo is still uploading: saving now would leave it out. */
+  uploading?: boolean;
   error?: string;
   cancelHref: string;
   saveLabel?: string;
@@ -58,8 +61,8 @@ export function FormActions({
         </p>
       )}
       <div className="flex flex-col gap-3 sm:flex-row">
-        <Button type="submit" size="xl" disabled={pending} className="sm:min-w-48">
-          {pending ? "Saving…" : saveLabel}
+        <Button type="submit" size="xl" disabled={pending || uploading} className="sm:min-w-48">
+          {pending ? "Saving…" : uploading ? "Waiting for the photo…" : saveLabel}
         </Button>
         <Link
           href={cancelHref}

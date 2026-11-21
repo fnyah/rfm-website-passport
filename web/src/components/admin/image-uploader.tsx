@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import Image from "next/image";
 import { upload } from "@vercel/blob/client";
 import { ImagePlus, Loader2, X } from "lucide-react";
@@ -24,6 +24,7 @@ export function ImageUploader({
   multiple = false,
   optional = false,
   defaultUrls = [],
+  onUploadingChange,
 }: {
   name: string;
   label: string;
@@ -31,6 +32,8 @@ export function ImageUploader({
   multiple?: boolean;
   optional?: boolean;
   defaultUrls?: string[];
+  /** Lets the form hold its Save button until every photo has finished uploading. */
+  onUploadingChange?: (uploading: boolean) => void;
 }) {
   const [items, setItems] = useState<UploadItem[]>(
     defaultUrls.map((url) => ({ url }))
@@ -39,6 +42,8 @@ export function ImageUploader({
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => onUploadingChange?.(isPending), [isPending, onUploadingChange]);
 
   function handleFiles(files: FileList | null) {
     if (!files || files.length === 0) return;
@@ -113,7 +118,7 @@ export function ImageUploader({
                 <div className="relative size-36 overflow-hidden rounded-lg ring-1 ring-border">
                   <Image src={item.url} alt="" fill sizes="144px" className="object-cover" unoptimized={item.uploading} />
                   {item.uploading && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/50 text-base font-medium text-white">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/50 text-lg font-medium text-white">
                       <Loader2 className="size-6 animate-spin" aria-hidden />
                       Uploading…
                     </div>
@@ -124,7 +129,7 @@ export function ImageUploader({
                     type="button"
                     variant="ghost"
                     onClick={() => removeAt(i)}
-                    className="h-11 gap-1.5 px-3 text-base text-muted-foreground hover:text-destructive"
+                    className="h-12 gap-1.5 px-3 text-lg text-muted-foreground hover:text-destructive"
                   >
                     <X aria-hidden />
                     Remove
@@ -145,7 +150,7 @@ export function ImageUploader({
           <ImagePlus aria-hidden />
           {chooseLabel}
         </Button>
-        <p className="text-base text-muted-foreground">
+        <p className="text-lg text-muted-foreground">
           Or drag a photo from your computer onto this box.
         </p>
         <input

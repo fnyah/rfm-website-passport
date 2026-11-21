@@ -1,4 +1,5 @@
 import "server-only";
+import { isValidObjectId } from "mongoose";
 import { connectToDatabase } from "@/lib/db";
 import { Standing, type StandingDoc } from "@/models/Standing";
 import { Event, type EventDoc } from "@/models/Event";
@@ -17,12 +18,14 @@ export async function getEvents(): Promise<EventDoc[]> {
 }
 
 export async function getStanding(id: string): Promise<StandingDoc | null> {
+  if (!isValidObjectId(id)) return null;
   await connectToDatabase();
   const standing = await Standing.findById(id).lean();
   return standing ? toPlain(standing) : null;
 }
 
 export async function getEvent(id: string): Promise<EventDoc | null> {
+  if (!isValidObjectId(id)) return null;
   await connectToDatabase();
   const event = await Event.findById(id).lean();
   return event ? toPlain(event) : null;

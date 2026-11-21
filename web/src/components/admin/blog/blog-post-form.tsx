@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
@@ -19,6 +19,7 @@ import type { BlogPostDoc } from "@/models/Blog";
 export function BlogPostForm({ post }: { post?: BlogPostDoc }) {
   const action = saveBlogPost.bind(null, post?._id ?? null);
   const [state, formAction, pending] = useActionState<ActionState, FormData>(action, {});
+  const [uploading, setUploading] = useState(false);
 
   return (
     <form action={formAction} className={formClassName}>
@@ -37,6 +38,7 @@ export function BlogPostForm({ post }: { post?: BlogPostDoc }) {
       </Field>
 
       <ImageUploader
+        onUploadingChange={setUploading}
         name="filename"
         label="Photos"
         optional
@@ -62,6 +64,7 @@ export function BlogPostForm({ post }: { post?: BlogPostDoc }) {
 
       <FormActions
         pending={pending}
+        uploading={uploading}
         error={state.error}
         cancelHref="/admin/for-educators"
         saveLabel={post ? "Save changes" : "Add this resource"}

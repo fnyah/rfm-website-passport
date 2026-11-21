@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageUploader } from "@/components/admin/image-uploader";
@@ -18,10 +18,12 @@ import type { PhotoDoc } from "@/models/Photo";
 export function HomePhotoForm({ photo }: { photo?: PhotoDoc }) {
   const action = saveHomePhoto.bind(null, photo?._id ?? null);
   const [state, formAction, pending] = useActionState<ActionState, FormData>(action, {});
+  const [uploading, setUploading] = useState(false);
 
   return (
     <form action={formAction} className={formClassName}>
       <ImageUploader
+        onUploadingChange={setUploading}
         name="filename"
         label="Photo"
         helperText="Square photos look best in the banner."
@@ -61,6 +63,7 @@ export function HomePhotoForm({ photo }: { photo?: PhotoDoc }) {
 
       <FormActions
         pending={pending}
+        uploading={uploading}
         error={state.error}
         cancelHref="/admin/home/photos"
         saveLabel={photo ? "Save changes" : "Add this photo"}

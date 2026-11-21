@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
@@ -19,6 +19,7 @@ import type { ProjectDoc } from "@/models/Project";
 export function ProjectForm({ project }: { project?: ProjectDoc }) {
   const action = saveProject.bind(null, project?._id ?? null);
   const [state, formAction, pending] = useActionState<ActionState, FormData>(action, {});
+  const [uploading, setUploading] = useState(false);
 
   return (
     <form action={formAction} className={formClassName}>
@@ -41,6 +42,7 @@ export function ProjectForm({ project }: { project?: ProjectDoc }) {
       </Field>
 
       <ImageUploader
+        onUploadingChange={setUploading}
         name="filename"
         label="Photos"
         optional
@@ -67,6 +69,7 @@ export function ProjectForm({ project }: { project?: ProjectDoc }) {
 
       <FormActions
         pending={pending}
+        uploading={uploading}
         error={state.error}
         cancelHref="/admin/projects"
         saveLabel={project ? "Save changes" : "Add this project"}

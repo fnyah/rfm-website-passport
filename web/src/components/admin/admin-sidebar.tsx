@@ -32,7 +32,7 @@ export function AdminSidebar() {
     <Sidebar collapsible="offcanvas">
       <SidebarHeader className="px-5 pt-6 pb-4">
         <p className="font-heading text-3xl font-medium">Your website</p>
-        <p className="text-base text-muted-foreground">Choose what to change</p>
+        <p className="text-lg text-muted-foreground">Choose what to change</p>
       </SidebarHeader>
 
       <SidebarContent>

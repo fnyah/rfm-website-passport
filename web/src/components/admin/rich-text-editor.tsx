@@ -169,7 +169,7 @@ function ToolButton({
       disabled={!editor.isEditable}
       onClick={onClick}
       className={cn(
-        "h-11 gap-2 px-3 text-base",
+        "h-12 gap-2 px-3 text-lg",
         active && "bg-primary/10 text-primary ring-2 ring-primary/40"
       )}
     >
@@ -199,7 +199,7 @@ function LinkForm({
       <label htmlFor="rich-text-link" className="text-lg font-semibold">
         Web address for the link
       </label>
-      <p className="-mt-2 text-base text-muted-foreground">
+      <p className="-mt-2 text-lg text-muted-foreground">
         Select some words first to turn them into a link, or the address itself is added.
       </p>
       <div className="flex flex-col gap-3 sm:flex-row">

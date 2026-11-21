@@ -48,7 +48,7 @@ export default async function AdminHomePhotosPage({
             >
               <p className="text-foreground">{photo.description || "No caption"}</p>
               {photo.link && (
-                <p className="mt-1 truncate text-base">Opens {photo.link.replace(/^https?:\/\//, "")}</p>
+                <p className="mt-1 truncate text-lg">Opens {photo.link.replace(/^https?:\/\//, "")}</p>
               )}
             </ItemCard>
           ))}
