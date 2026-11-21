@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { connectToDatabase } from "@/lib/db";
 import { Standing } from "@/models/Standing";
 import { Event } from "@/models/Event";
@@ -25,7 +26,7 @@ export async function saveStanding(
 
   revalidatePath("/admin/about");
   revalidatePath("/about");
-  return { success: true };
+  redirect("/admin/about?saved=1");
 }
 
 export async function deleteStanding(id: string) {
@@ -34,6 +35,7 @@ export async function deleteStanding(id: string) {
   await Standing.findByIdAndDelete(id);
   revalidatePath("/admin/about");
   revalidatePath("/about");
+  redirect("/admin/about?deleted=1");
 }
 
 export async function saveEvent(
@@ -58,7 +60,7 @@ export async function saveEvent(
 
   revalidatePath("/admin/about");
   revalidatePath("/about");
-  return { success: true };
+  redirect("/admin/about/events?saved=1");
 }
 
 export async function deleteEvent(id: string) {
@@ -67,4 +69,5 @@ export async function deleteEvent(id: string) {
   await Event.findByIdAndDelete(id);
   revalidatePath("/admin/about");
   revalidatePath("/about");
+  redirect("/admin/about/events?deleted=1");
 }

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { connectToDatabase } from "@/lib/db";
 import { Project } from "@/models/Project";
 import { requireSession, type ActionState } from "@/lib/actions/shared";
@@ -35,7 +36,7 @@ export async function saveProject(
 
   revalidatePath("/admin/projects");
   revalidatePath("/projects");
-  return { success: true };
+  redirect("/admin/projects?saved=1");
 }
 
 export async function deleteProject(id: string) {
@@ -44,4 +45,5 @@ export async function deleteProject(id: string) {
   await Project.findByIdAndDelete(id);
   revalidatePath("/admin/projects");
   revalidatePath("/projects");
+  redirect("/admin/projects?deleted=1");
 }

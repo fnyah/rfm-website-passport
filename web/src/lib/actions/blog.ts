@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { connectToDatabase } from "@/lib/db";
 import { BlogPost } from "@/models/Blog";
 import { requireSession, type ActionState } from "@/lib/actions/shared";
@@ -34,7 +35,7 @@ export async function saveBlogPost(
 
   revalidatePath("/admin/for-educators");
   revalidatePath("/blog");
-  return { success: true };
+  redirect("/admin/for-educators?saved=1");
 }
 
 export async function deleteBlogPost(id: string) {
@@ -43,4 +44,5 @@ export async function deleteBlogPost(id: string) {
   await BlogPost.findByIdAndDelete(id);
   revalidatePath("/admin/for-educators");
   revalidatePath("/blog");
+  redirect("/admin/for-educators?deleted=1");
 }

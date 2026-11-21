@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { connectToDatabase } from "@/lib/db";
 import { Home } from "@/models/Home";
 import { Photo } from "@/models/Photo";
@@ -28,7 +29,7 @@ export async function saveHomePost(
 
   revalidatePath("/admin/home");
   revalidatePath("/");
-  return { success: true };
+  redirect("/admin/home?saved=1");
 }
 
 export async function deleteHomePost(id: string) {
@@ -37,6 +38,7 @@ export async function deleteHomePost(id: string) {
   await Home.findByIdAndDelete(id);
   revalidatePath("/admin/home");
   revalidatePath("/");
+  redirect("/admin/home?deleted=1");
 }
 
 export async function saveHomePhoto(
@@ -67,7 +69,7 @@ export async function saveHomePhoto(
 
   revalidatePath("/admin/home");
   revalidatePath("/");
-  return { success: true };
+  redirect("/admin/home/photos?saved=1");
 }
 
 export async function deleteHomePhoto(id: string) {
@@ -76,4 +78,5 @@ export async function deleteHomePhoto(id: string) {
   await Photo.findByIdAndDelete(id);
   revalidatePath("/admin/home");
   revalidatePath("/");
+  redirect("/admin/home/photos?deleted=1");
 }
