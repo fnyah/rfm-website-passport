@@ -28,6 +28,9 @@ jobs:
       # NODE_ENV=production would skip devDependencies; the checks need them.
       - run: npm ci --include=dev
 
+      # PageProps/LayoutProps are generated into .next/types; a fresh clone has none.
+      - run: npx next typegen
+
       - run: npx tsc --noEmit
 
       - run: npm run lint
