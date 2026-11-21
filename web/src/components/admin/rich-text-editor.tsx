@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Bold, Italic, Link as LinkIcon, List, ListOrdered, Unlink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { plainTextToHtml } from "@/lib/plain-text";
 import { cn } from "@/lib/utils";
 
 /**
@@ -40,7 +41,8 @@ export function RichTextEditor({
       Link.configure({ openOnClick: false, autolink: true }),
       Placeholder.configure({ placeholder: placeholder ?? "" }),
     ],
-    content: defaultValue,
+    // Legacy plain text keeps its paragraphs when loaded for editing.
+    content: plainTextToHtml(defaultValue),
     immediatelyRender: false,
     editorProps: {
       attributes: {

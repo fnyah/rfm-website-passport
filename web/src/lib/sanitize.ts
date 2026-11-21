@@ -1,4 +1,5 @@
 import DOMPurify from "isomorphic-dompurify";
+import { plainTextToHtml } from "@/lib/plain-text";
 
 // Rich-text fields (Home/Standings/Project/Blog descriptions) are edited
 // with the Tiptap toolbar in the admin panel, which only exposes bold,
@@ -10,5 +11,6 @@ const ALLOWED_ATTR = ["href", "target", "rel"];
 
 export function sanitizeRichText(html: string | null | undefined): string {
   if (!html) return "";
-  return DOMPurify.sanitize(html, { ALLOWED_TAGS, ALLOWED_ATTR });
+  // Legacy plain text (no tags) becomes paragraphs before sanitizing.
+  return DOMPurify.sanitize(plainTextToHtml(html), { ALLOWED_TAGS, ALLOWED_ATTR });
 }
